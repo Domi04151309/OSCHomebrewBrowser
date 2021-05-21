@@ -237,7 +237,6 @@ int main(int argc, char **argv) {
 
 	GRRLIB_Init();
 	GRRLIB_InitFreetype();
-	START_showText("Homebrew Browser Lite\n");
 
 	u32 temp_esid;
 	ES_GetDeviceID(&temp_esid);

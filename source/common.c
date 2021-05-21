@@ -51,10 +51,8 @@ const DISC_INTERFACE* usb = &__io_usbstorage;
 #define FONTSIZE_SMALL 18
 #define BUFFER_SIZE 1024
 #define NET_BUFFER_SIZE 1024
-#define IP_ADDRESS_OLD_LOCAL "192.168.1.1"
 #define IP_ADDRESS_OLD "79.136.53.163"
 #define IP_ADDRESS_OLD2 "69.163.186.246"
-//#define IP_ADDRESS "192.168.1.1"
 #define SOCKET_PORT 80
 u32 IP_ADDRESS = 0;
 
@@ -205,8 +203,6 @@ size_t result;
 struct tm * timeinfo;
 time_t app_time;
 
-//char testy[200];
-
 void testing() {
 	printf("Going to test downloading a file\n");
 	hbb_updating = true;
@@ -246,18 +242,15 @@ static void *run_reset_thread(void *arg) {
 		if (WPAD_ButtonsHeld(0) & WPAD_BUTTON_1 || PAD_ButtonsDown(0) & PAD_BUTTON_Y) {
 			setting_online = false;
 			printf("\nNow working in offline mode.\n");
-			//add_to_log("Now working in offline mode.");
 		}
 		if (WPAD_ButtonsHeld(0) & WPAD_BUTTON_2 || PAD_ButtonsDown(0) & PAD_BUTTON_X) {
 			setting_repo_revert = true;
 			setting_repo = 0;
 			printf("\nReverting to OSCWii.org repository.\n");
-			//add_to_log("Reverting to CodeMii.com repository.");
 		}
 		if (WPAD_ButtonsHeld(0) & WPAD_BUTTON_B || PAD_ButtonsDown(0) & PAD_BUTTON_B) {
 			cancel_download = true;
 			cancel_extract = true;
-			//add_to_log("Cancelling download/extract.");
 		}
 	}
 	printf("\nHomebrew Browser shutting down...\n");
@@ -287,7 +280,6 @@ void suspend_www_thread() {
 }
 
 static void *run_icons_thread(void *arg) {
-
 	sleep(5);
 
 	int x;
@@ -342,19 +334,10 @@ static void *run_icons_thread(void *arg) {
 					total_list[x].file_found = -1;
 				}
 
-				// Load text to memory
-				//if (total_list[x].str_name == NULL && total_list[x].str_short_description == NULL) {
-					//total_list[x].str_name = GRRLIB_TextToTexture(total_list[x].app_name, FONTSIZE_SMALL, 0x575757);
-					//total_list[x].str_short_description = GRRLIB_TextToTexture(total_list[x].app_short_description, FONTSIZE_SMALL, 0x575757);
-				//}
-
-
 				int y;
 				for (y = 0; y < array_length (homebrew_list); y++) {
 					if (strcmp (total_list[x].name, homebrew_list[y].name) == 0) {
 						homebrew_list[y].file_found = total_list[x].file_found;
-						//homebrew_list[y].str_name = total_list[x].str_name;
-						//homebrew_list[y].str_short_description = total_list[x].str_short_description;
 						homebrew_list[y].content = total_list[x].content;
 					}
 				}
@@ -362,8 +345,6 @@ static void *run_icons_thread(void *arg) {
 				for (y = 0; y < array_length (emulators_list); y++) {
 					if (strcmp (total_list[x].name, emulators_list[y].name) == 0) {
 						emulators_list[y].file_found = total_list[x].file_found;
-						//emulators_list[y].str_name = total_list[x].str_name;
-						//emulators_list[y].str_short_description = total_list[x].str_short_description;
 						emulators_list[y].content = total_list[x].content;
 					}
 				}
@@ -371,8 +352,6 @@ static void *run_icons_thread(void *arg) {
 				for (y = 0; y < array_length (games_list); y++) {
 					if (strcmp (total_list[x].name, games_list[y].name) == 0) {
 						games_list[y].file_found = total_list[x].file_found;
-						//games_list[y].str_name = total_list[x].str_name;
-						//games_list[y].str_short_description = total_list[x].str_short_description;
 						games_list[y].content = total_list[x].content;
 					}
 				}
@@ -380,8 +359,6 @@ static void *run_icons_thread(void *arg) {
 				for (y = 0; y < array_length (media_list); y++) {
 					if (strcmp (total_list[x].name, media_list[y].name) == 0) {
 						media_list[y].file_found = total_list[x].file_found;
-						//media_list[y].str_name = total_list[x].str_name;
-						//media_list[y].str_short_description = total_list[x].str_short_description;
 						media_list[y].content = total_list[x].content;
 					}
 				}
@@ -389,8 +366,6 @@ static void *run_icons_thread(void *arg) {
 				for (y = 0; y < array_length (utilities_list); y++) {
 					if (strcmp (total_list[x].name, utilities_list[y].name) == 0) {
 						utilities_list[y].file_found = total_list[x].file_found;
-						//utilities_list[y].str_name = total_list[x].str_name;
-						//utilities_list[y].str_short_description = total_list[x].str_short_description;
 						utilities_list[y].content = total_list[x].content;
 					}
 				}
@@ -398,8 +373,6 @@ static void *run_icons_thread(void *arg) {
 				for (y = 0; y < array_length (demos_list); y++) {
 					if (strcmp (total_list[x].name, demos_list[y].name) == 0) {
 						demos_list[y].file_found = total_list[x].file_found;
-						//demos_list[y].str_name = total_list[x].str_name;
-						//demos_list[y].str_short_description = total_list[x].str_short_description;
 						demos_list[y].content = total_list[x].content;
 					}
 				}
@@ -442,19 +415,10 @@ static void *run_icons_thread(void *arg) {
 						total_list[x].file_found = -1;
 					}
 
-					// Load text to memory
-					//if (total_list[x].str_name == NULL && total_list[x].str_short_description == NULL) {
-						//total_list[x].str_name = GRRLIB_TextToTexture(total_list[x].app_name, FONTSIZE_SMALL, 0x575757);
-						//total_list[x].str_short_description = GRRLIB_TextToTexture(total_list[x].app_short_description, FONTSIZE_SMALL, 0x575757);
-					//}
-
-
 					int y;
 					for (y = 0; y < array_length (homebrew_list); y++) {
 						if (strcmp (total_list[x].name, homebrew_list[y].name) == 0) {
 							homebrew_list[y].file_found = total_list[x].file_found;
-							//homebrew_list[y].str_name = total_list[x].str_name;
-							//homebrew_list[y].str_short_description = total_list[x].str_short_description;
 							homebrew_list[y].content = total_list[x].content;
 						}
 					}
@@ -465,8 +429,6 @@ static void *run_icons_thread(void *arg) {
 					for (y = 0; y < array_length (emulators_list); y++) {
 						if (strcmp (total_list[x].name, emulators_list[y].name) == 0) {
 							emulators_list[y].file_found = total_list[x].file_found;
-							//emulators_list[y].str_name = total_list[x].str_name;
-							//emulators_list[y].str_short_description = total_list[x].str_short_description;
 							emulators_list[y].content = total_list[x].content;
 						}
 					}
@@ -477,8 +439,6 @@ static void *run_icons_thread(void *arg) {
 					for (y = 0; y < array_length (games_list); y++) {
 						if (strcmp (total_list[x].name, games_list[y].name) == 0) {
 							games_list[y].file_found = total_list[x].file_found;
-							//games_list[y].str_name = total_list[x].str_name;
-							//games_list[y].str_short_description = total_list[x].str_short_description;
 							games_list[y].content = total_list[x].content;
 						}
 					}
@@ -489,8 +449,6 @@ static void *run_icons_thread(void *arg) {
 					for (y = 0; y < array_length (media_list); y++) {
 						if (strcmp (total_list[x].name, media_list[y].name) == 0) {
 							media_list[y].file_found = total_list[x].file_found;
-							//media_list[y].str_name = total_list[x].str_name;
-							//media_list[y].str_short_description = total_list[x].str_short_description;
 							media_list[y].content = total_list[x].content;
 						}
 					}
@@ -501,8 +459,6 @@ static void *run_icons_thread(void *arg) {
 					for (y = 0; y < array_length (utilities_list); y++) {
 						if (strcmp (total_list[x].name, utilities_list[y].name) == 0) {
 							utilities_list[y].file_found = total_list[x].file_found;
-							//utilities_list[y].str_name = total_list[x].str_name;
-							//utilities_list[y].str_short_description = total_list[x].str_short_description;
 							utilities_list[y].content = total_list[x].content;
 						}
 					}
@@ -513,8 +469,6 @@ static void *run_icons_thread(void *arg) {
 					for (y = 0; y < array_length (demos_list); y++) {
 						if (strcmp (total_list[x].name, demos_list[y].name) == 0) {
 							demos_list[y].file_found = total_list[x].file_found;
-							//demos_list[y].str_name = total_list[x].str_name;
-							//demos_list[y].str_short_description = total_list[x].str_short_description;
 							demos_list[y].content = total_list[x].content;
 						}
 					}
@@ -525,9 +479,6 @@ static void *run_icons_thread(void *arg) {
 		// Sleep longer if downloaded image file
 		if (update_img_file == true) {
 			sleep(2);
-		}
-		else {
-			//usleep(50000);
 		}
 		download_icon = x;
 	}
@@ -613,7 +564,6 @@ static void *run_download_thread(void *arg) {
 				strcpy(temp_create,"usb:");
 			}
 			strcat(temp_create, split_tok);
-			//if (create_dir(split_tok) != 1) {
 			if (create_dir(temp_create) != 1) {
 				download_status = false;
 				error_number = 2;
@@ -919,7 +869,6 @@ static void *run_download_thread(void *arg) {
 			// Open file and get the file size
 			fseek (ftheme , 0, SEEK_END);
 			store_homebrew_list[0].local_app_size = ftell (ftheme);
-			//homebrew_list[selected_app].local_app_size = store_homebrew_list[0].local_app_size;
 			rewind (ftheme);
 			fclose(ftheme);
 		}
@@ -928,7 +877,6 @@ static void *run_download_thread(void *arg) {
 		// Open file and get the file size
 		fseek (f , 0, SEEK_END);
 		store_homebrew_list[0].local_app_size = ftell (f);
-		//homebrew_list[selected_app].local_app_size = store_homebrew_list[0].local_app_size;
 		rewind (f);
 		fclose(f);
 
@@ -993,7 +941,6 @@ static void *run_delete_thread(void *arg) {
 	bool ok_to_del = true;
 	char no_del_list[50][300];
 	int no_del_count = 0;
-	//error_number = 7;
 
 	// Directories to delete all files from
 	if (store_homebrew_list[0].folders != NULL && delete_status == true && cancel_delete == false) {
@@ -1015,21 +962,16 @@ static void *run_delete_thread(void *arg) {
 		split_tok1 = strtok (folders1,";");
 
 		while (split_tok1 != NULL) {
-
-			//printf("FIRST = %s\n", split_tok1);
-
 			ok_to_del = true;
 
 			int d;
 			for (d = 0; d < no_del_count; d++) {
-				//printf("SECOND = %s\n", no_del_list[d].folders);
 				if (strcmp(no_del_list[d], split_tok1) == 0) {
 					ok_to_del = false;
 				}
 			}
 
 			if (ok_to_del == true) {
-				//printf("OK TO DEL\n");
 				char temp_del[200] = "sd:";
 				if (setting_use_sd == false) {
 					strcpy(temp_del,"usb:");
@@ -1050,7 +992,6 @@ static void *run_delete_thread(void *arg) {
 		if (setting_use_sd == false) {
 			strcpy(del_file,"usb:/apps/");
 		}
-		//strcat(del_file, store_homebrew_list[0].name);
 
 		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
 			strcat(del_file, store_homebrew_list[0].user_dirname);
@@ -1072,7 +1013,6 @@ static void *run_delete_thread(void *arg) {
 			strcpy(del_file,"usb:/apps/");
 		}
 
-		//strcat(del_file, store_homebrew_list[0].name);
 		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
 			strcat(del_file, store_homebrew_list[0].user_dirname);
 		}
@@ -1720,7 +1660,6 @@ void sort_by_name (bool min_to_max) {
 
 
 	int now;
-//	int next;
 	int x;
 	int final = 0;
 
@@ -2087,7 +2026,7 @@ void initialise_fat() {
 	bool fat_init = false;
 
 	// At least one FAT initialisation has to be completed
-	START_showText("Attempting to mount SD card");
+	printf("Attempting to mount SD card");
 	if (initialise_device(METHOD_SD)) {
 		strcpy(rootdir, "sd:/");
 		if (test_fat() == true) {
@@ -2102,7 +2041,7 @@ void initialise_fat() {
 		}
 	}
 	if (setting_disusb == false) {
-		START_showText("Attempting to mount USB device");
+		printf("Attempting to mount USB device");
 		if (initialise_device(METHOD_USB)) {
 			strcpy(rootdir, "usb:/");
 			if (test_fat() == true) {
@@ -2507,7 +2446,6 @@ int delete_dir_files(char* path) {
 	dir = opendir(path);
 
 	if (dir != NULL) {
-		//OLD : while (dirnext(dir, filename, &st) == 0) {
 		char temp_path[MAXPATHLEN];
 		while ((dent=readdir(dir)) != NULL) {
 			strcpy(temp_path, path);
@@ -2657,7 +2595,7 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			START_showText("Downloading zip file containing current image files.\nYou can skip this by holding down the B button but it's highly recommended that you don't.");
+			START_showText("Downloading current image files.\nYou can skip this by holding down the B button but it's highly recommended that you don't.");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
@@ -2711,7 +2649,7 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			START_showText("Downloading zip file containing current image files.\nYou can skip this by holding down the B button but it's highly recommended that you don't.");
+			START_showText("Downloading current image files.\nYou can skip this by holding down the B button but it's highly recommended that you don't.");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
@@ -3596,11 +3534,9 @@ s32 request_list() {
 
 						// Downloads
 						split_tok = strtok (NULL, " ");
-						//strcpy(homebrew_list[array_count].app_downloads, split_tok);
 
 						// Rating
 						split_tok = strtok (NULL, " ");
-						//homebrew_list[array_count].app_rating = atoi(split_tok);
 
 						// Controllers
 						split_tok = strtok (NULL, " ");
@@ -3765,9 +3701,7 @@ s32 request_file(s32 server, FILE *f) {
 		bytes_read = net_read(server, message, sizeof(message));
 
 		download_progress_counter += bytes_read;
-		//if (updating >= 0) {
-			updating_current_size += bytes_read;
-		//}
+		updating_current_size += bytes_read;
 
 		// If updating the HBB, display dots as the progress bar
 		if (hbb_updating == true) {
