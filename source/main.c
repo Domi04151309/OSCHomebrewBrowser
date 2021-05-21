@@ -155,6 +155,9 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "apps_start_sort_png.h"
 #include "arrow_png.h"
 
+#include "activities/start.h"
+#include "res.h"
+
 #include "GRRLIB/GRRLIB.h"
 
 #define METHOD_SD 1
@@ -240,7 +243,10 @@ int main(int argc, char **argv) {
 	sprintf(setting_last_boot, "%li", current_time); // bug fix
 
 	printf("\x1b[2;0H");
-	printf("OSC Homebrew Browser v0.4.0e\n");
+
+	GRRLIB_Init();
+	GRRLIB_InitFreetype();
+	START_showText("Homebrew Browser Lite\n");
 
 	u32 temp_esid;
 	ES_GetDeviceID(&temp_esid);
@@ -299,11 +305,8 @@ int main(int argc, char **argv) {
 		suspend_www_thread();
 
 		if (www_passed == false) {
-			die("\nReturning you back to HBC. Please check to see if " MAIN_DOMAIN " and " FALLBACK_DOMAIN " are working.\n");
+			die("\nReturning you back to HBC. Please check to see if " MAIN_DOMAIN " and " FALLBACK_DOMAIN " are working.");
 		}
-
-		printf("Connection established\n");
-		repo_check();
 	}
 	else if (setting_server == true) { // Secondary server setting enabled
 		codemii_backup = true;
@@ -331,10 +334,9 @@ int main(int argc, char **argv) {
 		if (www_passed == false) {
 			die("\nReturning you back to HBC. Please check to see if " FALLBACK_DOMAIN " is working.\n");
 		}
-
-		printf("Connection established\n");
-		repo_check();
 	}
+	printf("Connection established\n");
+	repo_check();
 
 	// Grab the homebrew list and parse list
 	while (request_list() != true);
@@ -414,9 +416,6 @@ int main(int argc, char **argv) {
 		apps_check();
 		update_settings(); // Update last boot time
 	}
-
-	GRRLIB_Init();
-	GRRLIB_InitFreetype();
 
 	suspend_reset_thread();
 

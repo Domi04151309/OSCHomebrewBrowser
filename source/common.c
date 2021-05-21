@@ -12,7 +12,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include <fat.h>
 #include <math.h>
 #include <network.h>
-//#include <gcmodplay.h>
 #include <asndlib.h>
 #include <ogc/lwp_watchdog.h>
 #include <ogcsys.h>
@@ -37,6 +36,9 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include <ogc/usbstorage.h>
 
 #include <sys/param.h>
+
+#include "activities/start.h"
+#include "res.h"
 
 char rootdir[10];
 
@@ -228,13 +230,13 @@ void testing() {
 char* get_error_msg(s32 error_code) {
 	switch (error_code) {
 		case -6:
-			return "Are you connected to the internet? Try running a connection test in the Wii System Settings.";
+			return "Are you connected to the internet?\nTry running a connection test in the Wii System Settings.";
 			break;
 		case -81:
-			return "Is your SD card write-locked? Is the server in settings.xml not set to 0?";
+			return "Is your SD card write-locked?\nIs the server in settings.xml not set to 0?";
 			break;
 		default:
-			return "Undocumented error code. Please contact us on our Twitter or Discord.";
+			return "Undocumented error code.\nPlease contact us on our Twitter or Discord.";
 	}
 }
 
@@ -2403,7 +2405,7 @@ bool hide_apps_updated() {
 }
 
 void die(char *msg) {
-	printf(msg);
+	START_showText(msg);
 	sleep(5);
 	fatUnmount("sd:");
 	fatUnmount("usb:");
@@ -2447,7 +2449,7 @@ void initialise_fat() {
 	bool fat_init = false;
 
 	// At least one FAT initialisation has to be completed
-	printf("Attempting to mount SD card... ");
+	START_showText("Attempting to mount SD card");
 	if (initialise_device(METHOD_SD)) {
 		strcpy(rootdir, "sd:/");
 		if (test_fat() == true) {
@@ -2462,7 +2464,7 @@ void initialise_fat() {
 		}
 	}
 	if (setting_disusb == false) {
-		printf("Attempting to mount USB device... ");
+		START_showText("Attempting to mount USB device");
 		if (initialise_device(METHOD_USB)) {
 			strcpy(rootdir, "usb:/");
 			if (test_fat() == true) {
@@ -2479,7 +2481,7 @@ void initialise_fat() {
 
 	if (!fat_init)
 	{
-		printf("Could not mount SD card or USB device...");
+		START_showText("Could not mount SD card or USB device");
 		sleep(5);
 		exit(0);
 	}
@@ -2566,7 +2568,7 @@ bool test_fat() {
 }
 
 void initialise_network() {
-	printf("Waiting for network to initialise... ");
+	START_showText("Initializing Network");
 
 	// Tantric code from Snes9x-gx
 	s32 res=-1;
@@ -2619,9 +2621,12 @@ void initialise_network() {
 	{
 		struct in_addr hostip;
 		hostip.s_addr = net_gethostip();
-		if (hostip.s_addr)
-		{
+		if (hostip.s_addr) {
 			printf("Network initialised.\n");
+		} else {
+			START_showText("Could not connect to your network");
+			sleep(5);
+			exit(0);
 		}
 	}
 
@@ -3024,7 +3029,7 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			printf("\n\nDownloading zip file containing current image files. \nYou can skip this by holding down the B button but it's highly recommended that you don't.\n");
+			START_showText("Downloading zip file containing current image files.\nYou can skip this by holding down the B button but it's highly recommended that you don't.");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
@@ -3033,7 +3038,7 @@ void check_temp_files() {
 				printf("\n\nFailed to download zip file.\n");
 			}
 			else {
-				printf("\n\nExtracting image files...\n");
+				START_showText("Extracting image files");
 				if (unzipArchive("sd:/apps/homebrew_browser/temp_files.zip", "sd:/apps/homebrew_browser/temp/") == true) {
 					if (cancel_extract == false) {
 						printf("\nDownloaded and Extracted images successfully.\n\n");
@@ -3047,7 +3052,7 @@ void check_temp_files() {
 			hbb_updating = false;
 
 			if (cancel_download == true || cancel_extract == true) {
-				printf("\nCancelled download and extracting of image files.");
+				START_showText("Cancelled download and extracting of image files.");
 				cancel_download = false;
 				cancel_extract = false;
 			}
@@ -3078,7 +3083,7 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			printf("\n\nDownloading zip file containing current image files. \nYou can skip this by holding down the B button but it's highly recommended that you don't.\n");
+			START_showText("Downloading zip file containing current image files.\nYou can skip this by holding down the B button but it's highly recommended that you don't.");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
@@ -3102,7 +3107,7 @@ void check_temp_files() {
 			hbb_updating = false;
 
 			if (cancel_download == true || cancel_extract == true) {
-				printf("\nCancelled download and extracting of image files.");
+				START_showText("Cancelled download and extracting of image files.");
 				cancel_download = false;
 				cancel_extract = false;
 			}
@@ -3333,6 +3338,7 @@ void repo_check() {
 	while (offset < (BUFFER_SIZE - 1)) {
 		char *offset_buf = buf + offset;
 		if ((bytes_read = net_read(main_server, offset_buf, BUFFER_SIZE - 1 - offset)) < 0) {
+			START_showText(get_error_msg(bytes_read));
 			printf("%s\nError code %i in repo_check\n\n", get_error_msg(bytes_read), bytes_read);
 			net_close(main_server);
 			sleep(1);

@@ -14,21 +14,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include <ogcsys.h>
 #include "GRRLIB/GRRLIB.h"
 
-#define COLOUR_WHITE 0xFFFFFF
-#define COLOUR_RED 0xED349F
-#define COLOUR_GREEN 0x34ED90
-#define COLOUR_BLUE 0x34BEED
-
-#define TEXT_COLOUR_PRIMARY 0x212121
-#define TEXT_COLOUR_SECONDARY 0x666666
-
-#define FONTSIZE_SMALLER 16
-#define FONTSIZE_SMALL 18
-#define FONTSIZE_SMALL1 20
-#define FONTSIZE_NORMAL 22
-#define FONTSIZE_MEDIUM 48
-#define FONTSIZE_LARGE 72
-
 extern const char *CRLF;
 extern const u32 CRLF_LENGTH;
 extern char esid[50];
