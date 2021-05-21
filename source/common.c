@@ -101,8 +101,6 @@ static lwp_t reset_thread;
 static lwp_t icons_thread;
 static lwp_t download_thread;
 static lwp_t delete_thread;
-static lwp_t rating_thread;
-static lwp_t update_rating_thread;
 static lwp_t request_thread;
 static lwp_t www_thread;
 
@@ -118,8 +116,6 @@ bool www_passed = false;
 int download_in_progress = 0;
 int extract_in_progress = 0;
 int delete_in_progress = 0;
-bool get_rating_in_progress = false;
-char rating_number[5];
 int selected_app = 0;
 int total_list_count = 0;
 
@@ -150,7 +146,6 @@ bool in_menu = false;
 bool setting_check_size = true;
 bool setting_sd_card = true;
 bool setting_hide_installed = false;
-bool setting_get_rating = true;
 bool setting_online = true;
 bool setting_rumble = true;
 bool setting_update_icon = false;
@@ -1253,210 +1248,6 @@ u8 initialise_delete() {
 	return result;
 }
 
-static void *run_rating_thread(void *arg) {
-
-	s32 main_server = server_connect(0);
-
-	char http_request[1000];
-
-	if (setting_repo == 0) {
-		strcpy(http_request,"GET /hbb/get_rating.php?esid=");
-	}
-	else {
-		strcpy(http_request, "GET ");
-		strcat(http_request, repo_list[setting_repo].apps_dir);
-		strcat(http_request, "get_rating.php?esid=");
-	}
-
-	strcat(http_request,esid);
-	strcat(http_request,"&name=");
-	strcat(http_request,homebrew_list[selected_app].name);
-
-	strcat(http_request, " HTTP/1.0\r\nHost: ");
-	if (setting_repo == 0) {
-		if (codemii_backup == false) {
-			strcat(http_request, MAIN_DOMAIN);
-		}
-		else {
-			strcat(http_request, FALLBACK_DOMAIN);
-		}
-	}
-	else {
-		strcat(http_request, repo_list[setting_repo].domain);
-	}
-	strcat(http_request, "\r\nCache-Control: no-cache\r\n\r\n");
-
-	write_http_reply(main_server, http_request);
-
-	bool http_data = false;
-	char buf[BUFFER_SIZE];
-	s32 offset = 0;
-	s32 bytes_read;
-	while (offset < (BUFFER_SIZE - 1)) {
-		char *offset_buf = buf + offset;
-		if ((bytes_read = net_read(main_server, offset_buf, BUFFER_SIZE - 1 - offset)) < 0) {
-			net_close(main_server);
-			sleep(1);
-			return 0;
-		} else if (bytes_read == 0) {
-			break; // EOF from client
-		}
-		offset += bytes_read;
-		buf[offset] = '\0';
-
-		char *next;
-		char *end;
-		for (next = buf; (end = strstr(next, CRLF)); next = end + CRLF_LENGTH) {
-			*end = '\0';
-
-			if (*next) {
-				char *cmd_line = next;
-
-				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
-				if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
-					net_close(main_server);
-					sleep(1);
-					return 0;
-				}
-
-				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
-				if (strlen(cmd_line) == 1) {
-					http_data = true;
-				}
-
-				if (http_data == true) {
-					if ((strcmp(cmd_line,"1") == 0) || (strcmp(cmd_line,"2") == 0) || (strcmp(cmd_line,"3") == 0) || (strcmp(cmd_line,"4") == 0) || (strcmp(cmd_line,"5") == 0)) {
-						strcpy(homebrew_list[selected_app].user_rating, cmd_line);
-					}
-					else {
-						strcpy(homebrew_list[selected_app].user_rating,"-1");
-					}
-				}
-			}
-		}
-
-		if (next != buf) { // some lines were processed
-			offset = strlen(next);
-			char tmp_buf[offset];
-			memcpy(tmp_buf, next, offset);
-			memcpy(buf, tmp_buf, offset);
-		}
-	}
-
-	net_close(main_server);
-	get_rating_in_progress = false;
-
-	return 0;
-}
-
-u8 initialise_rating() {
-	s32 result = LWP_CreateThread(&rating_thread, run_rating_thread, NULL, NULL, 0, 80);
-	return result;
-}
-
-
-static void *run_update_rating_thread(void *arg) {
-
-	s32 main_server = server_connect(0);
-
-	char http_request[1000];
-
-	if (setting_repo == 0) {
-		strcpy(http_request,"GET /hbb/update_rating.php?esid=");
-	}
-	else {
-		strcpy(http_request, "GET ");
-		strcat(http_request, repo_list[setting_repo].apps_dir);
-		strcat(http_request, "update_rating.php?esid=");
-	}
-
-	strcat(http_request,esid);
-	strcat(http_request,"&name=");
-	strcat(http_request,homebrew_list[selected_app].name);
-	strcat(http_request,"&rate=");
-	strcat(http_request, rating_number);
-
-	strcat(http_request, " HTTP/1.0\r\nHost: ");
-	if (setting_repo == 0) {
-		if (codemii_backup == false) {
-			strcat(http_request, MAIN_DOMAIN);
-		}
-		else {
-			strcat(http_request, FALLBACK_DOMAIN);
-		}
-	}
-	else {
-		strcat(http_request, repo_list[setting_repo].domain);
-	}
-	strcat(http_request, "\r\nCache-Control: no-cache\r\n\r\n");
-
-	write_http_reply(main_server, http_request);
-
-	bool http_data = false;
-	char buf[BUFFER_SIZE];
-	s32 offset = 0;
-	s32 bytes_read;
-	while (offset < (BUFFER_SIZE - 1)) {
-		char *offset_buf = buf + offset;
-		if ((bytes_read = net_read(main_server, offset_buf, BUFFER_SIZE - 1 - offset)) < 0) {
-			net_close(main_server);
-			sleep(1);
-			return 0;
-		} else if (bytes_read == 0) {
-			break; // EOF from client
-		}
-		offset += bytes_read;
-		buf[offset] = '\0';
-
-		char *next;
-		char *end;
-		for (next = buf; (end = strstr(next, CRLF)); next = end + CRLF_LENGTH) {
-			*end = '\0';
-
-			if (*next) {
-				char *cmd_line = next;
-
-				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
-				if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
-					net_close(main_server);
-					sleep(1);
-					return 0;
-				}
-
-				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
-				if (strlen(cmd_line) == 1) {
-					http_data = true;
-				}
-
-				if (http_data == true) {
-					if ((strcmp(cmd_line,"1") == 0) || (strcmp(cmd_line,"2") == 0) || (strcmp(cmd_line,"3") == 0) || (strcmp(cmd_line,"4") == 0) || (strcmp(cmd_line,"5") == 0)) {
-						strcpy(homebrew_list[selected_app].user_rating, cmd_line);
-					}
-					else {
-						strcpy(homebrew_list[selected_app].user_rating,"-1");
-					}
-				}
-			}
-		}
-
-		if (next != buf) { // some lines were processed
-			offset = strlen(next);
-			char tmp_buf[offset];
-			memcpy(tmp_buf, next, offset);
-			memcpy(buf, tmp_buf, offset);
-		}
-	}
-
-	net_close(main_server);
-
-	return 0;
-}
-
-u8 initialise_update_rating() {
-	s32 result = LWP_CreateThread(&update_rating_thread, run_update_rating_thread, NULL, NULL, 0, 80);
-	return result;
-}
-
 static void *run_request_thread(void *arg) {
 	if (setting_online == true) {
 		if (setting_repo == 0) {
@@ -1613,9 +1404,6 @@ void update_settings() {
 	char set3[2];
 	sprintf(set3, "%i", setting_hide_installed);
 	mxmlElementSetAttr(data, "setting_hide_installed", set3);
-	char set4[2];
-	sprintf(set4, "%i", setting_get_rating);
-	mxmlElementSetAttr(data, "setting_get_rating", set4);
 	char set6[2];
 	sprintf(set6, "%i", setting_online);
 	mxmlElementSetAttr(data, "setting_online", set6);
@@ -1746,9 +1534,6 @@ void load_settings() {
 			}
 			if (mxmlElementGetAttr(data,"setting_hide_installed")) {
 				setting_hide_installed = atoi(mxmlElementGetAttr(data,"setting_hide_installed"));
-			}
-			if (mxmlElementGetAttr(data,"setting_get_rating")) {
-				setting_get_rating = atoi(mxmlElementGetAttr(data,"setting_get_rating"));
 			}
 			if (mxmlElementGetAttr(data,"setting_online") && setting_online == true) {
 				setting_online = atoi(mxmlElementGetAttr(data,"setting_online"));
@@ -1917,146 +1702,6 @@ void copy_xml_name() {
 	}
 }
 
-void sort_by_downloads (bool min_to_max) {
-
-	clear_temp_list();
-
-	int i;
-	for (i = 0; i < array_length (homebrew_list); i++) {
-		strcpy(temp_list[i].name, homebrew_list[i].name);
-		temp_list[i].app_downloads = atoi(homebrew_list[i].app_downloads);
-		//printf("%s\n",homebrew_list[i].app_downloads);
-	}
-
-	int now;
-	int next;
-	int x;
-	int final = 0;
-
-	while (final != (sort_array_length(temp_list) - 1)) {
-		final = 0;
-		for (x = 0; x < sort_array_length(temp_list) - 1; x++) {
-
-			now = temp_list[x].app_downloads;
-			next = temp_list[x+1].app_downloads;
-
-			if (min_to_max == true) {
-				if (next < now) {
-					temp1_list[0] = temp_list[x+1];
-					temp_list[x+1] = temp_list[x];
-					temp_list[x] = temp1_list[0];
-				}
-				else {
-					final++;
-				}
-			}
-			else {
-				if (now < next) {
-					temp1_list[0] = temp_list[x+1];
-					temp_list[x+1] = temp_list[x];
-					temp_list[x] = temp1_list[0];
-				}
-				else {
-					final++;
-				}
-			}
-		}
-	}
-
-	for (x = 0; x < array_length (homebrew_list); x++) {
-		int y;
-		for (y = 0; y < array_length (homebrew_list); y++) {
-			if (strcmp (homebrew_list[x].name, temp_list[y].name) == 0) {
-				temp_list2[y] = homebrew_list[x];
-			}
-		}
-	}
-
-	clear_list();
-
-	for (i = 0; i < 4; i++) {
-		strcpy(homebrew_list[i].name,"000");
-	}
-
-	x = 0;
-	for (i = 0; i < array_length (temp_list2); i++) {
-		if (strcmp(temp_list2[i].name,"000") != 0) {
-			homebrew_list[x] = temp_list2[i];
-			x++;
-		}
-	}
-}
-
-
-void sort_by_rating (bool min_to_max) {
-
-	clear_temp_list();
-
-	int i;
-	for (i = 0; i < array_length (homebrew_list); i++) {
-		strcpy(temp_list[i].name, homebrew_list[i].name);
-		temp_list[i].app_downloads = homebrew_list[i].app_rating;
-	}
-
-	int now;
-	int next;
-	int x;
-	int final = 0;
-
-	while (final != (sort_array_length(temp_list) - 1)) {
-		final = 0;
-		for (x = 0; x < sort_array_length(temp_list) - 1; x++) {
-
-			now = temp_list[x].app_downloads;
-			next = temp_list[x+1].app_downloads;
-
-			if (min_to_max == true) {
-				if (next < now) {
-					temp1_list[0] = temp_list[x+1];
-					temp_list[x+1] = temp_list[x];
-					temp_list[x] = temp1_list[0];
-				}
-				else {
-					final++;
-				}
-			}
-			else {
-				if (now < next) {
-					temp1_list[0] = temp_list[x+1];
-					temp_list[x+1] = temp_list[x];
-					temp_list[x] = temp1_list[0];
-				}
-				else {
-					final++;
-				}
-			}
-		}
-	}
-
-	for (x = 0; x < array_length (homebrew_list); x++) {
-		int y;
-		for (y = 0; y < array_length (homebrew_list); y++) {
-			if (strcmp (homebrew_list[x].name, temp_list[y].name) == 0) {
-				temp_list2[y] = homebrew_list[x];
-			}
-		}
-	}
-
-	clear_list();
-
-	for (i = 0; i < 4; i++) {
-		strcpy(homebrew_list[i].name,"000");
-	}
-
-	x = 0;
-	for (i = 0; i < array_length (temp_list2); i++) {
-		if (strcmp(temp_list2[i].name,"000") != 0) {
-			homebrew_list[x] = temp_list2[i];
-			x++;
-		}
-	}
-}
-
 void sort_by_name (bool min_to_max) {
 
 	clear_temp_list();
@@ -2139,7 +1784,7 @@ void sort_by_date (bool min_to_max) {
 	int i;
 	for (i = 0; i < array_length (homebrew_list); i++) {
 		strcpy(temp_list[i].name, homebrew_list[i].name);
-		temp_list[i].app_downloads = homebrew_list[i].app_time;
+		temp_list[i].app_time = homebrew_list[i].app_time;
 	}
 
 	int now;
@@ -2151,8 +1796,8 @@ void sort_by_date (bool min_to_max) {
 		final = 0;
 		for (x = 0; x < sort_array_length(temp_list) - 1; x++) {
 
-			now = temp_list[x].app_downloads;
-			next = temp_list[x+1].app_downloads;
+			now = temp_list[x].app_time;
+			next = temp_list[x+1].app_time;
 
 			if (min_to_max == true) {
 				if (next < now) {
@@ -2747,10 +2392,7 @@ void clear_list() {
 		homebrew_list[c].app_author[0] = 0;
 		homebrew_list[c].app_version[0] = 0;
 		homebrew_list[c].app_total_size = 0;
-		homebrew_list[c].app_downloads[0] = 0;
 		homebrew_list[c].app_controllers[0] = 0;
-		homebrew_list[c].app_rating = 0;
-		homebrew_list[c].user_rating[0] = 0;
 
 		homebrew_list[c].file_found = 0;
 		homebrew_list[c].content = NULL;
@@ -2781,16 +2423,12 @@ void clear_temp_list() {
 		temp_list2[c].app_author[0] = 0;
 		temp_list2[c].app_version[0] = 0;
 		temp_list2[c].app_total_size = 0;
-		temp_list2[c].app_downloads[0] = 0;
 		temp_list2[c].app_controllers[0] = 0;
-		temp_list2[c].app_rating = 0;
-		temp_list2[c].user_rating[0] = 0;
 
 		temp_list2[c].file_found = 0;
 		temp_list2[c].content = NULL;
 
 		temp_list[c].name[0] = 0;
-		temp_list[c].app_downloads = 0;
 	}
 }
 
@@ -2818,10 +2456,7 @@ void clear_store_list() {
 		store_homebrew_list[c].app_author[0] = 0;
 		store_homebrew_list[c].app_version[0] = 0;
 		store_homebrew_list[c].app_total_size = 0;
-		store_homebrew_list[c].app_downloads[0] = 0;
 		store_homebrew_list[c].app_controllers[0] = 0;
-		store_homebrew_list[c].app_rating = 0;
-		store_homebrew_list[c].user_rating[0] = 0;
 
 		store_homebrew_list[c].file_found = 0;
 		store_homebrew_list[c].content = NULL;
@@ -3665,11 +3300,7 @@ s32 request_list() {
 						homebrew_list[c].app_author[0] = 0;
 						homebrew_list[c].app_version[0] = 0;
 						homebrew_list[c].app_total_size = 0;
-						homebrew_list[c].app_downloads[0] = 0;
 						homebrew_list[c].app_controllers[0] = 0;
-
-						homebrew_list[c].app_rating = 0;
-						homebrew_list[c].user_rating[0] = 0;
 					}
 					add_to_list = true;
 				}
@@ -3965,11 +3596,11 @@ s32 request_list() {
 
 						// Downloads
 						split_tok = strtok (NULL, " ");
-						strcpy(homebrew_list[array_count].app_downloads, split_tok);
+						//strcpy(homebrew_list[array_count].app_downloads, split_tok);
 
 						// Rating
 						split_tok = strtok (NULL, " ");
-						homebrew_list[array_count].app_rating = atoi(split_tok);
+						//homebrew_list[array_count].app_rating = atoi(split_tok);
 
 						// Controllers
 						split_tok = strtok (NULL, " ");

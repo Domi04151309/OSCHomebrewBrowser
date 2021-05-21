@@ -26,8 +26,6 @@ u8 initialise_www();
 u8 load_icons();
 u8 initialise_download();
 u8 initialise_delete();
-u8 initialise_rating();
-u8 initialise_update_rating();
 u8 initialise_request();
 
 void testing();
@@ -57,8 +55,6 @@ extern int category_old_selection;
 extern int download_in_progress;
 extern int extract_in_progress;
 extern int delete_in_progress;
-extern bool get_rating_in_progress;
-extern char rating_number[5];
 extern int selected_app;
 extern int total_list_count;
 extern int timeout_counter;
@@ -84,7 +80,6 @@ extern bool in_menu;
 extern bool setting_check_size;
 extern bool setting_sd_card;
 extern bool setting_hide_installed;
-extern bool setting_get_rating;
 extern bool setting_online;
 extern bool setting_rumble;
 extern bool setting_update_icon;
@@ -115,9 +110,7 @@ void update_lists();
 void store_update_lists();
 void hide_apps_installed();
 bool hide_apps_updated();
-void sort_by_downloads(bool min_to_max);
 void sort_by_date(bool min_to_max);
-void sort_by_rating(bool min_to_max);
 void sort_by_name (bool min_to_max);
 extern int sort_up_down;
 
@@ -196,11 +189,7 @@ struct homebrew_struct {
 	char app_author[100];
 	char app_version[20];
 	int app_total_size;
-	char app_downloads[10];
 	char app_controllers[20];
-	int app_rating;
-
-	char user_rating[3];
 
 	// Dynamic text stored
 	//void *str_name;
@@ -220,8 +209,8 @@ struct text_struct {
 
 struct sort_homebrew_struct {
 	char name[100];
-	int app_downloads;
 	char app_name[100];
+	int app_time;
 };
 
 struct updated_apps_struct {
