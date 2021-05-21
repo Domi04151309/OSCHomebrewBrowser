@@ -25,8 +25,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include <unistd.h>
 #include <wiiuse/wpad.h>
 #include <zlib.h>
-#include "mp3player.h"
-#include "oggplayer.h"
 #include <mxml.h>
 #include "unzip/unzip.h"
 #include "unzip/miniunz.h"
@@ -96,12 +94,6 @@ struct sort_homebrew_struct folders_list[500];
 // Apps to not manage
 struct sort_homebrew_struct no_manage_list[500];
 
-// Modplay
-//static MODPlay play;
-
-extern u8 mp3data[];
-extern u32 mp3length;
-
 static volatile u8 reset = 0;
 static lwp_t reset_thread;
 static lwp_t icons_thread;
@@ -109,7 +101,6 @@ static lwp_t download_thread;
 static lwp_t delete_thread;
 static lwp_t rating_thread;
 static lwp_t update_rating_thread;
-static lwp_t music_thread;
 static lwp_t request_thread;
 static lwp_t www_thread;
 
@@ -158,7 +149,6 @@ bool setting_check_size = true;
 bool setting_sd_card = true;
 bool setting_hide_installed = false;
 bool setting_get_rating = true;
-bool setting_music = false;
 bool setting_online = true;
 bool setting_rumble = true;
 bool setting_update_icon = false;
@@ -202,7 +192,6 @@ int hbb_null_len = 0;
 bool sd_mounted = false;
 bool usb_mounted = false;
 
-bool stop_mp3_music = false;
 bool list_received = false;
 int no_manage_count = 0;
 
@@ -213,8 +202,7 @@ DIR* dir;
 struct dirent *dent;
 struct stat st;
 
-// Mod Music
-long mod_size;
+// Probably used somewhere TODO: Check where
 char * buffer;
 size_t result;
 
@@ -1469,175 +1457,6 @@ u8 initialise_update_rating() {
 	return result;
 }
 
-
-static void *run_music_thread(void *arg) {
-
-	long mp3_size;
-	char * buffer;
-	size_t result;
-
-	FILE *f;
-
-	if (setting_use_sd == true) {
-		f = fopen("sd:/apps/homebrew_browser/loop.mp3", "rb");
-	}
-	else {
-		f = fopen("usb:/apps/homebrew_browser/loop.mp3", "rb");
-	}
-
-	if (f == NULL) {
-	}
-	else {
-		fseek (f , 0, SEEK_END);
-		mp3_size = ftell (f);
-		rewind(f);
-
-		// allocate memory to contain the whole file:
-		buffer = (char*) malloc (sizeof(char)*mp3_size);
-		if (buffer == NULL) {perror ("   Memory error"); }
-
-		// copy the file into the buffer:
-		result = fread (buffer,1,mp3_size,f);
-		if (result != mp3_size) {perror ("   Reading error"); }
-
-		fclose(f);
-
-		while (1) {
-			if(!MP3Player_IsPlaying()) {
-				MP3Player_PlayBuffer(buffer, mp3_size+29200, NULL);
-			}
-			if (exiting == true || stop_mp3_music == true) {
-				MP3Player_Stop();
-				stop_mp3_music = false;
-				break;
-			}
-			usleep(1000);
-		}
-
-	}
-
-	return 0;
-}
-
-u8 initialise_music() {
-	s32 result = LWP_CreateThread(&music_thread, run_music_thread, NULL, NULL, 0, 80);
-	return result;
-}
-
-void initialise_mod_music() {
-	FILE *f;
-
-	if (setting_use_sd == true) {
-		f = fopen("sd:/apps/homebrew_browser/loop.mod", "rb");
-	}
-	else {
-		f = fopen("usb:/apps/homebrew_browser/loop.mod", "rb");
-	}
-
-	if (f == NULL) {
-	}
-	else {
-		fseek (f , 0, SEEK_END);
-		mod_size = ftell (f);
-		rewind(f);
-
-		// allocate memory to contain the whole file:
-		buffer = (char*) malloc (sizeof(char)*mod_size);
-		if (buffer == NULL) {fputs ("   Memory error",stderr); }
-
-		// copy the file into the buffer:
-		result = fread (buffer,1,mod_size,f);
-		if (result != mod_size) {fputs ("   Reading error",stderr); }
-
-		fclose(f);
-	}
-}
-
-void play_mod_music() {
-	bool playing_mp3 = false;
-	bool playing_ogg = false;
-
-	FILE *f;
-
-	// MP3
-	if (setting_use_sd == true) {
-		f = fopen("sd:/apps/homebrew_browser/loop.mp3", "rb");
-	}
-	else {
-		f = fopen("usb:/apps/homebrew_browser/loop.mp3", "rb");
-	}
-	if (f == NULL) {
-	}
-	else {
-		fclose(f);
-		playing_mp3 = true;
-		initialise_music();
-	}
-
-	// OGG
-	if (playing_mp3 == false) {
-		if (setting_use_sd == true) {
-			f = fopen("sd:/apps/homebrew_browser/loop.ogg", "rb");
-		}
-		else {
-			f = fopen("usb:/apps/homebrew_browser/loop.ogg", "rb");
-		}
-		if (f == NULL) {
-		}
-		else {
-
-			playing_ogg = true;
-
-			long ogg_size;
-			char * buffer;
-			size_t result;
-
-			fseek (f , 0, SEEK_END);
-			ogg_size = ftell (f);
-			rewind(f);
-
-			// allocate memory to contain the whole file:
-			buffer = (char*) malloc (sizeof(char)*ogg_size);
-			if (buffer == NULL) {perror ("   Memory error"); }
-
-			// copy the file into the buffer:
-			result = fread (buffer,1,ogg_size,f);
-			if (result != ogg_size) {perror ("   Reading error"); }
-
-			PlayOgg(buffer, ogg_size, 0, OGG_INFINITE_TIME);
-			fclose(f);
-		}
-	}
-
-	// MOD
-	if (playing_mp3 == false && playing_ogg == false) {
-		if (setting_use_sd == true) {
-			f = fopen("sd:/apps/homebrew_browser/loop.mod", "rb");
-		}
-		else {
-			f = fopen("usb:/apps/homebrew_browser/loop.mod", "rb");
-		}
-		if (f == NULL) {
-		}
-		else {
-			fclose(f);
-			if (buffer == NULL) {
-				initialise_mod_music();
-			}
-			else {
-				//MODPlay_SetMOD(&play, buffer);
-				//MODPlay_Start(&play);
-			}
-		}
-	}
-}
-
-void stop_mod_music() {
-	//MODPlay_Stop(&play);
-	stop_mp3_music = true;
-	StopOgg();
-}
-
 static void *run_request_thread(void *arg) {
 	if (setting_online == true) {
 		if (setting_repo == 0) {
@@ -1797,9 +1616,6 @@ void update_settings() {
 	char set4[2];
 	sprintf(set4, "%i", setting_get_rating);
 	mxmlElementSetAttr(data, "setting_get_rating", set4);
-	char set5[2];
-	sprintf(set5, "%i", setting_music);
-	mxmlElementSetAttr(data, "setting_music", set5);
 	char set6[2];
 	sprintf(set6, "%i", setting_online);
 	mxmlElementSetAttr(data, "setting_online", set6);
@@ -1939,9 +1755,6 @@ void load_settings() {
 			}
 			if (mxmlElementGetAttr(data,"setting_get_rating")) {
 				setting_get_rating = atoi(mxmlElementGetAttr(data,"setting_get_rating"));
-			}
-			if (mxmlElementGetAttr(data,"setting_music")) {
-				setting_music = atoi(mxmlElementGetAttr(data,"setting_music"));
 			}
 			if (mxmlElementGetAttr(data,"setting_online") && setting_online == true) {
 				setting_online = atoi(mxmlElementGetAttr(data,"setting_online"));
@@ -2620,8 +2433,6 @@ void initialise() {
 	VIDEO_Flush();
 	VIDEO_WaitVSync();
 	if(vmode->viTVMode&VI_NON_INTERLACE) VIDEO_WaitVSync();
-	MP3Player_Init();
-	// Initialise the audio
 	ASND_Init();
 	xfb_height = vmode->xfbHeight;
 }

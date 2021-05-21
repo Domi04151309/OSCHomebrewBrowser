@@ -140,7 +140,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "tool_tip_sort_name_png.h"
 #include "tool_tip_sort_downloads_png.h"
 #include "tool_tip_sort_rating_png.h"
-#include "version_png.h"
 #include "tool_tip_download_apps_png.h"
 #include "tool_tip_update_apps_png.h"
 #include "cancel_download_prompt_png.h"
@@ -422,10 +421,6 @@ int main(int argc, char **argv) {
 	GRRLIB_Init();
 	GRRLIB_InitFreetype();
 
-	if (setting_music == true) {
-		play_mod_music();
-	}
-
 	suspend_reset_thread();
 
 	// Constant Text
@@ -496,7 +491,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *str_setting_free_space = GRRLIB_TextToTexture("Check free space", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_hide_app = GRRLIB_TextToTexture("Hide installed apps", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_rating = GRRLIB_TextToTexture("Retrieve my ratings", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_setting_bgmusic = GRRLIB_TextToTexture("Background music", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_rumble = GRRLIB_TextToTexture("Rumble", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_icon = GRRLIB_TextToTexture("Update icons", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_offline = GRRLIB_TextToTexture("Offline mode", FONTSIZE_SMALL1, 0x575757);
@@ -678,7 +672,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *tool_tip_sort_rating_img=GRRLIB_LoadTexture(tool_tip_sort_rating_png);
 	GRRLIB_texImg *tool_tip_download_apps_img=GRRLIB_LoadTexture(tool_tip_download_apps_png);
 	GRRLIB_texImg *tool_tip_update_apps_img=GRRLIB_LoadTexture(tool_tip_update_apps_png);
-	GRRLIB_texImg *version_img=GRRLIB_LoadTexture(version_png);
 
 	GRRLIB_texImg *cancel_download_prompt_img=GRRLIB_LoadTexture(cancel_download_prompt_png);
 	GRRLIB_texImg *button_no_img=GRRLIB_LoadTexture(button_no_png);
@@ -1265,7 +1258,6 @@ int main(int argc, char **argv) {
 		GRRLIB_DrawImg(34, 440, apps_bottom_img, 0, 1, 1, 0xFFFFFFFF);
 		GRRLIB_DrawImg(34, 68, apps_top_img, 0, 1, 1, 0xFFFFFFFF);
 		GRRLIB_DrawImg(40, 122, apps_top2_img, 0, 1, 1, 0xFFFFFFFF);
-		GRRLIB_DrawImg(300, 53, version_img, 0, 1, 1, 0xFFFFFFFF);
 
 		// Category selection
 		GRRLIB_DrawImg(36, 103, cat_all_img, 0, 1, 1, 0xFFFFFFFF);
@@ -3025,7 +3017,6 @@ int main(int argc, char **argv) {
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						WPAD_Rumble(WPAD_CHAN_0, 0);
-						stop_mod_music();
 						exiting = true;
 						if (download_icon > 0) {
 							changing_cat = true;
@@ -3050,7 +3041,6 @@ int main(int argc, char **argv) {
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						exiting = true;
-						stop_mod_music();
 						usleep(300000);
 						if (download_icon > 0) {
 							changing_cat = true;
@@ -3104,14 +3094,6 @@ int main(int argc, char **argv) {
 							else {setting_get_rating = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 346 && ir.y < 388) {
-						doRumble = true;
-						GRRLIB_DrawImg(104, 346, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-							if (setting_music == true) { setting_music = false; stop_mod_music(); }
-							else { setting_music = true; play_mod_music(); }
-						}
-					}
 
 					if (setting_dischar == false) {
 						if (xfb_height == 480) { GRRLIB_DrawImg(0, 252, guy_settings_img, 0, 1, 1, 0xFFFFFFFF); }
@@ -3122,7 +3104,6 @@ int main(int argc, char **argv) {
 					GRRLIB_DrawImg(304, 210, str_setting_free_space, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(285, 260, str_setting_hide_app, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(277, 310, str_setting_rating, 0, 1.0, 1.0, 0xFFFFFFFF);
-					GRRLIB_DrawImg(290, 360, str_setting_bgmusic, 0, 1.0, 1.0, 0xFFFFFFFF);
 
 					if (setting_sd_card == true) { GRRLIB_DrawImg(498, 148, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
 					else { GRRLIB_DrawImg(498, 148, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
@@ -3132,8 +3113,6 @@ int main(int argc, char **argv) {
 					else { GRRLIB_DrawImg(498, 248, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 					if (setting_get_rating == true) { GRRLIB_DrawImg(498, 298, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
 					else { GRRLIB_DrawImg(498, 298, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
-					if (setting_music == true) { GRRLIB_DrawImg(498, 348, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
-					else { GRRLIB_DrawImg(498, 348, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 
 					if ((pressed & WPAD_BUTTON_PLUS) || (setting_wiiside == false && pressed & WPAD_BUTTON_RIGHT) || (pressed_gc & PAD_TRIGGER_R) || (pressed_gc & PAD_BUTTON_RIGHT)) {
 						menu_section = 2;
@@ -3836,7 +3815,6 @@ int main(int argc, char **argv) {
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			update_lists();
-			stop_mod_music();
 			exiting = true;
 			usleep(300000);
 			if (download_icon > 0) {
@@ -3854,7 +3832,6 @@ int main(int argc, char **argv) {
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			update_lists();
-			stop_mod_music();
 			exiting = true;
 			usleep(300000);
 			if (download_icon > 0) {
