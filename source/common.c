@@ -32,8 +32,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "unzip/miniunz.h"
 #include "GRRLIB/GRRLIB.h"
 #include "common.h"
-//#include "loop_mod.h"
-//#include "md5.h"
 #include "dns.h"
 
 // Modified Tantric FAT code
@@ -616,40 +614,6 @@ static void *run_download_thread(void *arg) {
 				error_number = 1;
 			}
 		}
-
-		// Check downloaded file size
-		/*char extractzipfile[200];
-		strcpy(extractzipfile, "sd:/apps/");
-		if (setting_use_sd == false) {
-			strcpy(extractzipfile, "usb:/apps/");
-		}
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-			strcat(extractzipfile, store_homebrew_list[0].user_dirname);
-		}
-		else {
-			strcat(extractzipfile, store_homebrew_list[0].name);
-		}
-
-		strcat(extractzipfile, "/");
-		strcat(extractzipfile, store_homebrew_list[0].name);
-		strcat(extractzipfile, ".zip");
-
-		FILE *fcheck = fopen(extractzipfile, "rb");
-		if (fcheck != NULL) {
-			fseek (fcheck , 0, SEEK_END);
-			int local_fcheck = ftell (fcheck);
-			rewind(fcheck);
-			fclose(fcheck);
-
-			if (local_fcheck != store_homebrew_list[0].total_app_size) {
-				download_status = false;
-				error_number = 1;
-			}
-		}
-		else {
-			download_status = false;
-			error_number = 1;
-		}*/
 	}
 
 	// Directories to create
@@ -1095,53 +1059,6 @@ static void *run_delete_thread(void *arg) {
 			split_tok1 = strtok (NULL, ";");
 
 		}
-
-		/*char folders[1000];
-		strcpy(folders, store_homebrew_list[0].folders);
-
-		char *split_tok;
-		split_tok = strtok (folders,";");
-
-		while (split_tok != NULL && delete_status == true) {
-
-			// NEW DELETE METHOD
-			bool ok_to_del = true;
-			char folders1[1000];
-			strcpy(folders1, store_homebrew_list[0].folders_no_del);
-			char *split_tok1;
-			split_tok1 = strtok (folders1,";");
-
-			while (split_tok1 != NULL) {
-				if (strcmp(split_tok1, split_tok) == 0) {
-					ok_to_del = false;
-				}
-				split_tok1 = strtok (NULL, ";");
-			}
-
-			if (ok_to_del == true) {
-				char temp_del[200] = "sd:";
-				if (setting_use_sd == false) {
-					strcpy(temp_del,"usb:");
-				}
-				strcat(temp_del, split_tok);
-
-				delete_dir_files(temp_del);
-			}
-
-
-			split_tok = strtok (NULL, ";");*/
-
-			/*if (!strstr(split_tok, "rom") && !strstr(split_tok, "save") && !strstr(split_tok, "ROM") && !strstr(split_tok, "SAVE") && !strstr(split_tok, "frodo/images")) {
-				char temp_del[200] = "sd:";
-				if (setting_use_sd == false) {
-					strcpy(temp_del,"usb:");
-				}
-				strcat(temp_del, split_tok);
-
-				delete_dir_files(temp_del);
-			}
-			split_tok = strtok (NULL, ";");
-		}*/
 	}
 
 	// Delete the icon.png, meta.xml and boot.dol/elf
@@ -1192,7 +1109,6 @@ static void *run_delete_thread(void *arg) {
 		if (setting_use_sd == false) {
 			strcpy(del_file,"usb:/apps/");
 		}
-		//strcat(del_file, store_homebrew_list[0].name);
 		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
 			strcat(del_file, store_homebrew_list[0].user_dirname);
 		}
@@ -1218,7 +1134,6 @@ static void *run_delete_thread(void *arg) {
 		if (setting_use_sd == false) {
 			strcpy(del_file1,"usb:/apps/");
 		}
-		//strcat(del_file1, store_homebrew_list[0].name);
 		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
 			strcat(del_file1, store_homebrew_list[0].user_dirname);
 		}
@@ -1263,7 +1178,6 @@ static void *run_delete_thread(void *arg) {
 
 			int d;
 			for (d = 0; d < no_del_count; d++) {
-				//printf("SECOND = %s\n", no_del_list[d].folders);
 				if (strcmp(no_del_list[d], directory[x]) == 0) {
 					ok_to_del = false;
 				}
@@ -1275,12 +1189,6 @@ static void *run_delete_thread(void *arg) {
 					strcpy(temp_del,"usb:");
 				}
 				strcat(temp_del, directory[x]);
-
-				if (remove_dir(temp_del) != 1) {
-					// Shouldn't really matter
-					//delete_status = false;
-					//error_number = 7;
-				}
 			}
 		}
 	}
@@ -1294,7 +1202,6 @@ static void *run_delete_thread(void *arg) {
 
 		int d;
 		for (d = 0; d <= no_del_count; d++) {
-			//printf("SECOND = %s\n", no_del_list[d].folders);
 			if (strcmp(no_del_list[d], main_folder) == 0) {
 				ok_to_del = false;
 			}
@@ -1305,7 +1212,6 @@ static void *run_delete_thread(void *arg) {
 			if (setting_use_sd == false) {
 				strcpy(app_dir,"usb:/apps/");
 			}
-			//strcat(app_dir, store_homebrew_list[0].name);
 			if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
 				strcat(app_dir, store_homebrew_list[0].user_dirname);
 			}
@@ -1323,18 +1229,11 @@ static void *run_delete_thread(void *arg) {
 		if (setting_use_sd == false) {
 			strcpy(app_dir,"usb:/apps/");
 		}
-		//strcat(app_dir, store_homebrew_list[0].name);
 		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
 			strcat(app_dir, store_homebrew_list[0].user_dirname);
 		}
 		else {
 			strcat(app_dir, store_homebrew_list[0].name);
-		}
-
-		if (remove_dir(app_dir) != 1) {
-			// Shouldn't really matter
-			//delete_status = false;
-			//error_number = 8;
 		}
 	}
 
@@ -1371,12 +1270,6 @@ static void *run_rating_thread(void *arg) {
 	s32 main_server = server_connect(0);
 
 	char http_request[1000];
-	//strcpy(http_request,"GET /hbb/get_rating.php?esid=");
-	//strcat(http_request,esid);
-	//strcat(http_request,"&name=");
-	//strcat(http_request,homebrew_list[selected_app].name);
-	//strcat(http_request, " HTTP/1.0\r\n\r\n");
-	//strcat(http_request," HTTP/1.0\r\nHost: " MAIN_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
 
 	if (setting_repo == 0) {
 		strcpy(http_request,"GET /hbb/get_rating.php?esid=");
@@ -1414,7 +1307,6 @@ static void *run_rating_thread(void *arg) {
 	while (offset < (BUFFER_SIZE - 1)) {
 		char *offset_buf = buf + offset;
 		if ((bytes_read = net_read(main_server, offset_buf, BUFFER_SIZE - 1 - offset)) < 0) {
-			//printf("Read error %i occurred. Retrying...\n", bytes_read);
 			net_close(main_server);
 			sleep(1);
 			return 0;
@@ -1431,11 +1323,9 @@ static void *run_rating_thread(void *arg) {
 
 			if (*next) {
 				char *cmd_line = next;
-				//printf("Message: %s\n", cmd_line);
 
 				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
 				if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
-					//printf("The server appears to be having an issue. Retrying...\n");
 					net_close(main_server);
 					sleep(1);
 					return 0;
@@ -1447,15 +1337,12 @@ static void *run_rating_thread(void *arg) {
 				}
 
 				if (http_data == true) {
-					//int rating = atoi(cmd_line);
-					//homebrew_list[selected_app].user_rating = rating;
 					if ((strcmp(cmd_line,"1") == 0) || (strcmp(cmd_line,"2") == 0) || (strcmp(cmd_line,"3") == 0) || (strcmp(cmd_line,"4") == 0) || (strcmp(cmd_line,"5") == 0)) {
 						strcpy(homebrew_list[selected_app].user_rating, cmd_line);
 					}
 					else {
 						strcpy(homebrew_list[selected_app].user_rating,"-1");
 					}
-					//printf("Rating = %i\n",homebrew_list[selected_app].user_rating);
 				}
 			}
 		}
@@ -1485,14 +1372,6 @@ static void *run_update_rating_thread(void *arg) {
 	s32 main_server = server_connect(0);
 
 	char http_request[1000];
-	//strcpy(http_request,"GET /hbb/update_rating.php?esid=");
-	//strcat(http_request,esid);
-	//strcat(http_request,"&name=");
-	//strcat(http_request,homebrew_list[selected_app].name);
-	//strcat(http_request,"&rate=");
-	//strcat(http_request, rating_number);
-	//strcat(http_request, " HTTP/1.0\r\n\r\n");
-	//strcat(http_request," HTTP/1.0\r\nHost: " MAIN_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
 
 	if (setting_repo == 0) {
 		strcpy(http_request,"GET /hbb/update_rating.php?esid=");
@@ -1532,7 +1411,6 @@ static void *run_update_rating_thread(void *arg) {
 	while (offset < (BUFFER_SIZE - 1)) {
 		char *offset_buf = buf + offset;
 		if ((bytes_read = net_read(main_server, offset_buf, BUFFER_SIZE - 1 - offset)) < 0) {
-			//printf("Read error %i occurred. Retrying...\n", bytes_read);
 			net_close(main_server);
 			sleep(1);
 			return 0;
@@ -1549,11 +1427,9 @@ static void *run_update_rating_thread(void *arg) {
 
 			if (*next) {
 				char *cmd_line = next;
-				//printf("Message: %s\n", cmd_line);
 
 				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
 				if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
-					//printf("The server appears to be having an issue. Retrying...\n");
 					net_close(main_server);
 					sleep(1);
 					return 0;
@@ -1565,15 +1441,12 @@ static void *run_update_rating_thread(void *arg) {
 				}
 
 				if (http_data == true) {
-					//int rating = atoi(cmd_line);
-					//homebrew_list[selected_app].user_rating = rating;
 					if ((strcmp(cmd_line,"1") == 0) || (strcmp(cmd_line,"2") == 0) || (strcmp(cmd_line,"3") == 0) || (strcmp(cmd_line,"4") == 0) || (strcmp(cmd_line,"5") == 0)) {
 						strcpy(homebrew_list[selected_app].user_rating, cmd_line);
 					}
 					else {
 						strcpy(homebrew_list[selected_app].user_rating,"-1");
 					}
-					//printf("Rating = %i\n",homebrew_list[selected_app].user_rating);
 				}
 			}
 		}
@@ -1677,13 +1550,7 @@ void initialise_mod_music() {
 		if (result != mod_size) {fputs ("   Reading error",stderr); }
 
 		fclose(f);
-
-		//MODPlay_SetMOD(&play, buffer);
-		//MODPlay_Start(&play);
 	}
-
-	/*MODPlay_SetMOD(&play, loop_mod);
-	MODPlay_Start(&play);*/
 }
 
 void play_mod_music() {
@@ -1788,9 +1655,6 @@ static void *run_request_thread(void *arg) {
 			}
 		}
 		else {
-			//char list_file[100] = "/hbb/homebrew_browser/listv030.txt";
-			//repo_list[setting_repo].list_file
-
 			if (setting_use_sd == true) {
 				if (request_list_file("sd:/apps/homebrew_browser/external_repo_list.txt", repo_list[setting_repo].list_file) == 1) {
 					printf("Homebrew List received.\n");
@@ -1887,7 +1751,6 @@ void load_no_manage_list() {
 
 	if (fl != NULL) {
 		while (fgets (current_line, 100, fl)) {
-			//printf("%s\n",current_line);
 			current_line[(strlen(current_line) - 2)] = '\0';
 			strcpy(no_manage_list[no_manage_count].name, current_line);
 			no_manage_count++;
@@ -1990,19 +1853,12 @@ void update_settings() {
 	FILE *fp = fopen("sd:/apps/homebrew_browser/settings.xml", "wb");
 	FILE *fp1 = fopen("usb:/apps/homebrew_browser/settings.xml", "wb");
 
-	if (fp == NULL) {
-		//printf("Settings file not found\n");
-	}
-	else {
+	if (fp != NULL) {
 		mxmlSaveFile(xml, fp, MXML_NO_CALLBACK);
 		fclose(fp);
-		//printf("saved\n");
 	}
 
-	if (fp1 == NULL) {
-		//printf("Settings file not found\n");
-	}
-	else {
+	if (fp1 != NULL) {
 		mxmlSaveFile(xml, fp1, MXML_NO_CALLBACK);
 		fclose(fp1);
 	}
@@ -2291,7 +2147,6 @@ void sort_by_downloads (bool min_to_max) {
 				}
 				else {
 					final++;
-					//printf("Test = %i   %i    %i\n",final, now, next);
 				}
 			}
 			else {
@@ -2302,7 +2157,6 @@ void sort_by_downloads (bool min_to_max) {
 				}
 				else {
 					final++;
-					//printf("Test = %i   %i    %i\n",final, now, next);
 				}
 			}
 		}
@@ -2329,7 +2183,6 @@ void sort_by_downloads (bool min_to_max) {
 			homebrew_list[x] = temp_list2[i];
 			x++;
 		}
-		//printf("%s\n",temp_list[i].app_downloads);
 	}
 }
 
@@ -2342,7 +2195,6 @@ void sort_by_rating (bool min_to_max) {
 	for (i = 0; i < array_length (homebrew_list); i++) {
 		strcpy(temp_list[i].name, homebrew_list[i].name);
 		temp_list[i].app_downloads = homebrew_list[i].app_rating;
-		//printf("%s\n",homebrew_list[i].app_downloads);
 	}
 
 	int now;
@@ -2365,7 +2217,6 @@ void sort_by_rating (bool min_to_max) {
 				}
 				else {
 					final++;
-					//printf("Test = %i   %i    %i\n",final, now, next);
 				}
 			}
 			else {
@@ -2376,7 +2227,6 @@ void sort_by_rating (bool min_to_max) {
 				}
 				else {
 					final++;
-					//printf("Test = %i   %i    %i\n",final, now, next);
 				}
 			}
 		}
@@ -2403,7 +2253,6 @@ void sort_by_rating (bool min_to_max) {
 			homebrew_list[x] = temp_list2[i];
 			x++;
 		}
-		//printf("%s\n",temp_list[i].app_downloads);
 	}
 }
 
@@ -2421,7 +2270,6 @@ void sort_by_name (bool min_to_max) {
 		for(z=0; z<leng; z++)
 			if (97<=temp_list[i].app_name[z] && temp_list[i].app_name[z]<=122)//a-z
 				temp_list[i].app_name[z]-=32;
-		//printf("%s\n",homebrew_list[i].app_downloads);
 	}
 
 
@@ -2434,8 +2282,6 @@ void sort_by_name (bool min_to_max) {
 		final = 0;
 		for (x = 0; x < sort_array_length(temp_list) - 1; x++) {
 
-			//now = temp_list[x].app_name;
-			//next = temp_list[x+1].app_name;
 			now = strcmp(temp_list[x].app_name,temp_list[x+1].app_name);
 
 			if (min_to_max == true) {
@@ -2446,30 +2292,20 @@ void sort_by_name (bool min_to_max) {
 				}
 				else {
 					final++;
-					//printf("Test = %s & %s =  %i\n", temp_list[x].app_name, temp_list[x+1].app_name, now);
 				}
 			}
 			else {
 				if (now > 0) {
-					//printf("Test = %s & %s =  %i\n", temp_list[x].app_name, temp_list[x+1].app_name, now);
 					temp1_list[0] = temp_list[x+1];
 					temp_list[x+1] = temp_list[x];
 					temp_list[x] = temp1_list[0];
 				}
 				else {
 					final++;
-					//printf("Test = %s & %s =  %i\n", temp_list[x].app_name, temp_list[x+1].app_name, now);
 				}
 			}
-			//sleep(1);
 		}
 	}
-
-	/*for (x = 0; x < sort_array_length(temp_list) - 1; x++) {
-		printf("Test = %s\n", temp_list[x].app_name);
-		sleep(1);
-	}*/
-
 
 	for (x = 0; x < array_length (homebrew_list); x++) {
 		int y;
@@ -2492,8 +2328,6 @@ void sort_by_name (bool min_to_max) {
 			homebrew_list[x] = temp_list2[i];
 			x++;
 		}
-		//printf("%s\n",temp_list2[i].app_name);
-		//sleep(1);
 	}
 }
 
@@ -2505,7 +2339,6 @@ void sort_by_date (bool min_to_max) {
 	for (i = 0; i < array_length (homebrew_list); i++) {
 		strcpy(temp_list[i].name, homebrew_list[i].name);
 		temp_list[i].app_downloads = homebrew_list[i].app_time;
-		//printf("%s\n",homebrew_list[i].app_downloads);
 	}
 
 	int now;
@@ -2528,7 +2361,6 @@ void sort_by_date (bool min_to_max) {
 				}
 				else {
 					final++;
-					//printf("Test = %i   %i    %i\n",final, now, next);
 				}
 			}
 			else {
@@ -2539,7 +2371,6 @@ void sort_by_date (bool min_to_max) {
 				}
 				else {
 					final++;
-					//printf("Test = %i   %i    %i\n",final, now, next);
 				}
 			}
 		}
@@ -2566,7 +2397,6 @@ void sort_by_date (bool min_to_max) {
 			homebrew_list[x] = temp_list2[i];
 			x++;
 		}
-		//printf("%s\n",temp_list[i].app_downloads);
 	}
 }
 
@@ -2793,10 +2623,7 @@ void initialise() {
 	MP3Player_Init();
 	// Initialise the audio
 	ASND_Init();
-	//AESND_Init(NULL);
-	//MODPlay_Init(&play);
 	xfb_height = vmode->xfbHeight;
-	//add_to_log("Initialise complete.");
 }
 
 
@@ -2897,41 +2724,6 @@ bool test_fat() {
 		return false;
 	}
 
-	// Attempt to write to device
-	/*char test_name[100];
-	strcpy(test_name, rootdir);
-	strcat(test_name, "test.txt");
-
-	FILE *fp = fopen(test_name, "wb");
-
-	char mystring[10] = "Test";
-
-	int x;
-	for (x = 0; x < 100000; x++) {
-		fwrite (mystring , strlen(mystring) , 1, fp);
-	}
-	fclose(fp);
-
-	// Check if written
-	fp = fopen(test_name, "rb");
-
-	if (fp == NULL) {
-		printf("Writing test to %s failed.\n", rootdir);
-		return false;
-	}
-	else {
-		fseek (fp , 0, SEEK_END);
-		int test_size = ftell (fp);
-		rewind(fp);
-		fclose(fp);
-		if (test_size != 400000) {
-			printf("Could not write to %s. Size %i didn't match expected size.\n.", rootdir, test_size);
-			return false;
-		}
-	}
-
-	remove_file(test_name);*/
-
 	// Create directories
 	char dir_apps[50];
 	char dir_hbb[150];
@@ -2970,25 +2762,6 @@ bool test_fat() {
 }
 
 void initialise_network() {
-	/*printf("Waiting for network to initialise... ");
-	s32 result = -1;
-	while (result < 0) {
-		while ((result = net_init()) == -EAGAIN) {
-			if (setting_online == false) { break; }
-		}
-		if (result < 0) printf("Unable to initialise network, retrying...\n");
-		if (setting_online == false) { break; }
-	}
-	if (result >= 0) {
-		u32 ip = 0;
-		do {
-			ip = net_gethostip();
-			if (!ip) printf("Unable to initialise network, retrying...\n");
-			if (setting_online == false) { break; }
-		} while (!ip);
-		if (ip) printf("Network initialised.\n");
-	}*/
-
 	printf("Waiting for network to initialise... ");
 
 	// Tantric code from Snes9x-gx
@@ -3060,7 +2833,6 @@ bool check_wifi() {
 		if (result < 0) printf("Unable to initialise network, retrying...\n");
 		times++;
 	}
-	//printf("T = %i\n", times);
 	if (result >= 0 && times < 3) {
 		u32 ip = 0;
 		do {
@@ -3070,7 +2842,6 @@ bool check_wifi() {
 		} while (!ip && times < 3);
 		if (ip) printf("Network initialised.\n");
 	}
-	//printf("T = %i\n", times);
 	if (times >= 3) {
 		return 0;
 	}
@@ -3080,7 +2851,6 @@ bool check_wifi() {
 void initialise_codemii() {
 	printf("Requesting IP address of " MAIN_DOMAIN "... ");
 	initializedns();
-	//IP_ADDRESS = getipbynamecached("test");
 	IP_ADDRESS = getipbynamecached(MAIN_DOMAIN);
 
 	if (IP_ADDRESS == 0) {
@@ -3180,9 +2950,6 @@ void clear_list() {
 		homebrew_list[c].app_rating = 0;
 		homebrew_list[c].user_rating[0] = 0;
 
-		//free(homebrew_list[c].str_name);
-//		homebrew_list[c].str_name = NULL;
-//		homebrew_list[c].str_short_description = NULL;
 		homebrew_list[c].file_found = 0;
 		homebrew_list[c].content = NULL;
 	}
@@ -3217,8 +2984,6 @@ void clear_temp_list() {
 		temp_list2[c].app_rating = 0;
 		temp_list2[c].user_rating[0] = 0;
 
-		//temp_list2[c].str_name = NULL;
-		//temp_list2[c].str_short_description = NULL;
 		temp_list2[c].file_found = 0;
 		temp_list2[c].content = NULL;
 
@@ -3256,8 +3021,6 @@ void clear_store_list() {
 		store_homebrew_list[c].app_rating = 0;
 		store_homebrew_list[c].user_rating[0] = 0;
 
-//		store_homebrew_list[c].str_name = NULL;
-//		store_homebrew_list[c].str_short_description = NULL;
 		store_homebrew_list[c].file_found = 0;
 		store_homebrew_list[c].content = NULL;
 	}
@@ -3315,16 +3078,7 @@ int delete_dir_files(char* path) {
 			strcat(temp_path, dent->d_name);
 			stat(temp_path, &st);
 
-			//OLD : if (!(st.st_mode & S_IFDIR)) {
 			if(!(S_ISDIR(st.st_mode))) {
-				// st.st_mode & S_IFDIR indicates a directory
-				//printf ("%s: %s\n", (st.st_mode & S_IFDIR ? " DIR" : "FILE"), filename);
-
-				/*char remove_path[255];
-				strcpy(remove_path, path);
-				strcat(remove_path, "/");
-				strcat(remove_path, filename);*/
-				//printf("remove = %s\n", remove_path);
 				remove_file(temp_path);
 			}
 		}
@@ -3357,7 +3111,6 @@ bool unzipArchive(char * zipfilepath, char * unzipfolderpath) {
 		printf("Cannot open %s, aborting\n",zipfilepath);
 		return false;
 	}
-	//printf("%s opened\n",zipfilepath);
 
 	if (chdir(unzipfolderpath)) { // can't access dir
 		makedir(unzipfolderpath); // attempt to make dir
@@ -3558,9 +3311,6 @@ void check_temp_files() {
 void add_to_stats() {
 	s32 main_server = server_connect(0);
 	char http_request[1000];
-	//strcpy(http_request,"GET /hbb_download.php?name=");
-	//strcat(http_request,homebrew_list[selected_app].name);
-	//strcat(http_request," HTTP/1.0\r\nHost: " MAIN_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
 
 	if (setting_repo == 0) {
 		strcpy(http_request, "GET /hbb_download.php?name=");
@@ -3597,11 +3347,6 @@ void apps_check() {
 
 	long setting_last_boot_num = atoi(setting_last_boot);
 
-	//int setting_last_boot_num = 12000000;
-	//strcpy(setting_last_boot, "12000000");
-	//printf("OLDTIME = %li\n", setting_last_boot_num);
-	//sleep(2);
-
 	// If able to read settings
 	if (setting_last_boot_num > 0 && setting_show_updated == true) {
 
@@ -3613,7 +3358,6 @@ void apps_check() {
 		char http_request[1000];
 		strcpy(http_request,"GET /hbb/apps_check_new.php?t=");
 		strcat(http_request, setting_last_boot);
-		//strcat(http_request, " HTTP/1.0\r\n\r\n");
 
 		if (codemii_backup == false) {
 			strcat(http_request," HTTP/1.0\r\nHost: " MAIN_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
@@ -3651,8 +3395,6 @@ void apps_check() {
 				if (*next) {
 					char *cmd_line = next;
 
-					//printf("Message: %s\n", cmd_line);
-
 					// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
 					if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
 						printf("The server appears to be having an issue (apps_check). Retrying...\n");
@@ -3665,9 +3407,6 @@ void apps_check() {
 					}
 
 					if (http_data == true) {
-						//char *split_tok;
-						//printf("Message: %s - Count = %i\n", cmd_line, count);
-
 						long temp_time = 0;
 						char app_text[100];
 						char app_version_from[100];
@@ -3684,8 +3423,6 @@ void apps_check() {
 										char set1[14];
 										sprintf(set1, "%li", temp_time + 1);
 										strcpy(setting_last_boot, set1);
-										//printf("TIME = %s\n", setting_last_boot);
-										//sleep(2);
 									}
 									first_time = 1;
 								}
@@ -3695,34 +3432,25 @@ void apps_check() {
 								app_time = temp_time;
 								timeinfo = localtime ( &app_time );
 								strftime (timebuf,50,"%d %b %Y",timeinfo);
-								//printf("OK1\n");
 							}
 
 							// Text
 							if (count == 2) {
-								//split_tok = strtok (NULL, " ");
 								strcpy(app_text, cmd_line);
-								//printf("OK2\n");
 							}
 
 							// Version from
 							if (count == 3) {
-								//split_tok = strtok (NULL, " ");
 								strcpy(app_version_from, cmd_line);
-								//printf("OK3\n");
 							}
 
 							// Version to
 							if (count == 4) {
-								//split_tok = strtok (NULL, " ");
 								strcpy(app_version, cmd_line);
-								//printf("OK3\n");
 							}
 
 							// New or updated?
 							if (count == 5) {
-								//printf("OK5\n");
-								//split_tok = strtok (NULL, " ");
 								if (strcmp(cmd_line, "a") == 0) {
 									strcpy(app_text_total, timebuf);
 									strcat(app_text_total, " - ");
@@ -3735,14 +3463,11 @@ void apps_check() {
 									strcpy(app_text_total, timebuf);
 									strcat(app_text_total, " - ");
 									strcat(app_text_total, app_text);
-									//strcat(app_text_total, " updated from ");
 									strcat(app_text_total, " ");
 									strcat(app_text_total, app_version_from);
 									strcat(app_text_total, " -> ");
 									strcat(app_text_total, app_version);
 								}
-
-								//printf("App = %s\n",app_text_total);
 
 								// Add text
 								strcpy(updated_apps_list[updated_apps_count].text, app_text_total);
@@ -3786,7 +3511,6 @@ void repo_check() {
 
 	char http_request[1000];
 	strcpy(http_request,"GET /hbb/repo_list.txt");
-	//strcat(http_request, " HTTP/1.0\r\n\r\n");
 
 	if (codemii_backup == false) {
 		strcat(http_request," HTTP/1.0\r\nHost: " MAIN_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
@@ -3822,8 +3546,6 @@ void repo_check() {
 			if (*next) {
 				char *cmd_line = next;
 
-				//printf("Message: %s, %i\n", cmd_line, strlen(cmd_line));
-
 				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
 				if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
 					printf("The server appears to be having an issue (repo_check). Retrying...\n");
@@ -3836,8 +3558,6 @@ void repo_check() {
 				}
 
 				if (http_data == true) {
-					//char *split_tok;
-					//printf("Message: %s - Count = %i\n", cmd_line, count);
 
 					if (count >= 1) {
 						if (count == 1) {
@@ -4198,13 +3918,9 @@ s32 write_http_reply(s32 server, char *msg) {
 	u32 msglen = strlen(msg);
 	char msgbuf[msglen + 1];
 	if (msgbuf == NULL) return -ENOMEM;
-	//sprintf(msgbuf, "%s", msg);
 	strcpy(msgbuf, msg);
-	//printf("Request: %s", msgbuf);
-	//return write_exact(server, msgbuf, msglen);
 
 	tcp_write (server, msgbuf, msglen);
-	//net_write(server, msgbuf, msglen);
 	return 1;
 }
 
@@ -4254,7 +3970,6 @@ s32 server_connect(int repo_bypass) {
 	struct sockaddr_in connect_addr;
 
 	s32 server = net_socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
-	//if (server < 0) die("Error creating socket, exiting");
 
 	memset(&connect_addr, 0, sizeof(connect_addr));
 	connect_addr.sin_family = AF_INET;
@@ -4281,8 +3996,6 @@ s32 server_connect(int repo_bypass) {
 	else {
 		connect_addr.sin_addr.s_addr = getipbynamecached(repo_list[setting_repo].domain);
 	}
-
-	//connect_addr.sin_addr.s_addr= inet_addr(IP_ADDRESS_OLD_LOCAL);
 
 	if (net_connect(server, (struct sockaddr*)&connect_addr, sizeof(connect_addr)) == -1) {
 		net_close(server);
@@ -4381,7 +4094,6 @@ s32 request_list() {
 				stat(temp_path, &st);
 
 				strcpy(foldername, dent->d_name);
-				// st.st_mode & S_IFDIR indicates a directory
 				// Don't add homebrew sorter to the list
 				if (S_ISDIR(st.st_mode) && strcmp(foldername,".") != 0 && strcmp(foldername,"..") != 0) {
 
@@ -4401,8 +4113,6 @@ s32 request_list() {
 		printf("Parsing Homebrew List");
 
 		while (fgets (cmd_line, 2000, f)) {
-
-			//printf("%s\n\n",cmd_line);
 
 			if (strstr(cmd_line, "Homebrew") && line_number == -1) {
 
@@ -4432,8 +4142,6 @@ s32 request_list() {
 					}
 				}
 				line_number = 0;
-
-				//printf("%s\n\n",update_text);
 			}
 			else {
 
@@ -4476,7 +4184,6 @@ s32 request_list() {
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
 					}
-					//free(homebrew_list);
 					array_count = 0;
 					add_to_list = false;
 				}
@@ -4487,7 +4194,6 @@ s32 request_list() {
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
 					}
-					//free(homebrew_list);
 					array_count = 0;
 					add_to_list = false;
 				}
@@ -4498,7 +4204,6 @@ s32 request_list() {
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
 					}
-					//free(homebrew_list);
 					array_count = 0;
 					add_to_list = false;
 				}
@@ -4509,7 +4214,6 @@ s32 request_list() {
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
 					}
-					//free(homebrew_list);
 					array_count = 0;
 					add_to_list = false;
 				}
@@ -4520,7 +4224,6 @@ s32 request_list() {
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
 					}
-					//free(homebrew_list);
 					array_count = 0;
 					add_to_list = false;
 				}
@@ -4533,7 +4236,6 @@ s32 request_list() {
 							for (z = 0; z < strlen(cmd_line); z++) {
 								if (cmd_line[z] == '\n' || cmd_line[z] == '\r') {
 									hbb_string_len = strlen(cmd_line) - z;
-									//printf("RESULTS = %i\n", hbb_string_len);
 									break;
 								}
 							}
@@ -4565,9 +4267,6 @@ s32 request_list() {
 
 									strcpy(filename, dent->d_name);
 									if (S_ISDIR(st.st_mode)) {
-										// st.st_mode & S_IFDIR indicates a directory
-										//printf ("%s: %s\n", (st.st_mode & S_IFDIR ? " DIR" : "FILE"), filename);
-
 										char * pch;
 										pch = strstr (filename,"ftpii");
 
@@ -4612,7 +4311,6 @@ s32 request_list() {
 						if (setting_use_sd == false) {
 							strcpy(boot_path,"usb:/apps/");
 						}
-						//strcat(boot_path, homebrew_list[array_count].name);
 						if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
 							strcat(boot_path, homebrew_list[array_count].user_dirname);
 						}
@@ -4639,22 +4337,10 @@ s32 request_list() {
 							}
 						}
 
-						/*
-
-						if (opendir(boot_path) == NULL) {
-							//printf("%s nothing here", homebrew_list[array_count].name);
-						}
-						else {
-							//printf("%s exists", homebrew_list[array_count].name);
-							dir_exists = true;
-						}*/
-
 						strcat(boot_path, "/boot.");
 						strcat(boot_path, homebrew_list[array_count].boot_ext);
 
 						if (dir_exists == true) {
-							//printf("Test\n");
-
 							FILE *f = fopen(boot_path, "rb");
 
 							// Problems opening the file?
@@ -4665,7 +4351,6 @@ s32 request_list() {
 								if (setting_use_sd == false) {
 									strcpy(boot_path2,"usb:/apps/");
 								}
-								//strcat(boot_path2, homebrew_list[array_count].name);
 
 								if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
 									strcat(boot_path2, homebrew_list[array_count].user_dirname);
@@ -4684,7 +4369,6 @@ s32 request_list() {
 									if (setting_use_sd == false) {
 										strcpy(boot_path2,"usb:/apps/");
 									}
-									//strcat(boot_path2, homebrew_list[array_count].name);
 
 									if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
 										strcat(boot_path2, homebrew_list[array_count].user_dirname);
@@ -4703,7 +4387,6 @@ s32 request_list() {
 										if (setting_use_sd == false) {
 											strcpy(boot_path2,"usb:/apps/");
 										}
-										//strcat(boot_path2, homebrew_list[array_count].name);
 
 										if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
 											strcat(boot_path2, homebrew_list[array_count].user_dirname);
@@ -4722,7 +4405,6 @@ s32 request_list() {
 											if (setting_use_sd == false) {
 												strcpy(boot_path3,"usb:/apps/");
 											}
-											//strcat(boot_path3, homebrew_list[array_count].name);
 
 											if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
 												strcat(boot_path3, homebrew_list[array_count].user_dirname);
@@ -4780,24 +4462,6 @@ s32 request_list() {
 							}
 						}
 
-						// Check if in no managed list
-						/*if (homebrew_list[array_count].local_app_size > 0) {
-							int d = 0;
-							for (d = 0; d < no_manage_count; d++) {
-								char testname[100];
-								strcpy(testname, homebrew_list[array_count].name);
-								int leng=strlen(testname);
-								int z;
-								for(z=0; z<leng; z++)
-									if (97<=testname[z] && testname[z]<=122)//a-z
-										testname[z]-=32;
-
-								if (strcmp(no_manage_list[d].name, testname) == 0) {
-									homebrew_list[array_count].no_manage = true;
-								}
-							}
-						}*/
-
 						// Total app size
 						split_tok = strtok (NULL, " ");
 						homebrew_list[array_count].total_app_size = atoi(split_tok);
@@ -4817,8 +4481,6 @@ s32 request_list() {
 						// Folders to create (if any), a dot means no folders needed
 						split_tok = strtok (NULL, " ");
 						if (split_tok != NULL) {
-							//strncpy(homebrew_list[array_count].folders, split_tok, strlen(split_tok) - hbb_string_len);
-							//homebrew_list[array_count].folders[strlen(split_tok) - hbb_string_len] = '\0';
 							strcpy(homebrew_list[array_count].folders, split_tok);
 						}
 
@@ -4831,13 +4493,9 @@ s32 request_list() {
 						// Files to not extract
 						split_tok = strtok (NULL, " ");
 						if (split_tok != NULL) {
-							//strcpy(homebrew_list[array_count].files_no_extract, split_tok);
 							strncpy(homebrew_list[array_count].files_no_extract, split_tok, strlen(split_tok) - hbb_string_len);
 							homebrew_list[array_count].files_no_extract[strlen(split_tok) - hbb_string_len] = '\0';
 						}
-
-						//printf("%s, %li, %li, %li, %s, %li, %s, %s %s %s\n", homebrew_list[array_count].name, homebrew_list[array_count].app_time, homebrew_list[array_count].img_size, homebrew_list[array_count].app_size, homebrew_list[array_count].boot_ext , homebrew_list[array_count].total_app_size, homebrew_list[array_count].app_controllers, homebrew_list[array_count].folders, homebrew_list[array_count].folders_no_del, homebrew_list[array_count].files_no_extract);
-						//usleep(10000);
 
 						line_number++;
 					}
@@ -4850,7 +4508,6 @@ s32 request_list() {
 							for (z = 0; z < strlen(cmd_line); z++) {
 								if (cmd_line[z] == '\n' || cmd_line[z] == '\r') {
 									hbb_string_len = strlen(cmd_line) - z;
-									//printf("RESULTS1 = %i\n", hbb_string_len);
 									break;
 								}
 							}
@@ -4861,7 +4518,6 @@ s32 request_list() {
 
 						strncpy(homebrew_list[array_count].app_name, cmd_line, hbb_null_len);
 						homebrew_list[array_count].app_name[hbb_null_len - 1] = '\0';
-						//printf("%s\n", homebrew_list[array_count].app_name);
 						line_number++;
 					}
 
@@ -4871,7 +4527,6 @@ s32 request_list() {
 
 						strncpy(homebrew_list[array_count].app_author, cmd_line, hbb_null_len);
 						homebrew_list[array_count].app_author[hbb_null_len - 1] = '\0';
-						//printf("%s\n", homebrew_list[array_count].app_author);
 						line_number++;
 					}
 
@@ -4881,14 +4536,12 @@ s32 request_list() {
 
 						strncpy(homebrew_list[array_count].app_version, cmd_line, hbb_null_len);
 						homebrew_list[array_count].app_version[hbb_null_len - 1] = '\0';
-						//printf("%s\n", homebrew_list[array_count].app_version);
 						line_number++;
 					}
 
 					// Size
 					else if (line_number == 4) {
 						homebrew_list[array_count].app_total_size = atoi(cmd_line);
-						//printf("%s\n", homebrew_list[array_count].app_total_size);
 						line_number++;
 					}
 
@@ -4898,7 +4551,6 @@ s32 request_list() {
 
 						strncpy(homebrew_list[array_count].app_short_description, cmd_line, hbb_null_len);
 						homebrew_list[array_count].app_short_description[hbb_null_len - 1] = '\0';
-						//printf("%s\n", homebrew_list[array_count].app_short_description);
 						line_number++;
 					}
 
@@ -4908,7 +4560,6 @@ s32 request_list() {
 
 						strncpy(homebrew_list[array_count].app_description, cmd_line, hbb_null_len);
 						homebrew_list[array_count].app_description[hbb_null_len - 1] = '\0';
-						//printf("%s\n", homebrew_list[array_count].app_description);
 						line_number = 0;
 						array_count++;
 
@@ -5053,13 +4704,10 @@ s32 request_list_file(char *file_path, char *path) {
 
 		main_server = server_connect(0);
 
-		//printf("Request: /homebrew/%s%s\n", filename, extension);
-
 		char http_request[1000];
 		strcpy(http_request, "GET ");
 		strcat(http_request, path);
 
-		//strcat(http_request, " HTTP/1.0\r\n\r\n");
 		strcat(http_request, " HTTP/1.0\r\nHost: ");
 		if (setting_repo == 0) {
 			if (codemii_backup == false) {
@@ -5091,8 +4739,6 @@ s32 request_list_file(char *file_path, char *path) {
 			return -1;
 		}
 	}
-
-	//printf("Received %s%s.\n", appname, filename);
 
 	return 1;
 }
@@ -5147,8 +4793,6 @@ s32 create_and_request_file(char* path1, char* appname, char *filename) {
 
 		main_server = server_connect(0);
 
-		//printf("Request: /homebrew/%s%s\n", filename, extension);
-
 		char http_request[1000];
 		if (setting_repo == 0) {
 			strcpy(http_request, "GET /hbb/");
@@ -5179,10 +4823,6 @@ s32 create_and_request_file(char* path1, char* appname, char *filename) {
 			strcat(http_request, repo_list[setting_repo].domain);
 		}
 		strcat(http_request, "\r\nCache-Control: no-cache\r\n\r\n");
-		//strcat(http_request, " HTTP/1.0\r\n\r\n");
-		//strcat(http_request, " HTTP/1.0\r\nHost: " MAIN_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
-
-		//strcpy(testy, http_request);
 
 		write_http_reply(main_server, http_request);
 		result = request_file(main_server, f);
@@ -5201,8 +4841,6 @@ s32 create_and_request_file(char* path1, char* appname, char *filename) {
 			return -1;
 		}
 	}
-
-	//printf("Received %s%s.\n", appname, filename);
 
 	return 1;
 }
