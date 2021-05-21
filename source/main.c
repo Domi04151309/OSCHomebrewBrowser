@@ -129,8 +129,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "tool_tip_queue_png.h"
 #include "tool_tip_sort_date_png.h"
 #include "tool_tip_sort_name_png.h"
-#include "tool_tip_download_apps_png.h"
-#include "tool_tip_update_apps_png.h"
 #include "cancel_download_prompt_png.h"
 #include "button_no_png.h"
 #include "button_no_highlight_png.h"
@@ -626,8 +624,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *tool_tip_queue_img=GRRLIB_LoadTexture(tool_tip_queue_png);
 	GRRLIB_texImg *tool_tip_sort_date_img=GRRLIB_LoadTexture(tool_tip_sort_date_png);
 	GRRLIB_texImg *tool_tip_sort_name_img=GRRLIB_LoadTexture(tool_tip_sort_name_png);
-	GRRLIB_texImg *tool_tip_download_apps_img=GRRLIB_LoadTexture(tool_tip_download_apps_png);
-	GRRLIB_texImg *tool_tip_update_apps_img=GRRLIB_LoadTexture(tool_tip_update_apps_png);
 
 	GRRLIB_texImg *cancel_download_prompt_img=GRRLIB_LoadTexture(cancel_download_prompt_png);
 	GRRLIB_texImg *button_no_img=GRRLIB_LoadTexture(button_no_png);
@@ -1485,15 +1481,7 @@ int main(int argc, char **argv) {
 				doRumble = true;
 				GRRLIB_DrawImg(577, 370, down_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_tool_tip == true) {
-					if (category_selection == 5) {
-						GRRLIB_DrawImg(435, 368, tool_tip_update_apps_img, 0, 1, 1, 0xFFFFFFFF);
-					}
-					else if (category_selection == 6 || category_selection == 7) {
-						GRRLIB_DrawImg(351, 364, tool_tip_download_apps_img, 0, 1, 1, 0xFFFFFFFF);
-					}
-					else {
-						GRRLIB_DrawImg(330, 364, tool_tip_queue_img, 0, 1, 1, 0xFFFFFFFF);
-					}
+					GRRLIB_DrawImg(330, 364, tool_tip_queue_img, 0, 1, 1, 0xFFFFFFFF);
 				}
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && download_in_progress == false) {
 					if (category_selection == 5 && updating == -1 && array_length (homebrew_list) >= 1) {
