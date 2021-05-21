@@ -99,7 +99,6 @@ extern int setting_sort;
 extern int setting_category;
 extern bool setting_disusb;
 extern bool setting_wiiside;
-extern bool setting_update;
 extern bool setting_server;
 
 extern bool cancel_confirmed;
@@ -166,7 +165,6 @@ int delete_dir_files(char* path);
 int create_dir(char* path);
 bool unzipArchive(char * zipfilepath, char * unzipfolderpath);
 void check_missing_files();
-void update_check();
 void check_temp_files();
 void apps_check();
 void save_xml_name();

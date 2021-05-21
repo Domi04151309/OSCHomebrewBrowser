@@ -409,9 +409,6 @@ int main(int argc, char **argv) {
 
 	if (setting_online == true && setting_repo == 0) {
 		check_missing_files();
-		if (setting_update == true) {
-			update_check();
-		} else { printf("\n"); }
 		check_temp_files();
 		apps_check();
 		update_settings(); // Update last boot time
@@ -500,7 +497,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *str_setting_sort = GRRLIB_TextToTexture("Custom sort", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_disusb = GRRLIB_TextToTexture("Disable USB mount", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_wiiside = GRRLIB_TextToTexture("Use Wiimote sideways", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_setting_update = GRRLIB_TextToTexture("Check for updates", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_server = GRRLIB_TextToTexture("Use secondary server", FONTSIZE_SMALL1, 0x575757);
 
 	// Settings
@@ -3304,20 +3300,10 @@ int main(int argc, char **argv) {
 							else {setting_wiiside = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 346 && ir.y < 388 && select_sort == false) {
-						doRumble = true;
-						GRRLIB_DrawImg(104, 346, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-							if (setting_update == true) { setting_update = false; }
-							else {setting_update = true; }
-
-						}
-					}
 
 					GRRLIB_DrawImg(351, 160, str_setting_sort, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(282, 210, str_setting_disusb, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(248, 310, str_setting_wiiside, 0, 1.0, 1.0, 0xFFFFFFFF);
-					GRRLIB_DrawImg(286, 360, str_setting_update, 0, 1.0, 1.0, 0xFFFFFFFF);
 
 					if (setting_sort == 1) { GRRLIB_DrawImg(498, 148, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 					else { GRRLIB_DrawImg(498, 148, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
@@ -3325,8 +3311,6 @@ int main(int argc, char **argv) {
 					else { GRRLIB_DrawImg(498, 198, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 					if (setting_wiiside == true) { GRRLIB_DrawImg(498, 298, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
 					else { GRRLIB_DrawImg(498, 298, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
-					if (setting_update == true) { GRRLIB_DrawImg(498, 348, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
-					else { GRRLIB_DrawImg(498, 348, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 
 					if (((pressed & WPAD_BUTTON_MINUS) || (setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || (pressed_gc & PAD_TRIGGER_L) || (pressed_gc & PAD_BUTTON_LEFT)) && select_sort == false) {
 						menu_section = 3;
