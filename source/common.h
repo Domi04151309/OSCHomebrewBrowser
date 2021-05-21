@@ -113,7 +113,6 @@ extern int setting_repo;
 extern int setting_sort;
 extern int setting_category;
 extern bool setting_disusb;
-extern bool setting_dischar;
 extern bool setting_wiiside;
 extern bool setting_update;
 extern bool setting_server;
