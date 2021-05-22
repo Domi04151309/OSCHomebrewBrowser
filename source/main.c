@@ -220,7 +220,7 @@ int main(int argc, char **argv) {
 
 	GRRLIB_Init();
 	GRRLIB_InitFreetype();
-	START_showTextTwo("This is a dummy", "This is a dummy"); //TODO: Investigate dummy render
+	START_showTextTwo("Loading", "..."); //TODO: Investigate dummy render
 
 	u32 temp_esid;
 	ES_GetDeviceID(&temp_esid);
@@ -387,17 +387,6 @@ int main(int argc, char **argv) {
 	}
 
 	suspend_reset_thread();
-
-	// Constant Text
-	GRRLIB_texImg *str_author = GRRLIB_TextToTexture("Author:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
-	GRRLIB_texImg *str_version = GRRLIB_TextToTexture("Version:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
-	GRRLIB_texImg *str_size= GRRLIB_TextToTexture("Size:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
-	GRRLIB_texImg *str_date = GRRLIB_TextToTexture("Date:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
-
-	GRRLIB_texImg *str_sdhc = GRRLIB_TextToTexture("SDHC:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
-	GRRLIB_texImg *str_sdhc_yes = GRRLIB_TextToTexture("Yes", FONTSIZE_SMALLER, COLOUR_GREEN);
-	GRRLIB_texImg *str_sdhc_no = GRRLIB_TextToTexture("No", FONTSIZE_SMALLER, COLOUR_RED);
-
 
 	// App listing text
 	GRRLIB_texImg *str_name = NULL; GRRLIB_texImg *str_name1 = NULL; GRRLIB_texImg *str_name2 = NULL; GRRLIB_texImg *str_name3 = NULL; GRRLIB_texImg *str_name4 = NULL;
@@ -1863,10 +1852,10 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(70, 230, string4, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(70, 250, string5, 0, 1.0, 1.0, 0xFFFFFFFF);
 
-			GRRLIB_DrawImg(70, 290, str_author, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 310, str_version, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 330, str_date, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 350, str_size, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(70, 290, STR_AUTHOR, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(70, 310, STR_VERSION, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(70, 330, STR_SIZE, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(70, 350, STR_DATE, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 
 			GRRLIB_DrawImg(140, 290, str_res_author, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(140, 310, str_res_version, 0, 1.0, 1.0, 0xFFFFFFFF);
@@ -1901,10 +1890,10 @@ int main(int argc, char **argv) {
 			if (strstr(homebrew_list[current_app].app_controllers, "k")) {
 				GRRLIB_DrawImg(544, 330, control_keyboard_img, 0, 1, 1, 0xFFFFFFFF);
 			} else { GRRLIB_DrawImg(544, 330, control_keyboard_img, 0, 1, 1, 0xFFFFFF3C); }
-			GRRLIB_DrawImg(489, 290, str_sdhc, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(489, 290, STR_SDHC, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 			if (strstr(homebrew_list[current_app].app_controllers, "s")) {
-				GRRLIB_DrawImg(553, 290, str_sdhc_yes, 0, 1.0, 1.0, 0xFFFFFFFF);
-			} else { GRRLIB_DrawImg(553, 290, str_sdhc_no, 0, 1.0, 1.0, 0xFFFFFFFF);}
+				GRRLIB_DrawText(553, 290, STR_YES, FONTSIZE_SMALLER, COLOUR_GREEN);
+			} else { GRRLIB_DrawText(553, 290, STR_NO, FONTSIZE_SMALLER, COLOUR_RED); }
 
 			if ((download_in_progress == false && extract_in_progress == false && delete_in_progress == false) || (strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0)) {
 				// Download or updated enabled?
