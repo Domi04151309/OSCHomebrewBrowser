@@ -56,8 +56,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "apps_top_png.h"
 #include "apps_top2_png.h"
 #include "background_png.h"
-#include "blue_light_png.h"
-#include "blue_light_small_png.h"
 #include "blue_dark_small_png.h"
 #include "blue_dark_small2_png.h"
 #include "no_image_png.h"
@@ -526,8 +524,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *apps_top_img=GRRLIB_LoadTexture(apps_top_png);
 	GRRLIB_texImg *apps_top2_img=GRRLIB_LoadTexture(apps_top2_png);
 	GRRLIB_texImg *background_img=GRRLIB_LoadTexture(background_png);
-	GRRLIB_texImg *blue_light_img=GRRLIB_LoadTexture(blue_light_png);
-	GRRLIB_texImg *blue_light_small_img=GRRLIB_LoadTexture(blue_light_small_png);
 	GRRLIB_texImg *blue_dark_small_img=GRRLIB_LoadTexture(blue_dark_small_png);
 	GRRLIB_texImg *blue_dark_small2_img=GRRLIB_LoadTexture(blue_dark_small2_png);
 	GRRLIB_texImg *date_img=GRRLIB_LoadTexture(date_png);
@@ -1046,27 +1042,6 @@ int main(int argc, char **argv) {
 			ypos = 142;
 		}
 
-		// Display icons, text
-		GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * start) + 4, str_name, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * start) + 30, str_short_desc, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_DrawImg(60, ypos + (76 * (start+1) + 4), icon2_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 4, str_name1, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 30, str_short_desc1, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_DrawImg(60, ypos + (76 * (start+2) + 4), icon3_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 4, str_name2, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 30, str_short_desc2, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 4, str_name3, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 30, str_short_desc3, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 4, str_name4, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 30, str_short_desc4, 0, 1.0, 1.0, 0xFFFFFFFF);
-
 		// Highlighting and display tick, question mark or plus
 		if (hbb_app_about == false && updating == -1 && in_menu == false && in_help == false && show_updated_apps == false) {
 
@@ -1075,7 +1050,7 @@ int main(int argc, char **argv) {
 				if (strlen(homebrew_list[(start + b)].name) >= 2 && strcmp(homebrew_list[(start + b)].name,"000") != 0) {
 					if (ir.y > 138 && ir.y < 437 && ir.x > 40 && ir.x < 536 && ir.y > (ypos + (76 * (start + b))) && ir.y < (ypos + (76 * (start + b)) + 64) && !(held & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || held_gc & PAD_BUTTON_B)) {
 						doRumble = true;
-						GRRLIB_DrawImg(110, ypos + (76 * (start + b)), blue_light_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(60, ypos + (76 * (start + b)), 490, 64, 0x80808040, true);
 
 						if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && hbb_app_about == false) {
 							hbb_app_about = true;
@@ -1126,6 +1101,27 @@ int main(int argc, char **argv) {
 				}
 			}
 		}
+
+		// Display icons, text
+		GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
+		GRRLIB_DrawImg(210, ypos + (76 * start) + 4, str_name, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawImg(210, ypos + (76 * start) + 30, str_short_desc, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+		GRRLIB_DrawImg(60, ypos + (76 * (start+1) + 4), icon2_img, 0, 1, 1, 0xFFFFFFC8);
+		GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 4, str_name1, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 30, str_short_desc1, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+		GRRLIB_DrawImg(60, ypos + (76 * (start+2) + 4), icon3_img, 0, 1, 1, 0xFFFFFFC8);
+		GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 4, str_name2, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 30, str_short_desc2, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+		GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
+		GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 4, str_name3, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 30, str_short_desc3, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+		GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
+		GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 4, str_name4, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 30, str_short_desc4, 0, 1.0, 1.0, 0xFFFFFFFF);
 
 		// Updated apps message
 		if (setting_show_updated == true && show_updated_apps == true) {
@@ -2211,28 +2207,28 @@ int main(int argc, char **argv) {
 			if (help_section == 0) {
 				if (ir.x > 250 && ir.x < 590 && ir.y > 146 && ir.y < 188) {
 					doRumble = true;
-					GRRLIB_DrawImg(164, 146, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+					GRRLIB_Rectangle(164, 146, 440, 44, 0x80808040, true);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 2;
 					}
 				}
 				if (ir.x > 250 && ir.x < 590 && ir.y > 196 && ir.y < 238) {
 					doRumble = true;
-					GRRLIB_DrawImg(164, 196, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+					GRRLIB_Rectangle(164, 196, 440, 44, 0x80808040, true);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 11;
 					}
 				}
 				if (ir.x > 250 && ir.x < 590 && ir.y > 246 && ir.y < 288) {
 					doRumble = true;
-					GRRLIB_DrawImg(164, 246, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+					GRRLIB_Rectangle(164, 246, 440, 44, 0x80808040, true);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 15;
 					}
 				}
 				if (ir.x > 250 && ir.x < 590 && ir.y > 296 && ir.y < 338) {
 					doRumble = true;
-					GRRLIB_DrawImg(164, 296, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+					GRRLIB_Rectangle(164, 296, 440, 44, 0x80808040, true);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 19;
 					}
@@ -2512,6 +2508,7 @@ int main(int argc, char **argv) {
 		// Menu
 		if (in_menu == true && in_help == false) {
 			GRRLIB_DrawImg(34, 130, apps_table_blank_img, 0, 1, 1, 0xFFFFFFFF);
+			GRRLIB_DrawImg(82, 146, gear_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (menu_section == 0) {
 				if (UI_isOnButton(ir.x, ir.y, 283, 155)) {
@@ -2580,7 +2577,7 @@ int main(int argc, char **argv) {
 
 					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 146, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 146, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_sd_card == true) { setting_sd_card = false; }
 							else {setting_sd_card = true; }
@@ -2588,7 +2585,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 246 && ir.y < 288) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 246, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 246, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_hide_installed == true) { setting_hide_installed = false; }
 							else {setting_hide_installed = true; }
@@ -2623,7 +2620,7 @@ int main(int argc, char **argv) {
 
 					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 146, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 146, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_rumble == true) { setting_rumble = false; }
 							else {setting_rumble = true; }
@@ -2631,7 +2628,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 196 && ir.y < 238) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 196, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 196, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_update_icon == true) { setting_update_icon = false; }
 							else {setting_update_icon = true; }
@@ -2639,7 +2636,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 246 && ir.y < 288) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 246, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 246, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_online == true) { setting_online = false; }
 							else {setting_online = true; }
@@ -2647,7 +2644,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 296 && ir.y < 338) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 296, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 296, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_tool_tip == true) { setting_tool_tip = false; }
 							else {setting_tool_tip = true; }
@@ -2655,7 +2652,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 346 && ir.y < 388) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 346, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 346, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_prompt_cancel == true) { setting_prompt_cancel = false; }
 							else {setting_prompt_cancel = true; }
@@ -2709,7 +2706,7 @@ int main(int argc, char **argv) {
 				else if (menu_section == 3) {
 					if (ir.x > 250 && ir.x < 530 && ir.y > 196 && ir.y < 238 && select_repo == false && select_category == false) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 196, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 196, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_show_updated == true) { setting_show_updated = false; }
 							else {setting_show_updated = true; }
@@ -2717,7 +2714,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 246 && ir.y < 288 && select_repo == false && select_category == false) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 246, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 246, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_use_sd == true) { setting_use_sd = false; }
 							else {setting_use_sd = true; }
@@ -2725,7 +2722,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 296 && ir.y < 338 && select_repo == false && select_category == false) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 296, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 296, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							select_repo = true;
 							wait_a_press = 10;
@@ -2733,7 +2730,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 346 && ir.y < 388 && select_repo == false && select_category == false) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 346, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 346, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							select_category = true;
 							wait_a_press = 10;
@@ -2784,7 +2781,7 @@ int main(int argc, char **argv) {
 
 					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188 && select_sort == false) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 146, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 146, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							select_sort = true;
 							wait_a_press = 10;
@@ -2792,7 +2789,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 196 && ir.y < 238 && select_sort == false) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 196, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 196, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_disusb == true) { setting_disusb = false; }
 							else {setting_disusb = true; }
@@ -2800,7 +2797,7 @@ int main(int argc, char **argv) {
 					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 296 && ir.y < 338 && select_sort == false) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 296, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 296, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_wiiside == true) { setting_wiiside = false; }
 							else {setting_wiiside = true; }
@@ -2848,7 +2845,7 @@ int main(int argc, char **argv) {
 
 					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188) {
 						doRumble = true;
-						GRRLIB_DrawImg(104, 146, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
+						GRRLIB_Rectangle(104, 146, 440, 44, 0x80808040, true);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_server == true) { setting_server = false; }
 							else {setting_server = true; }
@@ -2887,7 +2884,6 @@ int main(int argc, char **argv) {
 			if (wait_a_press > 0) {
 				wait_a_press--;
 			}
-			GRRLIB_DrawImg(82, 146, gear_bg_img, 0, 1, 1, 0xFFFFFFFF);
 		}
 		else {
 			if ((pressed & WPAD_BUTTON_HOME || pressed_gc & PAD_BUTTON_START) && hbb_app_about == false && updating == -1) {

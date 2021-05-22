@@ -4,7 +4,7 @@
 #include "../res.h"
 
 void START_new() {
-  GRRLIB_FillScreen(0xFF000000);
+  GRRLIB_FillScreen(0x000000FF);
 
   GRRLIB_texImg *appName = GRRLIB_TextToTexture("Homebrew Browser Lite", FONTSIZE_NORMAL, TEXT_COLOUR_PRIMARY_DARK);
   GRRLIB_DrawImg(64, 240 - (*appName).h, appName, 0, 1, 1, 0xFFFFFFFF);
