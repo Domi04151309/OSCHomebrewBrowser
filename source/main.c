@@ -63,7 +63,9 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "app_tick_small_png.h"
 #include "app_minus_png.h"
 #include "app_new_png.h"
+#include "help_png.h"
 #include "help_highlight_png.h"
+#include "sd_card_png.h"
 #include "sd_card_highlight_png.h"
 #include "cat_all_png.h"
 #include "cat_demo_png.h"
@@ -120,7 +122,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "apps_repo_png.h"
 #include "apps_start_cat_png.h"
 #include "apps_start_sort_png.h"
-#include "arrow_png.h"
 
 #include "ui.h"
 #include "res.h"
@@ -515,7 +516,9 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *app_tick_img=GRRLIB_LoadTexture(app_tick_png);
 	GRRLIB_texImg *app_tick_small_img=GRRLIB_LoadTexture(app_tick_small_png);
 	GRRLIB_texImg *app_new_img=GRRLIB_LoadTexture(app_new_png);
+	GRRLIB_texImg *help_img=GRRLIB_LoadTexture(help_png);
 	GRRLIB_texImg *help_highlight_img=GRRLIB_LoadTexture(help_highlight_png);
+	GRRLIB_texImg *sd_card_img=GRRLIB_LoadTexture(sd_card_png);
 	GRRLIB_texImg *sd_card_highlight_img=GRRLIB_LoadTexture(sd_card_highlight_png);
 	GRRLIB_texImg *down_img=GRRLIB_LoadTexture(down_png);
 	GRRLIB_texImg *down_highlight_img=GRRLIB_LoadTexture(down_highlight_png);
@@ -1379,6 +1382,8 @@ int main(int argc, char **argv) {
 				updated_cat = true;
 				close_windows();
 			}
+		} else {
+			GRRLIB_DrawImg(483, 17, sd_card_img, 0, 1, 1, 0xFFFFFFFF);
 		}
 		if (ir.x > 542 && ir.x < 592 && ir.y > 25 && ir.y < 75) {
 			doRumble = true;
@@ -1389,6 +1394,8 @@ int main(int argc, char **argv) {
 				in_help = true;
 				help_section = 0;
 			}
+		} else {
+			GRRLIB_DrawImg(546, 16, help_img, 0, 1, 1, 0xFFFFFFFF);
 		}
 
 		if (hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) {
