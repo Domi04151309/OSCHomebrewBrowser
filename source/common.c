@@ -219,12 +219,10 @@ char* get_error_msg(s32 error_code) {
 	switch (error_code) {
 		case -6:
 			return "Are you connected to the internet?\nTry running a connection test in the Wii System Settings.";
-			break;
 		case -81:
 			return "Is your SD card write-locked?\nIs the server in settings.xml not set to 0?";
-			break;
 		default:
-			return "Undocumented error code.\nPlease contact us on our Twitter or Discord.";
+			return "Undocumented error code.";
 	}
 }
 
@@ -2579,7 +2577,7 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			START_showText("Downloading current image files.\nYou can skip this by holding down the B button but it's highly recommended that you don't.");
+			START_showTextTwo("Downloading current image files", "You can skip this by holding down the B button.");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
@@ -2633,7 +2631,7 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			START_showText("Downloading current image files.\nYou can skip this by holding down the B button but it's highly recommended that you don't.");
+			START_showTextTwo("Downloading current image files", "You can skip this by holding down the B button.");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
