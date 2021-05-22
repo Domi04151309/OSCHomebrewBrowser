@@ -389,11 +389,11 @@ int main(int argc, char **argv) {
 	suspend_reset_thread();
 
 	// App listing text
-	GRRLIB_texImg *str_name = NULL; GRRLIB_texImg *str_name1 = NULL; GRRLIB_texImg *str_name2 = NULL; GRRLIB_texImg *str_name3 = NULL; GRRLIB_texImg *str_name4 = NULL;
-	GRRLIB_texImg *str_short_desc = NULL; GRRLIB_texImg *str_short_desc1 = NULL; GRRLIB_texImg *str_short_desc2 = NULL; GRRLIB_texImg *str_short_desc3 = NULL; GRRLIB_texImg *str_short_desc4 = NULL;
+	char *str_name = malloc(sizeof(char) * 100); char *str_name1 = malloc(sizeof(char) * 100); char *str_name2 = malloc(sizeof(char) * 100); char *str_name3 = malloc(sizeof(char) * 100); char *str_name4 = malloc(sizeof(char) * 100);
+	char *str_short_desc = malloc(sizeof(char) * 100); char *str_short_desc1 = malloc(sizeof(char) * 100); char *str_short_desc2 = malloc(sizeof(char) * 100); char *str_short_desc3 = malloc(sizeof(char) * 100); char *str_short_desc4 = malloc(sizeof(char) * 100);
 
 	// About text
-	GRRLIB_texImg *str_res_title = NULL;
+	char *str_res_title = malloc(sizeof(char) * 100);
 	GRRLIB_texImg *str_res_author = NULL;
 	GRRLIB_texImg *str_res_version = NULL;
 	GRRLIB_texImg *str_res_size = NULL;
@@ -401,11 +401,11 @@ int main(int argc, char **argv) {
 
 
 	// About text description
-	GRRLIB_texImg *string1 = NULL;
-	GRRLIB_texImg *string2 = NULL;
-	GRRLIB_texImg *string3 = NULL;
-	GRRLIB_texImg *string4 = NULL;
-	GRRLIB_texImg *string5 = NULL;
+	char *string1 = malloc(sizeof(char) * 100);
+	char *string2 = malloc(sizeof(char) * 100);
+	char *string3 = malloc(sizeof(char) * 100);
+	char *string4 = malloc(sizeof(char) * 100);
+	char *string5 = malloc(sizeof(char) * 100);
 
 	GRRLIB_texImg *str_downloading = GRRLIB_TextToTexture("Downloading ...", FONTSIZE_SMALL, 0x575757);
 	GRRLIB_texImg *str_downloading_small = GRRLIB_TextToTexture("Downloading in progress", FONTSIZE_SMALLER, 0x9d9d9d);
@@ -430,7 +430,7 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *str_download_info = NULL;
 
 	// Download queue
-	GRRLIB_texImg *str_title_status = NULL;
+	char *str_title_status = malloc(sizeof(char) * 100);
 	GRRLIB_texImg *str_overall_progress = GRRLIB_TextToTexture("Overall Progress", FONTSIZE_SMALL, 0x575757);
 
 	// Settings
@@ -774,8 +774,8 @@ int main(int argc, char **argv) {
 
 				// Text list
 				if (text_list[c].text == 0) {
-					text_list[c].str_name = GRRLIB_TextToTexture(homebrew_list[c].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
-					text_list[c].str_short_description = GRRLIB_TextToTexture(homebrew_list[c].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+					text_list[c].str_name = homebrew_list[c].app_name;
+					text_list[c].str_short_description = homebrew_list[c].app_short_description;
 					text_list[c].text = 1;
 
 					if (c > string_count) {
@@ -788,9 +788,7 @@ int main(int argc, char **argv) {
 							if (text_list[a].text != 0) {
 								text_list[a].text = 0;
 
-								free(text_list[a].str_name->data);
 								free(text_list[a].str_name);
-								free(text_list[a].str_short_description->data);
 								free(text_list[a].str_short_description);
 							}
 
@@ -803,9 +801,7 @@ int main(int argc, char **argv) {
 							if (text_list[a].text != 0) {
 								text_list[a].text = 0;
 
-								free(text_list[a].str_name->data);
 								free(text_list[a].str_name);
-								free(text_list[a].str_short_description->data);
 								free(text_list[a].str_short_description);
 							}
 
@@ -842,16 +838,16 @@ int main(int argc, char **argv) {
 			else { icon5_img=GRRLIB_LoadTexture(blank_png); }
 
 			// Name and Descriptions
-			str_name = text_list[start].str_name;
-			str_name1 = text_list[(start+1)].str_name;
-			str_name2 = text_list[(start+2)].str_name;
-			str_name3 = text_list[(start+3)].str_name;
-			str_name4 = text_list[(start+4)].str_name;
-			str_short_desc = text_list[start].str_short_description;
-			str_short_desc1 = text_list[(start+1)].str_short_description;
-			str_short_desc2 = text_list[(start+2)].str_short_description;
-			str_short_desc3 = text_list[(start+3)].str_short_description;
-			str_short_desc4 = text_list[(start+4)].str_short_description;
+			strcpy(str_name, text_list[start].str_name);
+			strcpy(str_name1, text_list[(start+1)].str_name);
+			strcpy(str_name2, text_list[(start+2)].str_name);
+			strcpy(str_name3, text_list[(start+3)].str_name);
+			strcpy(str_name4, text_list[(start+4)].str_name);
+			strcpy(str_short_desc, text_list[start].str_short_description);
+			strcpy(str_short_desc1, text_list[(start+1)].str_short_description);
+			strcpy(str_short_desc2, text_list[(start+2)].str_short_description);
+			strcpy(str_short_desc3, text_list[(start+3)].str_short_description);
+			strcpy(str_short_desc4, text_list[(start+4)].str_short_description);
 
 			refresh_list = start;
 		}
@@ -1091,24 +1087,24 @@ int main(int argc, char **argv) {
 
 		// Display icons, text
 		GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * start) + 4, str_name, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * start) + 30, str_short_desc, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawText(210, ypos + (76 * start) + 4, str_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+		GRRLIB_DrawText(210, ypos + (76 * start) + 30, str_short_desc, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
 		GRRLIB_DrawImg(60, ypos + (76 * (start+1) + 4), icon2_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 4, str_name1, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 30, str_short_desc1, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawText(210, ypos + (76 * (start+1)) + 4, str_name1, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+		GRRLIB_DrawText(210, ypos + (76 * (start+1)) + 30, str_short_desc1, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
 		GRRLIB_DrawImg(60, ypos + (76 * (start+2) + 4), icon3_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 4, str_name2, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 30, str_short_desc2, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawText(210, ypos + (76 * (start+2)) + 4, str_name2, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+		GRRLIB_DrawText(210, ypos + (76 * (start+2)) + 30, str_short_desc2, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
 		GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 4, str_name3, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 30, str_short_desc3, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawText(210, ypos + (76 * (start+3)) + 4, str_name3, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+		GRRLIB_DrawText(210, ypos + (76 * (start+3)) + 30, str_short_desc3, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
 		GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 4, str_name4, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 30, str_short_desc4, 0, 1.0, 1.0, 0xFFFFFFFF);
+		GRRLIB_DrawText(210, ypos + (76 * (start+4)) + 4, str_name4, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+		GRRLIB_DrawText(210, ypos + (76 * (start+4)) + 30, str_short_desc4, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
 		// Updated apps message
 		if (setting_show_updated == true && show_updated_apps == true) {
@@ -1476,9 +1472,9 @@ int main(int argc, char **argv) {
 				char temp[50];
 				sprintf (temp, "Processing %i/%i applications", new_updating + 1, array_length (homebrew_list));
 
-				str_title_status = GRRLIB_TextToTexture(temp, FONTSIZE_SMALL, 0x575757);
+				str_title_status = temp;
 
-				str_res_title = GRRLIB_TextToTexture(homebrew_list[new_updating].app_name, FONTSIZE_SMALL, 0x575757);
+				strcpy(str_res_title, homebrew_list[new_updating].app_name);
 
 				free_update = false;
 			}
@@ -1487,8 +1483,8 @@ int main(int argc, char **argv) {
 
 			if ((updating < array_length (homebrew_list) && new_updating < array_length (homebrew_list)) || new_updating == 10000) {
 
-				GRRLIB_DrawImg(220, 152, str_title_status, 0, 1.0, 1.0, 0xFFFFFFFF);
-				GRRLIB_DrawImg(348 - (strlen(homebrew_list[updating].app_name) * 5.5), 196, str_res_title, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_DrawText(220, 152, str_title_status, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+				GRRLIB_DrawText(348 - (strlen(homebrew_list[current_app].app_name) * 5.5), 196, str_res_title, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 				// Download
 				if (download_in_progress == true) {
@@ -1759,7 +1755,7 @@ int main(int argc, char **argv) {
 		// About
 		if (hbb_app_about == true && updating == -1 && in_menu == false && in_help == false) {
 			if (update_about == true) {
-				str_res_title = GRRLIB_TextToTexture(homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+				strcpy(str_res_title, homebrew_list[current_app].app_name);
 				str_res_author = GRRLIB_TextToTexture(homebrew_list[current_app].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 				str_res_version = GRRLIB_TextToTexture(homebrew_list[current_app].app_version, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
@@ -1803,35 +1799,35 @@ int main(int argc, char **argv) {
 					count++;
 					if (x >= (55 * (textrow+1)) && x <= (75 * (textrow+1)) && text_description[x] == ' ' && textrow == 0) {
 						test[count] = '\0';
-						string1 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string1, test);
 						textrow = 1;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 1) {
 						test[count] = '\0';
-						string2 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string2, test);
 						textrow = 2;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 2) {
 						test[count] = '\0';
-						string3 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string3, test);
 						textrow = 3;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 3) {
 						test[count] = '\0';
-						string4 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string4, test);
 						textrow = 4;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 4) {
 						test[count] = '\0';
-						string5 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string5, test);
 						count = 0;
 						textrow = 5;
 						break;
@@ -1844,13 +1840,13 @@ int main(int argc, char **argv) {
 
 			GRRLIB_DrawImg(34, 128, about_blank_img, 0, 1, 1, 0xFFFFFFFF);
 
-			GRRLIB_DrawImg(330 - (strlen(homebrew_list[current_app].app_name) * 5.5), 140, str_res_title, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(330 - (strlen(homebrew_list[current_app].app_name) * 5.5), 140, str_res_title, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
-			GRRLIB_DrawImg(70, 170, string1, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 190, string2, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 210, string3, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 230, string4, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 250, string5, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(70, 170, string1, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(70, 190, string2, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(70, 210, string3, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(70, 230, string4, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(70, 250, string5, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
 			GRRLIB_DrawText(70, 290, STR_AUTHOR, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 			GRRLIB_DrawText(70, 310, STR_VERSION, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
@@ -3141,25 +3137,15 @@ int main(int argc, char **argv) {
 
 		// Free about text when out of about window
 		if (free_about == true) {
-			free(string1->data);
 			free(string1);
-			free(string2->data);
 			free(string2);
-			free(string3->data);
 			free(string3);
-			free(string4->data);
 			free(string4);
-			free(string5->data);
 			free(string5);
-			free(str_res_title->data);
 			free(str_res_title);
-			free(str_res_author->data);
 			free(str_res_author);
-			free(str_res_version->data);
 			free(str_res_version);
-			free(str_res_size->data);
 			free(str_res_size);
-			free(str_res_date->data);
 			free(str_res_date);
 			free_about = false;
 		}
