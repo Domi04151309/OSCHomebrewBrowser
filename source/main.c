@@ -2220,108 +2220,30 @@ int main(int argc, char **argv) {
 					doRumble = true;
 					GRRLIB_DrawImg(164, 196, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 4;
+						help_section = 11;
 					}
 				}
 				if (ir.x > 250 && ir.x < 590 && ir.y > 246 && ir.y < 288) {
 					doRumble = true;
 					GRRLIB_DrawImg(164, 246, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 6;
-					}
-				}
-				if (ir.x > 250 && ir.x < 590 && ir.y > 296 && ir.y < 338) {
-					doRumble = true;
-					GRRLIB_DrawImg(164, 296, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 7;
-					}
-				}
-				if (ir.x > 250 && ir.x < 590 && ir.y > 346 && ir.y < 388) {
-					doRumble = true;
-					GRRLIB_DrawImg(164, 346, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 8;
-					}
-				}
-
-				GRRLIB_DrawImg(435, 160, str_help_about, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-				if ((pressed & WPAD_BUTTON_PLUS) || (setting_wiiside == false && pressed & WPAD_BUTTON_RIGHT) || (pressed_gc & PAD_TRIGGER_R) || (pressed_gc & PAD_BUTTON_RIGHT)) {
-					help_section = 1;
-				}
-
-				GRRLIB_DrawImg(452, 432, down_clear_img, 270, 1, 1, 0xFFFFFFFF);
-				if (ir.x > 430 && ir.x < 468 && ir.y > 400 && ir.y < 430) {
-					doRumble = true;
-					GRRLIB_DrawImg(452, 432, down_clear_highlight_img, 270, 1, 1, 0xFFFFFFFF);
-					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 1;
-					}
-				}
-
-				GRRLIB_DrawImg(355, 418, str_page1o2, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-			}
-			else if (help_section == 1) {
-				if (ir.x > 250 && ir.x < 590 && ir.y > 146 && ir.y < 188) {
-					doRumble = true;
-					GRRLIB_DrawImg(164, 146, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 11;
-					}
-				}
-				if (ir.x > 250 && ir.x < 590 && ir.y > 196 && ir.y < 238) {
-					doRumble = true;
-					GRRLIB_DrawImg(164, 196, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 15;
 					}
 				}
-				if (ir.x > 250 && ir.x < 590 && ir.y > 246 && ir.y < 288) {
-					doRumble = true;
-					GRRLIB_DrawImg(164, 246, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 16;
-					}
-				}
 				if (ir.x > 250 && ir.x < 590 && ir.y > 296 && ir.y < 338) {
 					doRumble = true;
 					GRRLIB_DrawImg(164, 296, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 17;
-					}
-				}
-				if (ir.x > 250 && ir.x < 590 && ir.y > 346 && ir.y < 388) {
-					doRumble = true;
-					GRRLIB_DrawImg(164, 346, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 19;
 					}
 				}
 
-				GRRLIB_DrawImg(504, 160, str_help_settings, 0, 1.0, 1.0, 0xFFFFFFFF);
-				GRRLIB_DrawImg(487, 210, str_help_controller, 0, 1.0, 1.0, 0xFFFFFFFF);
-				GRRLIB_DrawImg(340, 360, str_help_queue, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-				if ((pressed & WPAD_BUTTON_MINUS) || (setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || (pressed_gc & PAD_TRIGGER_L) || (pressed_gc & PAD_BUTTON_LEFT)) {
-					help_section = 0;
-				}
-
-				GRRLIB_DrawImg(332, 395, down_clear_img, 90, 1, 1, 0xFFFFFFFF);
-				if (ir.x > 285 && ir.x < 322 && ir.y > 400 && ir.y < 430) {
-					doRumble = true;
-					GRRLIB_DrawImg(332, 395, down_clear_highlight_img, 90, 1, 1, 0xFFFFFFFF);
-					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 0;
-					}
-				}
-
-				GRRLIB_DrawImg(355, 418, str_page2o2, 0, 1.0, 1.0, 0xFFFFFFFF);
-
+				GRRLIB_DrawImg(435, 160, str_help_about, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_DrawImg(504, 210, str_help_settings, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_DrawImg(487, 260, str_help_controller, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_DrawImg(340, 310, str_help_queue, 0, 1.0, 1.0, 0xFFFFFFFF);
 			}
-
-			if (help_section == 2) {
+			else if (help_section == 2) {
 				GRRLIB_DrawImg(32, 128, help_about_img, 0, 1, 1, 0xFFFFFFFF);
 				if ((setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L || pressed_gc & PAD_BUTTON_LEFT) { help_section = 0; }
 				if ((setting_wiiside == false && pressed & WPAD_BUTTON_RIGHT) || pressed & WPAD_BUTTON_PLUS || pressed_gc & PAD_TRIGGER_R || pressed_gc & PAD_BUTTON_RIGHT) { help_section = 3; }
@@ -2358,7 +2280,7 @@ int main(int argc, char **argv) {
 			}
 			else if (help_section == 11) {
 				GRRLIB_DrawImg(32, 128, help_settings_img, 0, 1, 1, 0xFFFFFFFF);
-				if ((setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L || pressed_gc & PAD_BUTTON_LEFT) { help_section = 1; }
+				if ((setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L || pressed_gc & PAD_BUTTON_LEFT) { help_section = 0; }
 				if ((setting_wiiside == false && pressed & WPAD_BUTTON_RIGHT) || pressed & WPAD_BUTTON_PLUS || pressed_gc & PAD_TRIGGER_R || pressed_gc & PAD_BUTTON_RIGHT) { help_section = 12; }
 				GRRLIB_DrawImg(56, 135, down_clear_img, 90, 1, 1, 0xFFFFFFFF);
 				if (ir.x > 46 && ir.x < 80 && ir.y > 140 && ir.y < 172) {
@@ -2502,7 +2424,7 @@ int main(int argc, char **argv) {
 			}
 			else if (help_section == 15) {
 				GRRLIB_DrawImg(32, 128, help_controller_img, 0, 1, 1, 0xFFFFFFFF);
-				if ((setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L || pressed_gc & PAD_BUTTON_LEFT) { help_section = 1; }
+				if ((setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L || pressed_gc & PAD_BUTTON_LEFT) { help_section = 0; }
 				GRRLIB_DrawImg(56, 135, down_clear_img, 90, 1, 1, 0xFFFFFFFF);
 				if (ir.x > 46 && ir.x < 80 && ir.y > 140 && ir.y < 172) {
 					doRumble = true;
@@ -2515,14 +2437,14 @@ int main(int argc, char **argv) {
 			}
 			else if (help_section == 19) {
 				GRRLIB_DrawImg(32, 128, help_queue_img, 0, 1, 1, 0xFFFFFFFF);
-				if ((setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L || pressed_gc & PAD_BUTTON_LEFT) { help_section = 1; }
+				if ((setting_wiiside == false && pressed & WPAD_BUTTON_LEFT) || pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L || pressed_gc & PAD_BUTTON_LEFT) { help_section = 0; }
 				if ((setting_wiiside == false && pressed & WPAD_BUTTON_RIGHT) || pressed & WPAD_BUTTON_PLUS || pressed_gc & PAD_TRIGGER_R || pressed_gc & PAD_BUTTON_RIGHT) { help_section = 20; }
 				GRRLIB_DrawImg(56, 135, down_clear_img, 90, 1, 1, 0xFFFFFFFF);
 				if (ir.x > 46 && ir.x < 80 && ir.y > 140 && ir.y < 172) {
 					doRumble = true;
 					GRRLIB_DrawImg(56, 135, down_clear_highlight_img, 90, 1, 1, 0xFFFFFFFF);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-						help_section = 1;
+						help_section = 0;
 					}
 				}
 				GRRLIB_DrawImg(568, 135, down_clear_img, 270, 1, 1, 0xFFFFFFFF);
@@ -2571,7 +2493,7 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawImg(522, 418, str_page3o3, 0, 1.0, 1.0, 0xFFFFFFFF);
 			}
 
-			if (help_section == 0 || help_section == 1) {
+			if (help_section == 0) {
 				GRRLIB_DrawImg(82, 146, help_bg_img, 0, 1, 1, 0xFFFFFFFF);
 			}
 			if (wait_a_press > 0) {
@@ -2582,12 +2504,7 @@ int main(int argc, char **argv) {
 				wait_a_press = 10;
 			}
 			else if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_START || pressed_gc & PAD_BUTTON_B) && help_section != 0 && wait_a_press == 0) {
-				if (help_section <= 10) {
-					help_section = 0;
-				}
-				else {
-					help_section = 1;
-				}
+				help_section = 0;
 				wait_a_press = 10;
 			}
 		}
