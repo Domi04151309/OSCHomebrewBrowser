@@ -9,7 +9,7 @@ void START_showText(char *text) {
   GRRLIB_texImg *beer = GRRLIB_LoadTexture(beer_png);
   GRRLIB_FillScreen(0xFF000000);
   GRRLIB_DrawImg(64, 240 - (*appName).h, appName, 0, 1, 1, 0xFFFFFFFF);
-  GRRLIB_DrawImg(64, 240 + (*texImg).h, texImg, 0, 1, 1, 0xFFFFFFFF);
+  GRRLIB_DrawImg(64, 240, texImg, 0, 1, 1, 0xFFFFFFFF);
   GRRLIB_DrawImg(512, 240 - (*beer).h / 2, beer, 0, 1, 1, 0xFFFFFFFF);
   GRRLIB_Render();
   free(appName);

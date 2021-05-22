@@ -77,7 +77,6 @@ extern long long sd_card_free;
 extern int download_icon;
 extern bool in_menu;
 
-extern bool setting_check_size;
 extern bool setting_sd_card;
 extern bool setting_hide_installed;
 extern bool setting_online;
@@ -87,7 +86,6 @@ extern bool setting_tool_tip;
 extern char setting_last_boot[14];
 extern bool setting_show_updated;
 extern bool setting_prompt_cancel;
-extern bool setting_power_off;
 extern bool setting_use_sd;
 extern int setting_repo;
 extern int setting_sort;

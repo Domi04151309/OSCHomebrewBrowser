@@ -141,7 +141,6 @@ int download_icon = 0;
 int sort_up_down = 0;
 bool in_menu = false;
 
-bool setting_check_size = true;
 bool setting_sd_card = true;
 bool setting_hide_installed = false;
 bool setting_online = true;
@@ -151,7 +150,6 @@ bool setting_tool_tip = true;
 char setting_last_boot[14] = "1";
 bool setting_show_updated = true;
 bool setting_prompt_cancel = true;
-bool setting_power_off = false;
 bool setting_use_sd = true;
 int setting_repo = 0;
 int setting_category = 2;
@@ -507,12 +505,10 @@ static void *run_download_thread(void *arg) {
 	download_progress_counter = 0;
 
 	// Check if there is enough space on SD card
-	if (setting_check_size == true) {
-		int check_size = ((store_homebrew_list[0].total_app_size / 1024) / 1024) + ((store_homebrew_list[0].app_total_size / 1024) / 1024);
-		if (sd_card_free <= check_size) {
-			download_status = false;
-			error_number = 9;
-		}
+	int check_size = ((store_homebrew_list[0].total_app_size / 1024) / 1024) + ((store_homebrew_list[0].app_total_size / 1024) / 1024);
+	if (sd_card_free <= check_size) {
+		download_status = false;
+		error_number = 9;
 	}
 
 	// Check we are still connected to the Wireless
@@ -1335,9 +1331,6 @@ void update_settings() {
 
 	data = mxmlNewElement(xml, "settings");
 
-	char set1[2];
-	sprintf(set1, "%i", setting_check_size);
-	mxmlElementSetAttr(data, "setting_check_size", set1);
 	char set2[2];
 	sprintf(set2, "%i", setting_sd_card);
 	mxmlElementSetAttr(data, "setting_sd_card", set2);
@@ -1359,9 +1352,6 @@ void update_settings() {
 	char set10[2];
 	sprintf(set10, "%i", setting_prompt_cancel);
 	mxmlElementSetAttr(data, "setting_prompt_cancel", set10);
-	char set11[2];
-	sprintf(set11, "%i", setting_power_off);
-	mxmlElementSetAttr(data, "setting_power_off", set11);
 	mxmlElementSetAttr(data, "setting_last_boot", setting_last_boot);
 	char set12[2];
 	sprintf(set12, "%i", setting_show_updated);
@@ -1466,9 +1456,6 @@ void load_settings() {
 
 			data = mxmlFindElement(tree, tree, "settings", NULL, NULL, MXML_DESCEND);
 
-			if (mxmlElementGetAttr(data,"setting_check_size")) {
-				setting_check_size = atoi(mxmlElementGetAttr(data,"setting_check_size"));
-			}
 			if (mxmlElementGetAttr(data,"setting_sd_card")) {
 				setting_sd_card = atoi(mxmlElementGetAttr(data,"setting_sd_card"));
 			}
@@ -1489,9 +1476,6 @@ void load_settings() {
 			}
 			if (mxmlElementGetAttr(data,"setting_prompt_cancel")) {
 				setting_prompt_cancel = atoi(mxmlElementGetAttr(data,"setting_prompt_cancel"));
-			}
-			if (mxmlElementGetAttr(data,"setting_power_off")) {
-				setting_power_off = atoi(mxmlElementGetAttr(data,"setting_power_off"));
 			}
 			if (mxmlElementGetAttr(data,"setting_last_boot")) {
 				if (atoi(mxmlElementGetAttr(data,"setting_last_boot")) > 0) {

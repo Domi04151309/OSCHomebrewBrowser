@@ -197,7 +197,7 @@ int download_arrow = 0;
 
 s8 HWButton = -1;
 void WiimotePowerPressed(s32 chan) {
-	if (chan == 0 && setting_power_off == true) {
+	if (chan == 0) {
 		HWButton = SYS_POWEROFF_STANDBY;
 	}
 }
@@ -455,14 +455,12 @@ int main(int argc, char **argv) {
 
 	// Settings
 	GRRLIB_texImg *str_setting_card_space = GRRLIB_TextToTexture("Show free space", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_setting_free_space = GRRLIB_TextToTexture("Check free space", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_hide_app = GRRLIB_TextToTexture("Hide installed apps", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_rumble = GRRLIB_TextToTexture("Rumble", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_icon = GRRLIB_TextToTexture("Update icons", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_offline = GRRLIB_TextToTexture("Offline mode", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_tool_tip = GRRLIB_TextToTexture("Tool tips", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_prompt = GRRLIB_TextToTexture("Confirm cancelling", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_setting_power = GRRLIB_TextToTexture("Wiimote Power off", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_updated = GRRLIB_TextToTexture("Updated Apps Pop-up", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_sd = GRRLIB_TextToTexture("Use SD card", FONTSIZE_SMALL1, 0x575757);
 	GRRLIB_texImg *str_setting_repo = GRRLIB_TextToTexture("Use Other Repositories", FONTSIZE_SMALL1, 0x575757);
@@ -2852,14 +2850,6 @@ int main(int argc, char **argv) {
 							else {setting_sd_card = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 196 && ir.y < 238) {
-						doRumble = true;
-						GRRLIB_DrawImg(104, 196, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-							if (setting_check_size == true) { setting_check_size = false; }
-							else {setting_check_size = true; }
-						}
-					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 246 && ir.y < 288) {
 						doRumble = true;
 						GRRLIB_DrawImg(104, 246, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
@@ -2870,13 +2860,10 @@ int main(int argc, char **argv) {
 					}
 
 					GRRLIB_DrawImg(313, 160, str_setting_card_space, 0, 1.0, 1.0, 0xFFFFFFFF);
-					GRRLIB_DrawImg(304, 210, str_setting_free_space, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(285, 260, str_setting_hide_app, 0, 1.0, 1.0, 0xFFFFFFFF);
 
 					if (setting_sd_card == true) { GRRLIB_DrawImg(498, 148, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
 					else { GRRLIB_DrawImg(498, 148, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
-					if (setting_check_size == true) { GRRLIB_DrawImg(498, 198, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
-					else { GRRLIB_DrawImg(498, 198, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 					if (setting_hide_installed == true) { GRRLIB_DrawImg(498, 248, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
 					else { GRRLIB_DrawImg(498, 248, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 
@@ -2984,15 +2971,6 @@ int main(int argc, char **argv) {
 					GRRLIB_DrawImg(355, 418, str_page2o5, 0, 1.0, 1.0, 0xFFFFFFFF);
 				}
 				else if (menu_section == 3) {
-
-					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188 && select_repo == false && select_category == false) {
-						doRumble = true;
-						GRRLIB_DrawImg(104, 146, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
-						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-							if (setting_power_off == true) { setting_power_off = false; }
-							else {setting_power_off = true; }
-						}
-					}
 					if (ir.x > 250 && ir.x < 530 && ir.y > 196 && ir.y < 238 && select_repo == false && select_category == false) {
 						doRumble = true;
 						GRRLIB_DrawImg(104, 196, blue_light_small_img, 0, 1, 1, 0xFFFFFFFF);
@@ -3026,14 +3004,11 @@ int main(int argc, char **argv) {
 						}
 					}
 
-					GRRLIB_DrawImg(292, 160, str_setting_power, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(259, 210, str_setting_updated, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(355, 260, str_setting_sd, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(244, 310, str_setting_repo, 0, 1.0, 1.0, 0xFFFFFFFF);
 					GRRLIB_DrawImg(300, 360, str_setting_cat, 0, 1.0, 1.0, 0xFFFFFFFF);
 
-					if (setting_power_off == true) { GRRLIB_DrawImg(498, 148, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
-					else { GRRLIB_DrawImg(498, 148, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 					if (setting_show_updated == true) { GRRLIB_DrawImg(498, 198, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
 					else { GRRLIB_DrawImg(498, 198, setting_cross_img, 0, 1, 1, 0xFFFFFFFF); }
 					if (setting_use_sd == true) { GRRLIB_DrawImg(498, 248, app_tick_img, 0, 1, 1, 0xFFFFFFFF); }
@@ -3346,25 +3321,6 @@ int main(int argc, char **argv) {
 			}
 			if (setting_sort == 1) {	GRRLIB_DrawImg(380, 228, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF); }
 
-			if (ir.y > 255 && ir.y < 280 && ir.x > 150 && ir.x < 400) {
-				doRumble = true;
-				GRRLIB_DrawImg(165, 257, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
-					setting_sort = 2;
-				}
-			}
-			if (setting_sort == 2) {	GRRLIB_DrawImg(380, 258, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF); }
-
-			if (ir.y > 285 && ir.y < 310 && ir.x > 150 && ir.x < 400) {
-				doRumble = true;
-				GRRLIB_DrawImg(165, 287, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
-					setting_sort = 3;
-				}
-			}
-			if (setting_sort == 3) {	GRRLIB_DrawImg(380, 288, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF); }
-
-
 			GRRLIB_DrawImg(386, 156, updated_close_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (ir.x > 372 && ir.x < 420 && ir.y > 155 && ir.y < 173) {
@@ -3547,7 +3503,7 @@ int main(int argc, char **argv) {
 			exit(0);
 		}
 
-		if (HWButton != -1 && setting_power_off == true) {
+		if (HWButton != -1) {
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			update_lists();
