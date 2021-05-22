@@ -13,4 +13,8 @@
 #define STR_YES "Yes"
 #define STR_NO "No"
 
+#define STR_DOWNLOAD "Download"
+#define STR_UPDATE "Update"
+#define STR_DELETE "Delete"
+
 #endif

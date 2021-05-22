@@ -37,10 +37,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 
 #include "mouse_png.h"
 #include "about_blank_png.h"
-#include "download_button_png.h"
-#include "download_button_highlight_png.h"
-#include "delete_button_png.h"
-#include "delete_button_highlight_png.h"
 #include "control_wiimote_png.h"
 #include "control_wiimote_2_png.h"
 #include "control_wiimote_3_png.h"
@@ -89,8 +85,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "blank_png.h"
 #include "sort_arrow_down_png.h"
 #include "sort_arrow_up_png.h"
-#include "update_png.h"
-#include "update_highlight_png.h"
 #include "help_about_png.h"
 #include "help_about_2_png.h"
 #include "help_controller_png.h"
@@ -128,7 +122,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "apps_start_sort_png.h"
 #include "arrow_png.h"
 
-#include "activities/start.h"
 #include "ui.h"
 #include "res.h"
 #include "strings.h"
@@ -218,6 +211,7 @@ int main(int argc, char **argv) {
 
 	GRRLIB_Init();
 	GRRLIB_InitFreetype();
+	GRRLIB_InitFont();
 	UI_bootScreen("Loading");
 
 	u32 temp_esid;
@@ -494,10 +488,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *mouse_img=GRRLIB_LoadTexture(mouse_png);
 
 	GRRLIB_texImg *about_blank_img=GRRLIB_LoadTexture(about_blank_png);
-	GRRLIB_texImg *download_button_img=GRRLIB_LoadTexture(download_button_png);
-	GRRLIB_texImg *download_button_highlight_img=GRRLIB_LoadTexture(download_button_highlight_png);
-	GRRLIB_texImg *delete_button_img=GRRLIB_LoadTexture(delete_button_png);
-	GRRLIB_texImg *delete_button_highlight_img=GRRLIB_LoadTexture(delete_button_highlight_png);
 	GRRLIB_texImg *control_wiimote_img=GRRLIB_LoadTexture(control_wiimote_png);
 	GRRLIB_texImg *control_wiimote_2_img=GRRLIB_LoadTexture(control_wiimote_2_png);
 	GRRLIB_texImg *control_wiimote_3_img=GRRLIB_LoadTexture(control_wiimote_3_png);
@@ -535,8 +525,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *download_frame_img=GRRLIB_LoadTexture(download_frame_png);
 	GRRLIB_texImg *sort_arrow_down_img=GRRLIB_LoadTexture(sort_arrow_down_png);
 	GRRLIB_texImg *sort_arrow_up_img=GRRLIB_LoadTexture(sort_arrow_up_png);
-	GRRLIB_texImg *update_img=GRRLIB_LoadTexture(update_png);
-	GRRLIB_texImg *update_highlight_img=GRRLIB_LoadTexture(update_highlight_png);
 
 	GRRLIB_texImg *cat_all_img=GRRLIB_LoadTexture(cat_all_png);
 	GRRLIB_texImg *cat_demo_img=GRRLIB_LoadTexture(cat_demo_png);
@@ -1897,10 +1885,9 @@ int main(int argc, char **argv) {
 				// Download or updated enabled?
 				if (homebrew_list[current_app].local_app_size > 0) {
 					if (homebrew_list[current_app].local_app_size != homebrew_list[current_app].app_size && download_arrow == 0 && homebrew_list[current_app].no_manage == false) {
-						GRRLIB_DrawImg(340, 385, update_img, 0, 1, 1, 0xFFFFFFFF);
-						if (ir.x > 333 && ir.x < 470 && ir.y > 385 && ir.y < 420) {
+						if (UI_isOnButton(ir.x, ir.y, 340, 385, STR_UPDATE)) {
 							doRumble = true;
-							GRRLIB_DrawImg(340, 385, update_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+							UI_drawButton(340, 385, STR_UPDATE, 1);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
 								download_in_progress = true;
 								selected_app = current_app;
@@ -1911,23 +1898,25 @@ int main(int argc, char **argv) {
 									update_xml = 1;
 								}
 							}
+						} else {
+							UI_drawButton(340, 385, STR_UPDATE, 0);
 						}
 					}
 					else if (homebrew_list[current_app].local_app_size > 0 && download_arrow == 0) {
-						GRRLIB_DrawImg(340, 385, update_img, 0, 1, 1, 0xFFFFFF50);
+						UI_drawButton(340, 385, STR_UPDATE, 2);
 					}
 
 					if (download_arrow == 0) {
-						GRRLIB_DrawImg(485, 385, delete_button_img, 0, 1, 1, 0xFFFFFFFF);
-
-						if (ir.x > 475 && ir.x < 575 && ir.y > 385 && ir.y < 420) {
+						if (UI_isOnButton(ir.x, ir.y, 485, 385, STR_DELETE)) {
 							doRumble = true;
-							GRRLIB_DrawImg(485, 385, delete_button_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+							UI_drawButton(485, 385, STR_DELETE, 1);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
 								delete_in_progress = true;
 								selected_app = current_app;
 								initialise_delete();
 							}
+						} else {
+							UI_drawButton(485, 385, STR_DELETE, 0);
 						}
 					}
 
@@ -1957,26 +1946,25 @@ int main(int argc, char **argv) {
 					}
 				}
 				else {
-
 					if (download_in_progress == true && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
-						GRRLIB_DrawImg(340, 385, download_button_img, 0, 1, 1, 0xFFFFFF50);
-					}
-					else {
-						GRRLIB_DrawImg(340, 385, download_button_img, 0, 1, 1, 0xFFFFFFFF);
-						if (ir.x > 330 && ir.x < 470 && ir.y > 385 && ir.y < 420) {
+						UI_drawButton(340, 385, STR_DOWNLOAD, 2);
+					} else {
+						if (UI_isOnButton(ir.x, ir.y, 340, 385, STR_DOWNLOAD)) {
 							doRumble = true;
-							GRRLIB_DrawImg(340, 385, download_button_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+							UI_drawButton(340, 385, STR_DOWNLOAD, 1);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
 								download_in_progress = true;
 								selected_app = current_app;
 								add_to_stats();
 								initialise_download();
 							}
+						} else {
+							UI_drawButton(340, 385, STR_DOWNLOAD, 0);
 						}
 					}
 
 					if (download_arrow == 0) {
-						GRRLIB_DrawImg(485, 385, delete_button_img, 0, 1, 1, 0xFFFFFF50);
+						UI_drawButton(485, 385, STR_DELETE, 2);
 					}
 				}
 			}
@@ -2496,19 +2484,19 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(82, 146, gear_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (menu_section == 0) {
-				if (UI_isOnButton(ir.x, ir.y, 283, 155)) {
+				if (UI_isOnBlockButton(ir.x, ir.y, 283, 155)) {
 					doRumble = true;
-					UI_drawButton(283, 155, STR_SETTINGS, 1);
+					UI_drawBlockButton(283, 155, STR_SETTINGS, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						menu_section = 1;
 					}
 				} else {
-					UI_drawButton(283, 155, STR_SETTINGS, 0);
+					UI_drawBlockButton(283, 155, STR_SETTINGS, 0);
 				}
 
-				if (UI_isOnButton(ir.x, ir.y, 283, 230)) {
+				if (UI_isOnBlockButton(ir.x, ir.y, 283, 230)) {
 					doRumble = true;
-					UI_drawButton(283, 230, STR_RETURN_TO_WII_MENU, 1);
+					UI_drawBlockButton(283, 230, STR_RETURN_TO_WII_MENU, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						WPAD_Rumble(WPAD_CHAN_0, 0);
@@ -2526,12 +2514,12 @@ int main(int argc, char **argv) {
 						WII_ReturnToMenu();
 					}
 				} else {
-					UI_drawButton(283, 230, STR_RETURN_TO_WII_MENU, 0);
+					UI_drawBlockButton(283, 230, STR_RETURN_TO_WII_MENU, 0);
 				}
 
-				if (UI_isOnButton(ir.x, ir.y, 283, 305)) {
+				if (UI_isOnBlockButton(ir.x, ir.y, 283, 305)) {
 					doRumble = true;
-					UI_drawButton(283, 305, STR_RETURN_TO_LOADER, 1);
+					UI_drawBlockButton(283, 305, STR_RETURN_TO_LOADER, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						WPAD_Rumble(WPAD_CHAN_0, 0);
@@ -2548,7 +2536,7 @@ int main(int argc, char **argv) {
 						exit(0);
 					}
 				} else {
-					UI_drawButton(283, 305, STR_RETURN_TO_LOADER, 0);
+					UI_drawBlockButton(283, 305, STR_RETURN_TO_LOADER, 0);
 				}
 
 

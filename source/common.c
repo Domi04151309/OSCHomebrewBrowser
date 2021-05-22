@@ -37,7 +37,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 
 #include <sys/param.h>
 
-#include "activities/start.h"
 #include "ui.h"
 #include "res.h"
 
