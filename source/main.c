@@ -131,6 +131,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "activities/start.h"
 #include "ui.h"
 #include "res.h"
+#include "strings.h"
 
 #include "GRRLIB/GRRLIB.h"
 
@@ -219,6 +220,7 @@ int main(int argc, char **argv) {
 
 	GRRLIB_Init();
 	GRRLIB_InitFreetype();
+	START_showTextTwo("This is a dummy", "This is a dummy"); //TODO: Investigate dummy render
 
 	u32 temp_esid;
 	ES_GetDeviceID(&temp_esid);
@@ -579,10 +581,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *setting_cross_img=GRRLIB_LoadTexture(setting_cross_png);
 	GRRLIB_texImg *help_bg_img=GRRLIB_LoadTexture(help_bg_png);
 	GRRLIB_texImg *tooltip_help_img=GRRLIB_LoadTexture(tooltip_help_png);
-
-	GRRLIB_texImg *menu_loader = GRRLIB_TextToTexture("Return to Loader", FONTSIZE_SMALL, TEXT_COLOUR_PRIMARY_DARK);
-	GRRLIB_texImg *menu_reboot = GRRLIB_TextToTexture("Return to Wii Menu", FONTSIZE_SMALL, TEXT_COLOUR_PRIMARY_DARK);
-	GRRLIB_texImg *menu_settings = GRRLIB_TextToTexture("Settings", FONTSIZE_SMALL, TEXT_COLOUR_PRIMARY_DARK);
 
 	GRRLIB_texImg *tool_tip_installedapps_img=GRRLIB_LoadTexture(tool_tip_installedapps_png);
 	GRRLIB_texImg *tool_tip_queue_img=GRRLIB_LoadTexture(tool_tip_queue_png);
@@ -2513,17 +2511,17 @@ int main(int argc, char **argv) {
 			if (menu_section == 0) {
 				if (UI_isOnButton(ir.x, ir.y, 283, 155)) {
 					doRumble = true;
-					UI_drawButton(283, 155, menu_settings, 1);
+					UI_drawButton(283, 155, STR_SETTINGS, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						menu_section = 1;
 					}
 				} else {
-					UI_drawButton(283, 155, menu_settings, 0);
+					UI_drawButton(283, 155, STR_SETTINGS, 0);
 				}
 
 				if (UI_isOnButton(ir.x, ir.y, 283, 230)) {
 					doRumble = true;
-					UI_drawButton(283, 230, menu_reboot, 1);
+					UI_drawButton(283, 230, STR_RETURN_TO_WII_MENU, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						WPAD_Rumble(WPAD_CHAN_0, 0);
@@ -2541,12 +2539,12 @@ int main(int argc, char **argv) {
 						WII_ReturnToMenu();
 					}
 				} else {
-					UI_drawButton(283, 230, menu_reboot, 0);
+					UI_drawButton(283, 230, STR_RETURN_TO_WII_MENU, 0);
 				}
 
 				if (UI_isOnButton(ir.x, ir.y, 283, 305)) {
 					doRumble = true;
-					UI_drawButton(283, 305, menu_loader, 1);
+					UI_drawButton(283, 305, STR_RETURN_TO_LOADER, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						WPAD_Rumble(WPAD_CHAN_0, 0);
@@ -2563,7 +2561,7 @@ int main(int argc, char **argv) {
 						exit(0);
 					}
 				} else {
-					UI_drawButton(283, 305, menu_loader, 0);
+					UI_drawButton(283, 305, STR_RETURN_TO_LOADER, 0);
 				}
 
 

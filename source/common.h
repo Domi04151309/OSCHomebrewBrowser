@@ -28,6 +28,8 @@ u8 initialise_download();
 u8 initialise_delete();
 u8 initialise_request();
 
+void exitApp(int code);
+
 void testing();
 void suspend_reset_thread();
 void suspend_www_thread();

@@ -12,12 +12,22 @@ static void DrawText(const char *string, unsigned int fontSize, void *buffer);
 static bool BlitGlyph(FT_Bitmap *bitmap, int offset, int top, void *buffer);
 static void BitmapTo4x4RGBA(const unsigned char *src, void *dst, const unsigned int width, const unsigned int height);
 
+GRRLIB_ttfFont *font = NULL;
+
+void GRRLIB_DrawText(int x, int y, const char *text, unsigned int fontSize, const u32 color) {
+	if (font == NULL) font = GRRLIB_LoadTTF	(ttf_font_ttf, ttf_font_ttf_size);
+  GRRLIB_PrintfTTF(x, y, font, text, fontSize, color);
+}
+
+//TODO: Replace deprecated code
 void GRRLIB_InitFreetype(void) {
 	if (FT_Init_FreeType(&ftLibrary)) {
+		GRRLIB_Exit();
 		exit(0);
 	}
 
 	if (FT_New_Memory_Face(ftLibrary, ttf_font_ttf, ttf_font_ttf_size, 0, &ftFace)) {
+		GRRLIB_Exit();
 		exit(0);
 	}
 }
@@ -40,18 +50,18 @@ GRRLIB_texImg *GRRLIB_TextToTexture(const char *string, unsigned int fontSize, u
 		/* Oops! Something went wrong! */
 		exit(0);
 	}
-	
+
 	/* Set the RGB pixels in tempTextureBuffer to the requested colour */
 	unsigned int *p = tempTextureBuffer;
 	unsigned int loop = 0;
 	for (loop = 0; loop < (texture->w * (fontSize*2)); ++loop) {
-		*(p++) = fontColour;	
+		*(p++) = fontColour;
 	}
 
 	/* Render the glyphs on to the temp buffer */
 	DrawText(string, fontSize, tempTextureBuffer);
 
-	/* Create a new buffer, this time to hold the final texture 
+	/* Create a new buffer, this time to hold the final texture
 	 * in a format suitable for the Wii */
 	texture->data = memalign(32, texture->w * (fontSize*2) * 4);
 
@@ -75,16 +85,16 @@ static void DrawText(const char *string, unsigned int fontSize, void *buffer) {
 
 	/* Convert the string to UTF32 */
 	size_t length = strlen(string);
-	wchar_t *utf32 = (wchar_t*)malloc(length * sizeof(wchar_t)); 
+	wchar_t *utf32 = (wchar_t*)malloc(length * sizeof(wchar_t));
 	length = mbstowcs(utf32, string, length);
-	
-	/* Loop over each character, drawing it on to the buffer, until the 
+
+	/* Loop over each character, drawing it on to the buffer, until the
 	 * end of the string is reached, or until the pixel width is too wide */
 	unsigned int loop = 0;
 	for (loop = 0; loop < length; ++loop) {
 		glyphIndex = FT_Get_Char_Index(ftFace, utf32[ loop ]);
-		
-		/* To the best of my knowledge, none of the other freetype 
+
+		/* To the best of my knowledge, none of the other freetype
 		 * implementations use kerning, so my method ends up looking
 		 * slightly better :) */
 		if (hasKerning && previousGlyph && glyphIndex) {
@@ -94,11 +104,11 @@ static void DrawText(const char *string, unsigned int fontSize, void *buffer) {
 		}
 
 		if (FT_Load_Glyph(ftFace, glyphIndex, FT_LOAD_RENDER)) {
-			/* Whoops, something went wrong trying to load the glyph 
+			/* Whoops, something went wrong trying to load the glyph
 			 * for this character... you should handle this better */
 			continue;
 		}
-	
+
 		if (BlitGlyph(&slot->bitmap, penX + slot->bitmap_left, penY - slot->bitmap_top, buffer) == true) {
 			/* The glyph was successfully blitted to the buffer, move the pen forwards */
 			penX += slot->advance.x >> 6;
@@ -139,7 +149,7 @@ static bool BlitGlyph(FT_Bitmap *bitmap, int offset, int top, void *buffer) {
 			p[ dstloc + 3 ] = bitmap->buffer[ srcloc ];
 		}
 	}
-	
+
 	return true;
 }
 
@@ -158,11 +168,11 @@ static void BitmapTo4x4RGBA(const unsigned char *src, void *dst, const unsigned 
 				for (ar = 0; ar < 4; ++ar) {
 					/* Alpha pixels */
 					*p++ = src[(((i + ar) + ((block + c) * width)) * 4) + 3];
-					/* Red pixels */	
+					/* Red pixels */
 					*p++ = src[((i + ar) + ((block + c) * width)) * 4];
 				}
 			}
-			
+
 			/* Green and Blue */
 			for (c = 0; c < 4; ++c) {
 				for (gb = 0; gb < 4; ++gb) {

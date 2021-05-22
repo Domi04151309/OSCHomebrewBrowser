@@ -6,7 +6,7 @@
 #define UI_PADDING 8
 #define UI_CORNER_RADIUS 4
 
-void UI_drawButton(int x, int y, GRRLIB_texImg *text, uint8_t hover);
+void UI_drawButton(int x, int y, char *text, uint8_t hover);
 int UI_isOnButton(int irX, int irY, int x, int y);
 
 #endif

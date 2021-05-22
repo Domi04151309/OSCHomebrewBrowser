@@ -201,6 +201,11 @@ size_t result;
 struct tm * timeinfo;
 time_t app_time;
 
+void exitApp(int code) {
+	GRRLIB_Exit();
+	exit(code);
+}
+
 void testing() {
 	printf("Going to test downloading a file\n");
 	hbb_updating = true;
@@ -250,7 +255,7 @@ static void *run_reset_thread(void *arg) {
 		}
 	}
 	printf("\nHomebrew Browser shutting down...\n");
-	exit(0);
+	exitApp(0);
 }
 
 u8 initialise_reset_button() {
@@ -1968,7 +1973,7 @@ void die(char *msg) {
 	sleep(5);
 	fatUnmount("sd:");
 	fatUnmount("usb:");
-	exit(1);
+	exitApp(1);
 }
 
 void initialise() {
@@ -2042,7 +2047,7 @@ void initialise_fat() {
 	{
 		START_showText("Could not mount SD card or USB device");
 		sleep(5);
-		exit(0);
+		exitApp(0);
 	}
 
 }
@@ -2185,7 +2190,7 @@ void initialise_network() {
 		} else {
 			START_showText("Could not connect to your network");
 			sleep(5);
-			exit(0);
+			exitApp(0);
 		}
 	}
 
