@@ -216,11 +216,9 @@ int main(int argc, char **argv) {
 	current_time = time(0);
 	sprintf(setting_last_boot, "%li", current_time); // bug fix
 
-	printf("\x1b[2;0H");
-
 	GRRLIB_Init();
 	GRRLIB_InitFreetype();
-	START_showTextTwo("Loading", "..."); //TODO: Investigate dummy render
+	UI_bootScreen("Loading");
 
 	u32 temp_esid;
 	ES_GetDeviceID(&temp_esid);

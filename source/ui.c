@@ -1,6 +1,22 @@
 #include "ui.h"
+#include "beer_png.h"
 #include "GRRLIB/GRRLIB.h"
 #include "res.h"
+
+void UI_bootScreen(char *string) {
+  UI_bootScreenTwo(string, " ");
+}
+
+void UI_bootScreenTwo(char *string1, char *string2) {
+  GRRLIB_FillScreen(0x000000FF);
+  GRRLIB_texImg *beer = GRRLIB_LoadTexture(beer_png);
+  GRRLIB_DrawImg(512, 240 - (*beer).h / 2, beer, 0, 1, 1, 0xFFFFFFFF);
+  GRRLIB_FreeTexture(beer);
+  GRRLIB_DrawText(64, 240 - FONTSIZE_NORMAL - 8, "Homebrew Browser Lite", FONTSIZE_NORMAL, TEXT_COLOR_PRIMARY_DARK);
+  GRRLIB_DrawText(64, 240 + 8, string1, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY_DARK);
+  GRRLIB_DrawText(64, 240 + 8 + FONTSIZE_SMALL, string2, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY_DARK);
+  GRRLIB_Render();
+}
 
 void UI_drawButton(int x, int y, char *text, uint8_t hover) {
   u32 color;

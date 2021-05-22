@@ -42,6 +42,7 @@ GRRLIB_texImg *GRRLIB_TextToTexture(const char *string, unsigned int fontSize, u
 	texture->h = fontSize*2;
 
 	/* Set the font colour, alpha is determined when we blit the glyphs */
+	fontColour = fontColour >> 8;
 	fontColour = fontColour << 8;
 
 	/* Create a tempory buffer, 640 pixels wide, for freetype draw the glyphs */

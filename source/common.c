@@ -38,6 +38,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include <sys/param.h>
 
 #include "activities/start.h"
+#include "ui.h"
 #include "res.h"
 
 char rootdir[10];
@@ -1969,7 +1970,7 @@ bool hide_apps_updated() {
 }
 
 void die(char *msg) {
-	START_showText(msg);
+	UI_bootScreen(msg);
 	sleep(5);
 	fatUnmount("sd:");
 	fatUnmount("usb:");
@@ -2045,7 +2046,7 @@ void initialise_fat() {
 
 	if (!fat_init)
 	{
-		START_showText("Could not mount SD card or USB device");
+		UI_bootScreen("Could not mount SD card or USB device");
 		sleep(5);
 		exitApp(0);
 	}
@@ -2132,7 +2133,7 @@ bool test_fat() {
 }
 
 void initialise_network() {
-	START_showText("Initializing Network");
+	UI_bootScreen("Initializing Network");
 
 	// Tantric code from Snes9x-gx
 	s32 res=-1;
@@ -2188,7 +2189,7 @@ void initialise_network() {
 		if (hostip.s_addr) {
 			printf("Network initialised.\n");
 		} else {
-			START_showText("Could not connect to your network");
+			UI_bootScreen("Could not connect to your network");
 			sleep(5);
 			exitApp(0);
 		}
@@ -2582,7 +2583,7 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			START_showTextTwo("Downloading current image files", "You can skip this by holding down the B button.");
+			UI_bootScreenTwo("Downloading current image files", "You can skip this by holding down the B button.");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
@@ -2591,7 +2592,7 @@ void check_temp_files() {
 				printf("\n\nFailed to download zip file.\n");
 			}
 			else {
-				START_showText("Extracting image files");
+				UI_bootScreen("Extracting image files");
 				if (unzipArchive("sd:/apps/homebrew_browser/temp_files.zip", "sd:/apps/homebrew_browser/temp/") == true) {
 					if (cancel_extract == false) {
 						printf("\nDownloaded and Extracted images successfully.\n\n");
@@ -2605,7 +2606,7 @@ void check_temp_files() {
 			hbb_updating = false;
 
 			if (cancel_download == true || cancel_extract == true) {
-				START_showText("Cancelled download and extracting of image files.");
+				UI_bootScreen("Cancelled download and extracting of image files.");
 				cancel_download = false;
 				cancel_extract = false;
 			}
@@ -2636,7 +2637,7 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			START_showTextTwo("Downloading current image files", "You can skip this by holding down the B button.");
+			UI_bootScreenTwo("Downloading current image files", "You can skip this by holding down the B button.");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
@@ -2660,7 +2661,7 @@ void check_temp_files() {
 			hbb_updating = false;
 
 			if (cancel_download == true || cancel_extract == true) {
-				START_showText("Cancelled download and extracting of image files.");
+				UI_bootScreen("Cancelled download and extracting of image files.");
 				cancel_download = false;
 				cancel_extract = false;
 			}
@@ -2891,7 +2892,7 @@ void repo_check() {
 	while (offset < (BUFFER_SIZE - 1)) {
 		char *offset_buf = buf + offset;
 		if ((bytes_read = net_read(main_server, offset_buf, BUFFER_SIZE - 1 - offset)) < 0) {
-			START_showText(get_error_msg(bytes_read));
+			UI_bootScreen(get_error_msg(bytes_read));
 			printf("%s\nError code %i in repo_check\n\n", get_error_msg(bytes_read), bytes_read);
 			net_close(main_server);
 			sleep(1);
