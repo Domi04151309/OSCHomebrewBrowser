@@ -389,12 +389,12 @@ int main(int argc, char **argv) {
 	suspend_reset_thread();
 
 	// Constant Text
-	GRRLIB_texImg *str_author = GRRLIB_TextToTexture("Author:", FONTSIZE_SMALLER, TEXT_COLOUR_PRIMARY);
-	GRRLIB_texImg *str_version = GRRLIB_TextToTexture("Version:", FONTSIZE_SMALLER, TEXT_COLOUR_PRIMARY);
-	GRRLIB_texImg *str_size= GRRLIB_TextToTexture("Size:", FONTSIZE_SMALLER, TEXT_COLOUR_PRIMARY);
-	GRRLIB_texImg *str_date = GRRLIB_TextToTexture("Date:", FONTSIZE_SMALLER, TEXT_COLOUR_PRIMARY);
+	GRRLIB_texImg *str_author = GRRLIB_TextToTexture("Author:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
+	GRRLIB_texImg *str_version = GRRLIB_TextToTexture("Version:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
+	GRRLIB_texImg *str_size= GRRLIB_TextToTexture("Size:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
+	GRRLIB_texImg *str_date = GRRLIB_TextToTexture("Date:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 
-	GRRLIB_texImg *str_sdhc = GRRLIB_TextToTexture("SDHC:", FONTSIZE_SMALLER, TEXT_COLOUR_PRIMARY);
+	GRRLIB_texImg *str_sdhc = GRRLIB_TextToTexture("SDHC:", FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 	GRRLIB_texImg *str_sdhc_yes = GRRLIB_TextToTexture("Yes", FONTSIZE_SMALLER, COLOUR_GREEN);
 	GRRLIB_texImg *str_sdhc_no = GRRLIB_TextToTexture("No", FONTSIZE_SMALLER, COLOUR_RED);
 
@@ -785,8 +785,8 @@ int main(int argc, char **argv) {
 
 				// Text list
 				if (text_list[c].text == 0) {
-					text_list[c].str_name = GRRLIB_TextToTexture(homebrew_list[c].app_name, FONTSIZE_SMALL, TEXT_COLOUR_PRIMARY);
-					text_list[c].str_short_description = GRRLIB_TextToTexture(homebrew_list[c].app_short_description, FONTSIZE_SMALL, TEXT_COLOUR_SECONDARY);
+					text_list[c].str_name = GRRLIB_TextToTexture(homebrew_list[c].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+					text_list[c].str_short_description = GRRLIB_TextToTexture(homebrew_list[c].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 					text_list[c].text = 1;
 
 					if (c > string_count) {
@@ -1770,9 +1770,9 @@ int main(int argc, char **argv) {
 		// About
 		if (hbb_app_about == true && updating == -1 && in_menu == false && in_help == false) {
 			if (update_about == true) {
-				str_res_title = GRRLIB_TextToTexture(homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOUR_PRIMARY);
-				str_res_author = GRRLIB_TextToTexture(homebrew_list[current_app].app_author, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
-				str_res_version = GRRLIB_TextToTexture(homebrew_list[current_app].app_version, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
+				str_res_title = GRRLIB_TextToTexture(homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+				str_res_author = GRRLIB_TextToTexture(homebrew_list[current_app].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+				str_res_version = GRRLIB_TextToTexture(homebrew_list[current_app].app_version, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
 				char temp[50];
 				if (homebrew_list[current_app].app_total_size > 0 && homebrew_list[current_app].app_total_size < 1048576) {
@@ -1783,14 +1783,14 @@ int main(int argc, char **argv) {
 					float appsize = (float) (homebrew_list[current_app].app_total_size / 1024) / 1024;
 					sprintf (temp, "%1.1f MB", appsize);
 				}
-				str_res_size = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
+				str_res_size = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
 
 				app_time = homebrew_list[current_app].app_time;
 				char timebuf[50];
 				timeinfo = localtime ( &app_time );
 				strftime (timebuf,50,"%d %b %Y",timeinfo);
-				str_res_date = GRRLIB_TextToTexture(timebuf, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
+				str_res_date = GRRLIB_TextToTexture(timebuf, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
 				const int text_size = sizeof(homebrew_list[0].app_description);
 				char text_description[text_size];
@@ -1814,35 +1814,35 @@ int main(int argc, char **argv) {
 					count++;
 					if (x >= (55 * (textrow+1)) && x <= (75 * (textrow+1)) && text_description[x] == ' ' && textrow == 0) {
 						test[count] = '\0';
-						string1 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
+						string1 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 						textrow = 1;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 1) {
 						test[count] = '\0';
-						string2 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
+						string2 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 						textrow = 2;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 2) {
 						test[count] = '\0';
-						string3 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
+						string3 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 						textrow = 3;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 3) {
 						test[count] = '\0';
-						string4 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
+						string4 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 						textrow = 4;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 4) {
 						test[count] = '\0';
-						string5 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOUR_SECONDARY);
+						string5 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 						count = 0;
 						textrow = 5;
 						break;

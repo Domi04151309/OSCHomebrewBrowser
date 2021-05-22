@@ -16,7 +16,7 @@ void UI_drawButton(int x, int y, char *text, uint8_t hover) {
   GRRLIB_Circle(x + w - UI_CORNER_RADIUS, y + UI_CORNER_RADIUS, UI_CORNER_RADIUS, color, true);
   GRRLIB_Circle(x + w -UI_CORNER_RADIUS, y + h - UI_CORNER_RADIUS, UI_CORNER_RADIUS, color, true);
 
-  GRRLIB_DrawText(x + UI_PADDING, y + UI_PADDING, text, FONTSIZE_NORMAL, TEXT_COLOUR_PRIMARY_DARK);
+  GRRLIB_DrawText(x + UI_PADDING, y + UI_PADDING, text, FONTSIZE_NORMAL, TEXT_COLOR_PRIMARY_DARK);
 }
 
 int UI_isOnButton(int irX, int irY, int x, int y) {
