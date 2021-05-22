@@ -116,12 +116,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "help_settings_6_png.h"
 #include "help_settings_7_png.h"
 #include "gear_bg_png.h"
-#include "menu_loader_png.h"
-#include "menu_loader_highlight_png.h"
-#include "menu_reboot_png.h"
-#include "menu_reboot_highlight_png.h"
-#include "menu_settings_png.h"
-#include "menu_settings_highlight_png.h"
 #include "setting_cross_png.h"
 #include "tooltip_help_png.h"
 #include "help_bg_png.h"
@@ -146,6 +140,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "arrow_png.h"
 
 #include "activities/start.h"
+#include "ui.h"
 #include "res.h"
 
 #include "GRRLIB/GRRLIB.h"
@@ -610,15 +605,13 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *help_settings_7_img=GRRLIB_LoadTexture(help_settings_7_png);
 
 	GRRLIB_texImg *gear_bg_img=GRRLIB_LoadTexture(gear_bg_png);
-	GRRLIB_texImg *menu_loader_img=GRRLIB_LoadTexture(menu_loader_png);
-	GRRLIB_texImg *menu_loader_highlight_img=GRRLIB_LoadTexture(menu_loader_highlight_png);
-	GRRLIB_texImg *menu_reboot_img=GRRLIB_LoadTexture(menu_reboot_png);
-	GRRLIB_texImg *menu_reboot_highlight_img=GRRLIB_LoadTexture(menu_reboot_highlight_png);
-	GRRLIB_texImg *menu_settings_img=GRRLIB_LoadTexture(menu_settings_png);
-	GRRLIB_texImg *menu_settings_highlight_img=GRRLIB_LoadTexture(menu_settings_highlight_png);
 	GRRLIB_texImg *setting_cross_img=GRRLIB_LoadTexture(setting_cross_png);
 	GRRLIB_texImg *help_bg_img=GRRLIB_LoadTexture(help_bg_png);
 	GRRLIB_texImg *tooltip_help_img=GRRLIB_LoadTexture(tooltip_help_png);
+
+	GRRLIB_texImg *menu_loader = GRRLIB_TextToTexture("Return to Loader", FONTSIZE_SMALL, TEXT_COLOUR_PRIMARY_DARK);
+	GRRLIB_texImg *menu_reboot = GRRLIB_TextToTexture("Return to Wii Menu", FONTSIZE_SMALL, TEXT_COLOUR_PRIMARY_DARK);
+	GRRLIB_texImg *menu_settings = GRRLIB_TextToTexture("Settings", FONTSIZE_SMALL, TEXT_COLOUR_PRIMARY_DARK);
 
 	GRRLIB_texImg *tool_tip_installedapps_img=GRRLIB_LoadTexture(tool_tip_installedapps_png);
 	GRRLIB_texImg *tool_tip_queue_img=GRRLIB_LoadTexture(tool_tip_queue_png);
@@ -2787,19 +2780,19 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(34, 130, apps_table_blank_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (menu_section == 0) {
-				GRRLIB_DrawImg(283, 155, menu_settings_img, 0, 1, 1, 0xFFFFFFFF);
-				if (ir.x > 267 && ir.x < 510 && ir.y > 174 && ir.y < 203) {
+				if (UI_isOnButton(ir.x, ir.y, 283, 155)) {
 					doRumble = true;
-					GRRLIB_DrawImg(283, 155, menu_settings_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+					UI_drawButton(283, 155, menu_settings, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						menu_section = 1;
 					}
+				} else {
+					UI_drawButton(283, 155, menu_settings, 0);
 				}
 
-				GRRLIB_DrawImg(283, 230, menu_reboot_img, 0, 1, 1, 0xFFFFFFFF);
-				if (ir.x > 267 && ir.x < 510 && ir.y > 250 && ir.y < 278) {
+				if (UI_isOnButton(ir.x, ir.y, 283, 230)) {
 					doRumble = true;
-					GRRLIB_DrawImg(283, 230, menu_reboot_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+					UI_drawButton(283, 230, menu_reboot, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						WPAD_Rumble(WPAD_CHAN_0, 0);
@@ -2813,16 +2806,16 @@ int main(int argc, char **argv) {
 						usleep(300000);
 						fatUnmount("sd:");
 						fatUnmount("usb:");
-						//reboot();
 						WII_Initialize();
 						WII_ReturnToMenu();
 					}
+				} else {
+					UI_drawButton(283, 230, menu_reboot, 0);
 				}
 
-				GRRLIB_DrawImg(269, 305, menu_loader_img, 0, 1, 1, 0xFFFFFFFF);
-				if (ir.x > 267 && ir.x < 510 && ir.y > 320 && ir.y < 352) {
+				if (UI_isOnButton(ir.x, ir.y, 283, 305)) {
 					doRumble = true;
-					GRRLIB_DrawImg(269, 305, menu_loader_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+					UI_drawButton(283, 305, menu_loader, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						WPAD_Rumble(WPAD_CHAN_0, 0);
 						WPAD_Rumble(WPAD_CHAN_0, 0);
@@ -2838,7 +2831,10 @@ int main(int argc, char **argv) {
 						fatUnmount("usb:");
 						exit(0);
 					}
+				} else {
+					UI_drawButton(283, 305, menu_loader, 0);
 				}
+
 
 				// Exit
 				if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_START || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0) {
