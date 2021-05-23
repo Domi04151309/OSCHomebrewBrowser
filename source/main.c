@@ -94,12 +94,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "help_settings_7_png.h"
 #include "gear_bg_png.h"
 #include "setting_cross_png.h"
-#include "tooltip_help_png.h"
 #include "help_bg_png.h"
-#include "tool_tip_installedapps_png.h"
-#include "tool_tip_queue_png.h"
-#include "tool_tip_sort_date_png.h"
-#include "tool_tip_sort_name_png.h"
 #include "cancel_download_prompt_png.h"
 #include "button_no_png.h"
 #include "button_no_highlight_png.h"
@@ -542,12 +537,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *gear_bg_img=GRRLIB_LoadTexture(gear_bg_png);
 	GRRLIB_texImg *setting_cross_img=GRRLIB_LoadTexture(setting_cross_png);
 	GRRLIB_texImg *help_bg_img=GRRLIB_LoadTexture(help_bg_png);
-	GRRLIB_texImg *tooltip_help_img=GRRLIB_LoadTexture(tooltip_help_png);
-
-	GRRLIB_texImg *tool_tip_installedapps_img=GRRLIB_LoadTexture(tool_tip_installedapps_png);
-	GRRLIB_texImg *tool_tip_queue_img=GRRLIB_LoadTexture(tool_tip_queue_png);
-	GRRLIB_texImg *tool_tip_sort_date_img=GRRLIB_LoadTexture(tool_tip_sort_date_png);
-	GRRLIB_texImg *tool_tip_sort_name_img=GRRLIB_LoadTexture(tool_tip_sort_name_png);
 
 	GRRLIB_texImg *cancel_download_prompt_img=GRRLIB_LoadTexture(cancel_download_prompt_png);
 	GRRLIB_texImg *button_no_img=GRRLIB_LoadTexture(button_no_png);
@@ -1351,7 +1340,7 @@ int main(int argc, char **argv) {
 		if (UI_isOnImg(ir, 483, 16, sd_card_img)) {
 			doRumble = true;
 			GRRLIB_DrawImg(483, 16, sd_card_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-			if (setting_tool_tip == true) { GRRLIB_DrawImg(300, 26, tool_tip_installedapps_img, 0, 1, 1, 0xFFFFFFFF); }
+			if (setting_tool_tip == true) { UI_drawTooltip(483, 25, STR_INSTALLED_APPS); }
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1) {
 				category_old_selection = category_selection;
 				category_selection = 5;
@@ -1364,7 +1353,7 @@ int main(int argc, char **argv) {
 		if (UI_isOnImg(ir, 546, 16, help_img)) {
 			doRumble = true;
 			GRRLIB_DrawImg(546, 16, help_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-			if (setting_tool_tip == true) { GRRLIB_DrawImg(493, 25, tooltip_help_img, 0, 1, 1, 0xFFFFFFFF); }
+			if (setting_tool_tip == true) { UI_drawTooltip(546, 25, STR_INFO); }
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1) {
 				close_windows();
 				in_help = true;
@@ -1378,7 +1367,7 @@ int main(int argc, char **argv) {
 			if (UI_isOnImg(ir, 580, 150, name_img)) {
 				doRumble = true;
 				GRRLIB_DrawImg(580, 150, name_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if (setting_tool_tip == true) { GRRLIB_DrawImg(433, 147, tool_tip_sort_name_img, 0, 1, 1, 0xFFFFFFFF); }
+				if (setting_tool_tip == true) { UI_drawTooltip(580, 150, STR_SORT_BY_NAME); }
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 					// Free list strings
 					free_string = true;
@@ -1391,7 +1380,7 @@ int main(int argc, char **argv) {
 			if (UI_isOnImg(ir, 580, 200, date_img)) {
 				doRumble = true;
 				GRRLIB_DrawImg(580, 200, date_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if (setting_tool_tip == true) { GRRLIB_DrawImg(450, 197, tool_tip_sort_date_img, 0, 1, 1, 0xFFFFFFFF); }
+				if (setting_tool_tip == true) { UI_drawTooltip(580, 200, STR_SORT_BY_DATE); }
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 					// Free list strings
 					free_string = true;
@@ -1404,9 +1393,7 @@ int main(int argc, char **argv) {
 			if (UI_isOnImg(ir, 580, 370, down_img)) {
 				doRumble = true;
 				GRRLIB_DrawImg(580, 370, down_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if (setting_tool_tip == true) {
-					GRRLIB_DrawImg(330, 364, tool_tip_queue_img, 0, 1, 1, 0xFFFFFFFF);
-				}
+				if (setting_tool_tip == true) { UI_drawTooltip(580, 370, STR_QUEUE); }
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && download_in_progress == false) {
 					if (category_selection == 5 && updating == -1 && array_length (homebrew_list) >= 1) {
 						category_selection = 7;
@@ -3103,12 +3090,9 @@ int main(int argc, char **argv) {
 		}
 
 		// Draw the IR pointer
+		GRRLIB_DrawImg(ir.x - (*mouse_img).w / 2, ir.y - (*mouse_img).h / 2, mouse_img, ir.angle, 1, 1, 0xFFFFFFFF);
 		if (ir.valid || (ir.valid && held & WPAD_BUTTON_B) || held_gc & PAD_BUTTON_B) {
-			GRRLIB_DrawImg(ir.x, ir.y - 36, mouse_img, ir.angle, 1, 1, 0xFFFFFFFF);
 			gc_control_used = false;
-		}
-		else if (gc_control_used == true) {
-			GRRLIB_DrawImg(ir.x, ir.y - 36, mouse_img, ir.angle, 1, 1, 0xFFFFFFFF);
 		}
 
 		GRRLIB_Render();

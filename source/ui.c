@@ -35,6 +35,12 @@ int UI_isOnImg(ir_t ir, int x, int y, const GRRLIB_texImg *img) {
   else return 0;
 }
 
+void UI_drawTooltip(int x, int y, const char *string) {
+  int w = 2 * UI_PADDING + GRRLIB_TextWidth(string, FONTSIZE_SMALL);
+  UI_roundedRect(x - w, y, w, UI_BLOCK_BTN_H, TOOLTIP_COLOR);
+  GRRLIB_DrawText(x - w + UI_PADDING, y + UI_PADDING, string, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+}
+
 void UI_drawButton(int x, int y, const char *text, uint8_t state) {
   u32 color;
   if (state == 1) color = BTN_COLOR_HOVER;

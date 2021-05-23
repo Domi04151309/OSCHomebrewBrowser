@@ -16,6 +16,7 @@ void UI_bootScreen(const char *string);
 void UI_bootScreenTwo(const char *string1, const char *string2);
 void UI_roundedRect(int x, int y, int w, int h, u32 color);
 int UI_isOnImg(ir_t ir, int x, int y, const GRRLIB_texImg *img);
+void UI_drawTooltip(int x, int y, const char *string);
 void UI_drawButton(int x, int y, const char *text, uint8_t state);
 int UI_isOnButton(ir_t ir, int x, int y, const char * text);
 void UI_drawBlockButton(int x, int y, const char *text, uint8_t state);
