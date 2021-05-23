@@ -1877,7 +1877,7 @@ int main(int argc, char **argv) {
 				// Download or updated enabled?
 				if (homebrew_list[current_app].local_app_size > 0) {
 					if (homebrew_list[current_app].local_app_size != homebrew_list[current_app].app_size && download_arrow == 0 && homebrew_list[current_app].no_manage == false) {
-						if (UI_isOnButton(ir.x, ir.y, 340, 385, STR_UPDATE)) {
+						if (UI_isOnButton(ir, 340, 385, STR_UPDATE)) {
 							doRumble = true;
 							UI_drawButton(340, 385, STR_UPDATE, 1);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
@@ -1899,7 +1899,7 @@ int main(int argc, char **argv) {
 					}
 
 					if (download_arrow == 0) {
-						if (UI_isOnButton(ir.x, ir.y, 485, 385, STR_DELETE)) {
+						if (UI_isOnButton(ir, 485, 385, STR_DELETE)) {
 							doRumble = true;
 							UI_drawButton(485, 385, STR_DELETE, 1);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
@@ -1941,7 +1941,7 @@ int main(int argc, char **argv) {
 					if (download_in_progress == true && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
 						UI_drawButton(340, 385, STR_DOWNLOAD, 2);
 					} else {
-						if (UI_isOnButton(ir.x, ir.y, 340, 385, STR_DOWNLOAD)) {
+						if (UI_isOnButton(ir, 340, 385, STR_DOWNLOAD)) {
 							doRumble = true;
 							UI_drawButton(340, 385, STR_DOWNLOAD, 1);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
@@ -2476,7 +2476,7 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(82, 146, gear_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (menu_section == 0) {
-				if (UI_isOnBlockButton(ir.x, ir.y, 283, 155)) {
+				if (UI_isOnBlockButton(ir, 283, 155)) {
 					doRumble = true;
 					UI_drawBlockButton(283, 155, STR_SETTINGS, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
@@ -2486,7 +2486,7 @@ int main(int argc, char **argv) {
 					UI_drawBlockButton(283, 155, STR_SETTINGS, 0);
 				}
 
-				if (UI_isOnBlockButton(ir.x, ir.y, 283, 230)) {
+				if (UI_isOnBlockButton(ir, 283, 230)) {
 					doRumble = true;
 					UI_drawBlockButton(283, 230, STR_RETURN_TO_WII_MENU, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
@@ -2509,7 +2509,7 @@ int main(int argc, char **argv) {
 					UI_drawBlockButton(283, 230, STR_RETURN_TO_WII_MENU, 0);
 				}
 
-				if (UI_isOnBlockButton(ir.x, ir.y, 283, 305)) {
+				if (UI_isOnBlockButton(ir, 283, 305)) {
 					doRumble = true;
 					UI_drawBlockButton(283, 305, STR_RETURN_TO_LOADER, 1);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {

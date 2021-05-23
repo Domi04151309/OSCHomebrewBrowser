@@ -1,6 +1,9 @@
 #include "ui.h"
-#include "beer_png.h"
+
+#include <wiiuse/wpad.h>
 #include "GRRLIB/GRRLIB.h"
+
+#include "beer_png.h"
 #include "res.h"
 
 void UI_bootScreen(const char *string) {
@@ -39,10 +42,10 @@ void UI_drawButton(int x, int y, const char *text, uint8_t state) {
   GRRLIB_DrawText(x + UI_PADDING, y + UI_PADDING, text, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 }
 
-int UI_isOnButton(int irX, int irY, int x, int y, const char *text) {
+int UI_isOnButton(ir_t ir, int x, int y, const char *text) {
   int w = 2 * UI_PADDING + GRRLIB_TextWidth(text, FONTSIZE_SMALL);
 
-  if (irX > x && irX < x + w && irY > y && irY < y + UI_BLOCK_BTN_H) return 1;
+  if (ir.x > x && ir.x < x + w && ir.y > y && ir.y < y + UI_BLOCK_BTN_H) return 1;
   else return 0;
 }
 
@@ -56,7 +59,7 @@ void UI_drawBlockButton(int x, int y, const char *text, uint8_t state) {
   GRRLIB_DrawText(x + UI_PADDING, y + UI_PADDING, text, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 }
 
-int UI_isOnBlockButton(int irX, int irY, int x, int y) {
-  if (irX > x && irX < x + UI_BLOCK_BTN_W && irY > y && irY < y + UI_BLOCK_BTN_H) return 1;
+int UI_isOnBlockButton(ir_t ir, int x, int y) {
+  if (ir.x > x && ir.x < x + UI_BLOCK_BTN_W && ir.y > y && ir.y < y + UI_BLOCK_BTN_H) return 1;
   else return 0;
 }

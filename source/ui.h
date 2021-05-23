@@ -1,8 +1,10 @@
 #ifndef _UI_H_
 #define _UI_H_
 
-#include "res.h"
+#include <wiiuse/wpad.h>
 #include "GRRLIB/GRRLIB.h"
+
+#include "res.h"
 
 #define UI_PADDING 12
 #define UI_CORNER_RADIUS 4
@@ -14,8 +16,8 @@ void UI_bootScreen(const char *string);
 void UI_bootScreenTwo(const char *string1, const char *string2);
 void UI_roundedRect(int x, int y, int w, int h, u32 color);
 void UI_drawButton(int x, int y, const char *text, uint8_t state);
-int UI_isOnButton(int irX, int irY, int x, int y, const char * text);
+int UI_isOnButton(ir_t ir, int x, int y, const char * text);
 void UI_drawBlockButton(int x, int y, const char *text, uint8_t state);
-int UI_isOnBlockButton(int irX, int irY, int x, int y);
+int UI_isOnBlockButton(ir_t ir, int x, int y);
 
 #endif
