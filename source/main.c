@@ -46,8 +46,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "control_keyboard_png.h"
 #include "control_zapper_png.h"
 #include "background_png.h"
-#include "blue_dark_small_png.h"
-#include "blue_dark_small2_png.h"
 #include "no_image_png.h"
 #include "date_png.h"
 #include "date_highlight_png.h"
@@ -492,8 +490,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *control_keyboard_img=GRRLIB_LoadTexture(control_keyboard_png);
 	GRRLIB_texImg *control_zapper_img=GRRLIB_LoadTexture(control_zapper_png);
 	GRRLIB_texImg *background_img=GRRLIB_LoadTexture(background_png);
-	GRRLIB_texImg *blue_dark_small_img=GRRLIB_LoadTexture(blue_dark_small_png);
-	GRRLIB_texImg *blue_dark_small2_img=GRRLIB_LoadTexture(blue_dark_small2_png);
 	GRRLIB_texImg *date_img=GRRLIB_LoadTexture(date_png);
 	GRRLIB_texImg *date_highlight_img=GRRLIB_LoadTexture(date_highlight_png);
 	GRRLIB_texImg *name_img=GRRLIB_LoadTexture(name_png);
@@ -650,12 +646,6 @@ int main(int argc, char **argv) {
 		}
 
 		GRRLIB_FillScreen(WINDOW_BACKGROUND);
-
-		if (in_menu == false && in_help == false) {
-			GRRLIB_DrawImg(580, 150, name_img, 0, 1, 1, 0xFFFFFFFF);
-			GRRLIB_DrawImg(580, 200, date_img, 0, 1, 1, 0xFFFFFFFF);
-			GRRLIB_DrawImg(577, 370, down_img, 0, 1, 1, 0xFFFFFFFF);
-		}
 
 		// Apps
 		UI_roundedRect(35, 130, 530, 310, COLOUR_WHITE);
@@ -1357,10 +1347,10 @@ int main(int argc, char **argv) {
 
 
 		// Main menu icons
-		GRRLIB_DrawImg(17, 17, background_img, 0, 1, 1, 0xFFFFFFFF);
-		if (ir.x > 480 && ir.x < 530 && ir.y > 25 && ir.y < 75) {
+		GRRLIB_DrawImg(16, 16, background_img, 0, 1, 1, 0xFFFFFFFF);
+		if (UI_isOnImg(ir, 483, 16, sd_card_img)) {
 			doRumble = true;
-			GRRLIB_DrawImg(483, 17, sd_card_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+			GRRLIB_DrawImg(483, 16, sd_card_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 			if (setting_tool_tip == true) { GRRLIB_DrawImg(300, 26, tool_tip_installedapps_img, 0, 1, 1, 0xFFFFFFFF); }
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1) {
 				category_old_selection = category_selection;
@@ -1369,9 +1359,9 @@ int main(int argc, char **argv) {
 				close_windows();
 			}
 		} else {
-			GRRLIB_DrawImg(483, 17, sd_card_img, 0, 1, 1, 0xFFFFFFFF);
+			GRRLIB_DrawImg(483, 16, sd_card_img, 0, 1, 1, 0xFFFFFFFF);
 		}
-		if (ir.x > 542 && ir.x < 592 && ir.y > 25 && ir.y < 75) {
+		if (UI_isOnImg(ir, 546, 16, help_img)) {
 			doRumble = true;
 			GRRLIB_DrawImg(546, 16, help_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 			if (setting_tool_tip == true) { GRRLIB_DrawImg(493, 25, tooltip_help_img, 0, 1, 1, 0xFFFFFFFF); }
@@ -1385,7 +1375,7 @@ int main(int argc, char **argv) {
 		}
 
 		if (hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) {
-			if (ir.x > 565 && ir.x < 600 && ir.y > 150 && ir.y < 185) {
+			if (UI_isOnImg(ir, 580, 150, name_img)) {
 				doRumble = true;
 				GRRLIB_DrawImg(580, 150, name_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_tool_tip == true) { GRRLIB_DrawImg(433, 147, tool_tip_sort_name_img, 0, 1, 1, 0xFFFFFFFF); }
@@ -1395,8 +1385,10 @@ int main(int argc, char **argv) {
 					if (sort_up_down == 6) { sort_up_down = 7; sort_by_name(1); refresh_list = -1; ypos = 142; }
 					else { sort_up_down = 6; sort_by_name(0); refresh_list = -1; ypos = 142; }
 				}
+			} else {
+				GRRLIB_DrawImg(580, 150, name_img, 0, 1, 1, 0xFFFFFFFF);
 			}
-			if (ir.x > 565 && ir.x < 600 && ir.y > 200 && ir.y < 235) {
+			if (UI_isOnImg(ir, 580, 200, date_img)) {
 				doRumble = true;
 				GRRLIB_DrawImg(580, 200, date_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_tool_tip == true) { GRRLIB_DrawImg(450, 197, tool_tip_sort_date_img, 0, 1, 1, 0xFFFFFFFF); }
@@ -1406,10 +1398,12 @@ int main(int argc, char **argv) {
 					if (sort_up_down == 0) { sort_up_down = 1; sort_by_date(1); refresh_list = -1; ypos = 142; }
 					else { sort_up_down = 0; sort_by_date(0); refresh_list = -1; ypos = 142; }
 				}
+			} else {
+				GRRLIB_DrawImg(580, 200, date_img, 0, 1, 1, 0xFFFFFFFF);
 			}
-			if (ir.x > 562 && ir.x < 596 && ir.y > 373 && ir.y < 404) {
+			if (UI_isOnImg(ir, 580, 370, down_img)) {
 				doRumble = true;
-				GRRLIB_DrawImg(577, 370, down_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+				GRRLIB_DrawImg(580, 370, down_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_tool_tip == true) {
 					GRRLIB_DrawImg(330, 364, tool_tip_queue_img, 0, 1, 1, 0xFFFFFFFF);
 				}
@@ -1434,6 +1428,8 @@ int main(int argc, char **argv) {
 						}
 					}
 				}
+			} else {
+				GRRLIB_DrawImg(580, 370, down_img, 0, 1, 1, 0xFFFFFFFF);
 			}
 		}
 
@@ -2886,7 +2882,7 @@ int main(int argc, char **argv) {
 
 						if (ir.y > 138 && ir.y < 437 && ir.x > 40 && ir.x < 536 && ir.y > (ypos_updated + (25 * x)) && ir.y < (ypos_updated + (25 * x) + 20) && !(held & WPAD_BUTTON_B || held_gc & PAD_BUTTON_B)) {
 							doRumble = true;
-							GRRLIB_DrawImg(150, ypos_updated + (25 * x) - 1, blue_dark_small_img, 0, 1, 1, 0xFFFFFFC8);
+							GRRLIB_Rectangle(150, ypos_updated + (25 * x) - 1, 328, 24, 0x80808040, true);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 								setting_repo = x;
 							}
@@ -2932,7 +2928,7 @@ int main(int argc, char **argv) {
 
 			if (ir.y > 195 && ir.y < 220 && ir.x > 150 && ir.x < 400) {
 				doRumble = true;
-				GRRLIB_DrawImg(165, 197, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_Rectangle(165, 197, 224, 24, 0x80808040, true);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 0;
 				}
@@ -2941,7 +2937,7 @@ int main(int argc, char **argv) {
 
 			if (ir.y > 225 && ir.y < 250 && ir.x > 150 && ir.x < 400) {
 				doRumble = true;
-				GRRLIB_DrawImg(165, 227, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_Rectangle(165, 227, 224, 24, 0x80808040, true);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 1;
 				}
@@ -2950,7 +2946,7 @@ int main(int argc, char **argv) {
 
 			if (ir.y > 255 && ir.y < 280 && ir.x > 150 && ir.x < 400) {
 				doRumble = true;
-				GRRLIB_DrawImg(165, 257, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_Rectangle(165, 257, 224, 24, 0x80808040, true);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 2;
 				}
@@ -2959,7 +2955,7 @@ int main(int argc, char **argv) {
 
 			if (ir.y > 285 && ir.y < 310 && ir.x > 150 && ir.x < 400) {
 				doRumble = true;
-				GRRLIB_DrawImg(165, 287, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_Rectangle(165, 287, 224, 24, 0x80808040, true);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 3;
 				}
@@ -2968,7 +2964,7 @@ int main(int argc, char **argv) {
 
 			if (ir.y > 315 && ir.y < 340 && ir.x > 150 && ir.x < 400) {
 				doRumble = true;
-				GRRLIB_DrawImg(165, 317, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_Rectangle(165, 317, 224, 24, 0x80808040, true);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 4;
 				}
@@ -3002,7 +2998,7 @@ int main(int argc, char **argv) {
 
 			if (ir.y > 195 && ir.y < 220 && ir.x > 150 && ir.x < 400) {
 				doRumble = true;
-				GRRLIB_DrawImg(165, 197, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_Rectangle(165, 197, 224, 24, 0x80808040, true);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_sort = 0;
 				}
@@ -3011,7 +3007,7 @@ int main(int argc, char **argv) {
 
 			if (ir.y > 225 && ir.y < 250 && ir.x > 150 && ir.x < 400) {
 				doRumble = true;
-				GRRLIB_DrawImg(165, 227, blue_dark_small2_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_Rectangle(165, 227, 224, 24, 0x80808040, true);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_sort = 1;
 				}

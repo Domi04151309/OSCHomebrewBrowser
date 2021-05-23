@@ -30,6 +30,11 @@ void UI_roundedRect(int x, int y, int w, int h, u32 color) {
   GRRLIB_Circle(x + w -UI_CORNER_RADIUS, y + h - UI_CORNER_RADIUS, UI_CORNER_RADIUS, color, true);
 }
 
+int UI_isOnImg(ir_t ir, int x, int y, const GRRLIB_texImg *img) {
+  if (ir.x > x && ir.x < x + (*img).w && ir.y > y && ir.y < y + (*img).h) return 1;
+  else return 0;
+}
+
 void UI_drawButton(int x, int y, const char *text, uint8_t state) {
   u32 color;
   if (state == 1) color = BTN_COLOR_HOVER;
