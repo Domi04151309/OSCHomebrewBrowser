@@ -36,7 +36,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include <sys/statvfs.h>
 
 #include "mouse_png.h"
-#include "about_blank_png.h"
 #include "control_wiimote_png.h"
 #include "control_wiimote_2_png.h"
 #include "control_wiimote_3_png.h"
@@ -46,11 +45,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "control_gcn_png.h"
 #include "control_keyboard_png.h"
 #include "control_zapper_png.h"
-#include "apps_table_png.h"
-#include "apps_table_blank_png.h"
-#include "apps_bottom_png.h"
-#include "apps_top_png.h"
-#include "apps_top2_png.h"
 #include "background_png.h"
 #include "blue_dark_small_png.h"
 #include "blue_dark_small2_png.h"
@@ -488,7 +482,6 @@ int main(int argc, char **argv) {
 
 	GRRLIB_texImg *mouse_img=GRRLIB_LoadTexture(mouse_png);
 
-	GRRLIB_texImg *about_blank_img=GRRLIB_LoadTexture(about_blank_png);
 	GRRLIB_texImg *control_wiimote_img=GRRLIB_LoadTexture(control_wiimote_png);
 	GRRLIB_texImg *control_wiimote_2_img=GRRLIB_LoadTexture(control_wiimote_2_png);
 	GRRLIB_texImg *control_wiimote_3_img=GRRLIB_LoadTexture(control_wiimote_3_png);
@@ -498,11 +491,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *control_gcn_img=GRRLIB_LoadTexture(control_gcn_png);
 	GRRLIB_texImg *control_keyboard_img=GRRLIB_LoadTexture(control_keyboard_png);
 	GRRLIB_texImg *control_zapper_img=GRRLIB_LoadTexture(control_zapper_png);
-	GRRLIB_texImg *apps_table_img=GRRLIB_LoadTexture(apps_table_png);
-	GRRLIB_texImg *apps_table_blank_img=GRRLIB_LoadTexture(apps_table_blank_png);
-	GRRLIB_texImg *apps_bottom_img=GRRLIB_LoadTexture(apps_bottom_png);
-	GRRLIB_texImg *apps_top_img=GRRLIB_LoadTexture(apps_top_png);
-	GRRLIB_texImg *apps_top2_img=GRRLIB_LoadTexture(apps_top2_png);
 	GRRLIB_texImg *background_img=GRRLIB_LoadTexture(background_png);
 	GRRLIB_texImg *blue_dark_small_img=GRRLIB_LoadTexture(blue_dark_small_png);
 	GRRLIB_texImg *blue_dark_small2_img=GRRLIB_LoadTexture(blue_dark_small2_png);
@@ -661,8 +649,7 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		GRRLIB_FillScreen(0xFFE1E1E1);
-		GRRLIB_DrawImg(0, 0, background_img, 0, 1, 1, 0xFFFFFFFF);
+		GRRLIB_FillScreen(WINDOW_BACKGROUND);
 
 		if (in_menu == false && in_help == false) {
 			GRRLIB_DrawImg(580, 150, name_img, 0, 1, 1, 0xFFFFFFFF);
@@ -671,7 +658,7 @@ int main(int argc, char **argv) {
 		}
 
 		// Apps
-		GRRLIB_DrawImg(34, 130, apps_table_blank_img, 0, 1, 1, 0xFFFFFFFF);
+		UI_roundedRect(35, 130, 530, 310, COLOUR_WHITE);
 
 		int x;
 		int start = -1;
@@ -1026,7 +1013,7 @@ int main(int argc, char **argv) {
 				if (strlen(homebrew_list[(start + b)].name) >= 2 && strcmp(homebrew_list[(start + b)].name,"000") != 0) {
 					if (ir.y > 138 && ir.y < 437 && ir.x > 40 && ir.x < 536 && ir.y > (ypos + (76 * (start + b))) && ir.y < (ypos + (76 * (start + b)) + 64) && !(held & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || held_gc & PAD_BUTTON_B)) {
 						doRumble = true;
-						GRRLIB_Rectangle(60, ypos + (76 * (start + b)), 490, 64, 0x80808040, true);
+						GRRLIB_Rectangle(35, ypos + (76 * (start + b)), 530, 64, 0x80808040, true);
 
 						if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && hbb_app_about == false) {
 							hbb_app_about = true;
@@ -1143,11 +1130,9 @@ int main(int argc, char **argv) {
 			}
 		}
 
-
-		GRRLIB_DrawImg(34, 127, apps_table_img, 0, 1, 1, 0xFFFFFFFF);
-		GRRLIB_DrawImg(34, 440, apps_bottom_img, 0, 1, 1, 0xFFFFFFFF);
-		GRRLIB_DrawImg(34, 68, apps_top_img, 0, 1, 1, 0xFFFFFFFF);
-		GRRLIB_DrawImg(40, 122, apps_top2_img, 0, 1, 1, 0xFFFFFFFF);
+		//UI_roundedRect
+		GRRLIB_Rectangle(35, 440, 530, 40, WINDOW_BACKGROUND, true);
+		GRRLIB_Rectangle(35, 66, 530, 64, WINDOW_BACKGROUND, true);
 
 		// Category selection
 		GRRLIB_DrawImg(36, 103, cat_all_img, 0, 1, 1, 0xFFFFFFFF);
@@ -1371,7 +1356,8 @@ int main(int argc, char **argv) {
 		if (pressed & WPAD_BUTTON_RIGHT) { xx += 1; }
 
 
-		// Main menu icon Highlight
+		// Main menu icons
+		GRRLIB_DrawImg(17, 17, background_img, 0, 1, 1, 0xFFFFFFFF);
 		if (ir.x > 480 && ir.x < 530 && ir.y > 25 && ir.y < 75) {
 			doRumble = true;
 			GRRLIB_DrawImg(483, 17, sd_card_highlight_img, 0, 1, 1, 0xFFFFFFFF);
@@ -1476,7 +1462,7 @@ int main(int argc, char **argv) {
 				free_update = false;
 			}
 
-			GRRLIB_DrawImg(34, 128, about_blank_img, 0, 1, 1, 0xFFFFFFFF);
+			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 
 			if ((updating < array_length (homebrew_list) && new_updating < array_length (homebrew_list)) || new_updating == 10000) {
 
@@ -1834,8 +1820,7 @@ int main(int argc, char **argv) {
 				update_about = false;
 			}
 
-
-			GRRLIB_DrawImg(34, 128, about_blank_img, 0, 1, 1, 0xFFFFFFFF);
+			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 
 			GRRLIB_DrawImg(330 - (strlen(homebrew_list[current_app].app_name) * 5.5), 140, str_res_title, 0, 1.0, 1.0, 0xFFFFFFFF);
 
@@ -2182,7 +2167,7 @@ int main(int argc, char **argv) {
 
 		// Help
 		if (in_help == true) {
-			GRRLIB_DrawImg(34, 128, about_blank_img, 0, 1, 1, 0xFFFFFFFF);
+			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 
 			if (help_section == 0) {
 				if (ir.x > 250 && ir.x < 590 && ir.y > 146 && ir.y < 188) {
@@ -2487,7 +2472,7 @@ int main(int argc, char **argv) {
 
 		// Menu
 		if (in_menu == true && in_help == false) {
-			GRRLIB_DrawImg(34, 130, apps_table_blank_img, 0, 1, 1, 0xFFFFFFFF);
+			UI_roundedRect(35, 130, 530, 310, COLOUR_WHITE);
 			GRRLIB_DrawImg(82, 146, gear_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (menu_section == 0) {
