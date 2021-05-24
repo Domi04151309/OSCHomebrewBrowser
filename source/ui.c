@@ -30,9 +30,8 @@ void UI_roundedRect(int x, int y, int w, int h, u32 color) {
   GRRLIB_Circle(x + w -UI_CORNER_RADIUS, y + h - UI_CORNER_RADIUS, UI_CORNER_RADIUS, color, true);
 }
 
-int UI_isOnImg(ir_t ir, int x, int y, const GRRLIB_texImg *img) {
-  if (ir.x > x && ir.x < x + (*img).w && ir.y > y && ir.y < y + (*img).h) return 1;
-  else return 0;
+void UI_highlight(int x, int y, int w, int h) {
+  GRRLIB_Rectangle(x, y, w, h, HIGHLIGHT_COLOR, true);
 }
 
 void UI_drawTooltip(int x, int y, const char *string) {
@@ -53,13 +52,6 @@ void UI_drawButton(int x, int y, const char *text, uint8_t state) {
   GRRLIB_DrawText(x + UI_PADDING, y + UI_PADDING, text, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 }
 
-int UI_isOnButton(ir_t ir, int x, int y, const char *text) {
-  int w = 2 * UI_PADDING + GRRLIB_TextWidth(text, FONTSIZE_SMALL);
-
-  if (ir.x > x && ir.x < x + w && ir.y > y && ir.y < y + UI_BLOCK_BTN_H) return 1;
-  else return 0;
-}
-
 void UI_drawBlockButton(int x, int y, const char *text, uint8_t state) {
   u32 color;
   if (state == 1) color = BTN_COLOR_HOVER;
@@ -70,7 +62,20 @@ void UI_drawBlockButton(int x, int y, const char *text, uint8_t state) {
   GRRLIB_DrawText(x + UI_PADDING, y + UI_PADDING, text, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 }
 
-int UI_isOnBlockButton(ir_t ir, int x, int y) {
-  if (ir.x > x && ir.x < x + UI_BLOCK_BTN_W && ir.y > y && ir.y < y + UI_BLOCK_BTN_H) return 1;
+int UI_isOnSquare(ir_t ir, int x, int y, int w, int h) {
+  if (ir.x > x && ir.x < x + w && ir.y > y && ir.y < y + h) return 1;
   else return 0;
+}
+
+int UI_isOnImg(ir_t ir, int x, int y, const GRRLIB_texImg *img) {
+  return UI_isOnSquare(ir, x, y, (*img).w, (*img).h);
+}
+
+int UI_isOnButton(ir_t ir, int x, int y, const char *text) {
+  int w = 2 * UI_PADDING + GRRLIB_TextWidth(text, FONTSIZE_SMALL);
+  return UI_isOnSquare(ir, x, y, w, UI_BLOCK_BTN_H);
+}
+
+int UI_isOnBlockButton(ir_t ir, int x, int y) {
+  return UI_isOnSquare(ir, x, y, UI_BLOCK_BTN_W, UI_BLOCK_BTN_H);
 }

@@ -654,30 +654,20 @@ int main(int argc, char **argv) {
 
 		// Refresh list
 		if (refresh_list != start) {
-			if (icon1_img)
-			{
-				free(icon1_img->data);
-				free(icon1_img);
+			if (icon1_img) {
+				GRRLIB_FreeTexture(icon1_img);
 			}
-			if (icon2_img)
-			{
-				free(icon2_img->data);
-				free(icon2_img);
+			if (icon2_img) {
+				GRRLIB_FreeTexture(icon2_img);
 			}
-			if (icon3_img)
-			{
-				free(icon3_img->data);
-				free(icon3_img);
+			if (icon3_img) {
+				GRRLIB_FreeTexture(icon3_img);
 			}
-			if (icon4_img)
-			{
-				free(icon4_img->data);
-				free(icon4_img);
+			if (icon4_img) {
+				GRRLIB_FreeTexture(icon4_img);
 			}
-			if (icon5_img)
-			{
-				free(icon5_img->data);
-				free(icon5_img);
+			if (icon5_img) {
+				GRRLIB_FreeTexture(icon5_img);
 			}
 
 			// Load images as needed, store them into memory as well as text
@@ -743,10 +733,8 @@ int main(int argc, char **argv) {
 							if (text_list[a].text != 0) {
 								text_list[a].text = 0;
 
-								free(text_list[a].str_name->data);
-								free(text_list[a].str_name);
-								free(text_list[a].str_short_description->data);
-								free(text_list[a].str_short_description);
+								GRRLIB_FreeTexture(text_list[a].str_name);
+								GRRLIB_FreeTexture(text_list[a].str_short_description);
 							}
 
 						}
@@ -758,10 +746,8 @@ int main(int argc, char **argv) {
 							if (text_list[a].text != 0) {
 								text_list[a].text = 0;
 
-								free(text_list[a].str_name->data);
-								free(text_list[a].str_name);
-								free(text_list[a].str_short_description->data);
-								free(text_list[a].str_short_description);
+								GRRLIB_FreeTexture(text_list[a].str_name);
+								GRRLIB_FreeTexture(text_list[a].str_short_description);
 							}
 
 						}
@@ -990,9 +976,9 @@ int main(int argc, char **argv) {
 			int b;
 			for(b = 0; b <= 4; b++) {
 				if (strlen(homebrew_list[(start + b)].name) >= 2 && strcmp(homebrew_list[(start + b)].name,"000") != 0) {
-					if (ir.y > 138 && ir.y < 437 && ir.x > 40 && ir.x < 536 && ir.y > (ypos + (76 * (start + b))) && ir.y < (ypos + (76 * (start + b)) + 64) && !(held & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || held_gc & PAD_BUTTON_B)) {
+					if (UI_isOnSquare(ir, 35, ypos + (76 * (start + b)), 530, 64) && !(held & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || held_gc & PAD_BUTTON_B)) {
 						doRumble = true;
-						GRRLIB_Rectangle(35, ypos + (76 * (start + b)), 530, 64, 0x80808040, true);
+						UI_highlight(35, ypos + (76 * (start + b)), 530, 64);
 
 						if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && hbb_app_about == false) {
 							hbb_app_about = true;
@@ -2153,30 +2139,30 @@ int main(int argc, char **argv) {
 			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 
 			if (help_section == 0) {
-				if (ir.x > 250 && ir.x < 590 && ir.y > 146 && ir.y < 188) {
+				if (UI_isOnSquare(ir, 164, 146, 440, 44)) {
 					doRumble = true;
-					GRRLIB_Rectangle(164, 146, 440, 44, 0x80808040, true);
+					UI_highlight(164, 146, 440, 44);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 2;
 					}
 				}
-				if (ir.x > 250 && ir.x < 590 && ir.y > 196 && ir.y < 238) {
+				if (UI_isOnSquare(ir, 164, 196, 440, 44)) {
 					doRumble = true;
-					GRRLIB_Rectangle(164, 196, 440, 44, 0x80808040, true);
+					UI_highlight(164, 196, 440, 44);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 11;
 					}
 				}
-				if (ir.x > 250 && ir.x < 590 && ir.y > 246 && ir.y < 288) {
+				if (UI_isOnSquare(ir, 164, 246, 440, 44)) {
 					doRumble = true;
-					GRRLIB_Rectangle(164, 246, 440, 44, 0x80808040, true);
+					UI_highlight(164, 246, 440, 44);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 15;
 					}
 				}
-				if (ir.x > 250 && ir.x < 590 && ir.y > 296 && ir.y < 338) {
+				if (UI_isOnSquare(ir, 164, 296, 440, 44)) {
 					doRumble = true;
-					GRRLIB_Rectangle(164, 296, 440, 44, 0x80808040, true);
+					UI_highlight(164, 296, 440, 44);
 					if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 						help_section = 19;
 					}
@@ -2523,17 +2509,17 @@ int main(int argc, char **argv) {
 			else {
 				if (menu_section == 1) {
 
-					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188) {
+					if (UI_isOnSquare(ir, 104, 146, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 146, 440, 44, 0x80808040, true);
+						UI_highlight(104, 146, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_sd_card == true) { setting_sd_card = false; }
 							else {setting_sd_card = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 246 && ir.y < 288) {
+					if (UI_isOnSquare(ir, 104, 246, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 246, 440, 44, 0x80808040, true);
+						UI_highlight(104, 246, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_hide_installed == true) { setting_hide_installed = false; }
 							else {setting_hide_installed = true; }
@@ -2566,41 +2552,41 @@ int main(int argc, char **argv) {
 				}
 				else if (menu_section == 2) {
 
-					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188) {
+					if (UI_isOnSquare(ir, 104, 146, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 146, 440, 44, 0x80808040, true);
+						UI_highlight(104, 146, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_rumble == true) { setting_rumble = false; }
 							else {setting_rumble = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 196 && ir.y < 238) {
+					if (UI_isOnSquare(ir, 104, 196, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 196, 440, 44, 0x80808040, true);
+						UI_highlight(104, 196, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_update_icon == true) { setting_update_icon = false; }
 							else {setting_update_icon = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 246 && ir.y < 288) {
+					if (UI_isOnSquare(ir, 104, 246, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 246, 440, 44, 0x80808040, true);
+						UI_highlight(104, 246, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_online == true) { setting_online = false; }
 							else {setting_online = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 296 && ir.y < 338) {
+					if (UI_isOnSquare(ir, 104, 296, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 296, 440, 44, 0x80808040, true);
+						UI_highlight(104, 296, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_tool_tip == true) { setting_tool_tip = false; }
 							else {setting_tool_tip = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 346 && ir.y < 388) {
+					if (UI_isOnSquare(ir, 104, 346, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 346, 440, 44, 0x80808040, true);
+						UI_highlight(104, 346, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_prompt_cancel == true) { setting_prompt_cancel = false; }
 							else {setting_prompt_cancel = true; }
@@ -2651,34 +2637,34 @@ int main(int argc, char **argv) {
 
 					GRRLIB_DrawImg(355, 418, str_page2o5, 0, 1.0, 1.0, 0xFFFFFFFF);
 				}
-				else if (menu_section == 3) {
-					if (ir.x > 250 && ir.x < 530 && ir.y > 196 && ir.y < 238 && select_repo == false && select_category == false) {
+				else if (menu_section == 3 && select_repo == false && select_category == false) {
+					if (UI_isOnSquare(ir, 104, 196, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 196, 440, 44, 0x80808040, true);
+						UI_highlight(104, 196, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_show_updated == true) { setting_show_updated = false; }
 							else {setting_show_updated = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 246 && ir.y < 288 && select_repo == false && select_category == false) {
+					if (UI_isOnSquare(ir, 104, 246, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 246, 440, 44, 0x80808040, true);
+						UI_highlight(104, 246, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_use_sd == true) { setting_use_sd = false; }
 							else {setting_use_sd = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 296 && ir.y < 338 && select_repo == false && select_category == false) {
+					if (UI_isOnSquare(ir, 104, 296, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 296, 440, 44, 0x80808040, true);
+						UI_highlight(104, 296, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							select_repo = true;
 							wait_a_press = 10;
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 346 && ir.y < 388 && select_repo == false && select_category == false) {
+					if (UI_isOnSquare(ir, 104, 346, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 346, 440, 44, 0x80808040, true);
+						UI_highlight(104, 346, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							select_category = true;
 							wait_a_press = 10;
@@ -2725,27 +2711,27 @@ int main(int argc, char **argv) {
 
 					GRRLIB_DrawImg(355, 418, str_page3o5, 0, 1.0, 1.0, 0xFFFFFFFF);
 				}
-				else if (menu_section == 4) {
+				else if (menu_section == 4 && select_sort == false) {
 
-					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188 && select_sort == false) {
+					if (UI_isOnSquare(ir, 104, 146, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 146, 440, 44, 0x80808040, true);
+						UI_highlight(104, 146, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							select_sort = true;
 							wait_a_press = 10;
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 196 && ir.y < 238 && select_sort == false) {
+					if (UI_isOnSquare(ir, 104, 196, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 196, 440, 44, 0x80808040, true);
+						UI_highlight(104, 196, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_disusb == true) { setting_disusb = false; }
 							else {setting_disusb = true; }
 						}
 					}
-					if (ir.x > 250 && ir.x < 530 && ir.y > 296 && ir.y < 338 && select_sort == false) {
+					if (UI_isOnSquare(ir, 104, 296, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 296, 440, 44, 0x80808040, true);
+						UI_highlight(104, 296, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_wiiside == true) { setting_wiiside = false; }
 							else {setting_wiiside = true; }
@@ -2791,9 +2777,9 @@ int main(int argc, char **argv) {
 				}
 				else if (menu_section == 5) {
 
-					if (ir.x > 250 && ir.x < 530 && ir.y > 146 && ir.y < 188) {
+					if (UI_isOnSquare(ir, 104, 146, 440, 44)) {
 						doRumble = true;
-						GRRLIB_Rectangle(104, 146, 440, 44, 0x80808040, true);
+						UI_highlight(104, 146, 440, 44);
 						if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 							if (setting_server == true) { setting_server = false; }
 							else {setting_server = true; }
@@ -2867,9 +2853,9 @@ int main(int argc, char **argv) {
 					}
 					if (start_updated >= 0) {
 
-						if (ir.y > 138 && ir.y < 437 && ir.x > 40 && ir.x < 536 && ir.y > (ypos_updated + (25 * x)) && ir.y < (ypos_updated + (25 * x) + 20) && !(held & WPAD_BUTTON_B || held_gc & PAD_BUTTON_B)) {
+						if (UI_isOnSquare(ir, 150, ypos_updated + (25 * x) - 1, 328, 24) && !(held & WPAD_BUTTON_B || held_gc & PAD_BUTTON_B)) {
 							doRumble = true;
-							GRRLIB_Rectangle(150, ypos_updated + (25 * x) - 1, 328, 24, 0x80808040, true);
+							UI_highlight(150, ypos_updated + (25 * x) - 1, 328, 24);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 								setting_repo = x;
 							}
@@ -2913,45 +2899,45 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(180, 285, str_cat_4, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(180, 315, str_cat_5, 0, 1.0, 1.0, 0xFFFFFFFF);
 
-			if (ir.y > 195 && ir.y < 220 && ir.x > 150 && ir.x < 400) {
+			if (UI_isOnSquare(ir, 165, 197, 224, 24)) {
 				doRumble = true;
-				GRRLIB_Rectangle(165, 197, 224, 24, 0x80808040, true);
+				UI_highlight(165, 197, 224, 24);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 0;
 				}
 			}
 			if (setting_category == 0) {	GRRLIB_DrawImg(380, 198, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF); }
 
-			if (ir.y > 225 && ir.y < 250 && ir.x > 150 && ir.x < 400) {
+			if (UI_isOnSquare(ir, 165, 227, 224, 24)) {
 				doRumble = true;
-				GRRLIB_Rectangle(165, 227, 224, 24, 0x80808040, true);
+				UI_highlight(165, 227, 224, 24);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 1;
 				}
 			}
 			if (setting_category == 1) {	GRRLIB_DrawImg(380, 228, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF); }
 
-			if (ir.y > 255 && ir.y < 280 && ir.x > 150 && ir.x < 400) {
+			if (UI_isOnSquare(ir, 165, 257, 224, 24)) {
 				doRumble = true;
-				GRRLIB_Rectangle(165, 257, 224, 24, 0x80808040, true);
+				UI_highlight(165, 257, 224, 24);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 2;
 				}
 			}
 			if (setting_category == 2) {	GRRLIB_DrawImg(380, 258, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF); }
 
-			if (ir.y > 285 && ir.y < 310 && ir.x > 150 && ir.x < 400) {
+			if (UI_isOnSquare(ir, 165, 287, 224, 24)) {
 				doRumble = true;
-				GRRLIB_Rectangle(165, 287, 224, 24, 0x80808040, true);
+				UI_highlight(165, 287, 224, 24);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 3;
 				}
 			}
 			if (setting_category == 3) {	GRRLIB_DrawImg(380, 288, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF); }
 
-			if (ir.y > 315 && ir.y < 340 && ir.x > 150 && ir.x < 400) {
+			if (UI_isOnSquare(ir, 165, 317, 224, 24)) {
 				doRumble = true;
-				GRRLIB_Rectangle(165, 317, 224, 24, 0x80808040, true);
+				UI_highlight(165, 317, 224, 24);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_category = 4;
 				}
@@ -2983,18 +2969,18 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(180, 195, str_sort_1, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(180, 225, str_sort_2, 0, 1.0, 1.0, 0xFFFFFFFF);
 
-			if (ir.y > 195 && ir.y < 220 && ir.x > 150 && ir.x < 400) {
+			if (UI_isOnSquare(ir, 165, 197, 224, 24)) {
 				doRumble = true;
-				GRRLIB_Rectangle(165, 197, 224, 24, 0x80808040, true);
+				UI_highlight(165, 197, 224, 24);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_sort = 0;
 				}
 			}
 			if (setting_sort == 0) {	GRRLIB_DrawImg(380, 198, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF); }
 
-			if (ir.y > 225 && ir.y < 250 && ir.x > 150 && ir.x < 400) {
+			if (UI_isOnSquare(ir, 165, 227, 224, 24)) {
 				doRumble = true;
-				GRRLIB_Rectangle(165, 227, 224, 24, 0x80808040, true);
+				UI_highlight(165, 227, 224, 24);
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
 					setting_sort = 1;
 				}
@@ -3038,8 +3024,7 @@ int main(int argc, char **argv) {
 			}
 
 			if (free_sd_size == true) {
-				free(str_sd_card->data);
-				free(str_sd_card);
+				GRRLIB_FreeTexture(str_sd_card);
 				free_sd_size = false;
 			}
 
@@ -3099,26 +3084,16 @@ int main(int argc, char **argv) {
 
 		// Free about text when out of about window
 		if (free_about == true) {
-			free(string1->data);
-			free(string1);
-			free(string2->data);
-			free(string2);
-			free(string3->data);
-			free(string3);
-			free(string4->data);
-			free(string4);
-			free(string5->data);
-			free(string5);
-			free(str_res_title->data);
-			free(str_res_title);
-			free(str_res_author->data);
-			free(str_res_author);
-			free(str_res_version->data);
-			free(str_res_version);
-			free(str_res_size->data);
-			free(str_res_size);
-			free(str_res_date->data);
-			free(str_res_date);
+			GRRLIB_FreeTexture(string1);
+			GRRLIB_FreeTexture(string2);
+			GRRLIB_FreeTexture(string3);
+			GRRLIB_FreeTexture(string4);
+			GRRLIB_FreeTexture(string5);
+			GRRLIB_FreeTexture(str_res_title);
+			GRRLIB_FreeTexture(str_res_author);
+			GRRLIB_FreeTexture(str_res_version);
+			GRRLIB_FreeTexture(str_res_size);
+			GRRLIB_FreeTexture(str_res_date);
 			free_about = false;
 		}
 
@@ -3129,8 +3104,8 @@ int main(int argc, char **argv) {
 				if (text_list[a].text != 0) {
 					text_list[a].text = 0;
 
-					free(text_list[a].str_name);
-					free(text_list[a].str_short_description);
+					GRRLIB_FreeTexture(text_list[a].str_name);
+					GRRLIB_FreeTexture(text_list[a].str_short_description);
 				}
 
 			}
@@ -3140,15 +3115,13 @@ int main(int argc, char **argv) {
 
 		// Icon loading info
 		if (free_icon_info == true && download_icon > 0) {
-			free(str_icon_info->data);
-			free(str_icon_info);
+			GRRLIB_FreeTexture(str_icon_info);
 			free_icon_info = false;
 		}
 
 		// Download size progress
 		if (free_download_info == true) {
-			free(str_download_info->data);
-			free(str_download_info);
+			GRRLIB_FreeTexture(str_download_info);
 			free_download_info = false;
 		}
 
