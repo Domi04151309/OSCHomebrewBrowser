@@ -65,8 +65,6 @@ int xfb_height = 0;
 
 struct repo_struct repo_list[200];
 
-struct updated_apps_struct updated_apps_list[1600];
-
 // List to show
 struct homebrew_struct homebrew_list[1600];
 struct text_struct text_list[1600];
@@ -117,8 +115,6 @@ int delete_in_progress = 0;
 int selected_app = 0;
 int total_list_count = 0;
 
-bool show_updated_apps = false;
-int updated_apps_count = 0;
 int repo_count = 0;
 int timeout_counter = 0;
 
@@ -148,8 +144,6 @@ bool setting_rumble = true;
 bool setting_update_icon = false;
 bool setting_tool_tip = true;
 char setting_last_boot[14] = "1";
-bool setting_show_updated = true;
-bool setting_prompt_cancel = true;
 bool setting_use_sd = true;
 int setting_repo = 0;
 int setting_category = 2;
@@ -1352,13 +1346,7 @@ void update_settings() {
 	char set9[2];
 	sprintf(set9, "%i", setting_tool_tip);
 	mxmlElementSetAttr(data, "setting_tool_tip", set9);
-	char set10[2];
-	sprintf(set10, "%i", setting_prompt_cancel);
-	mxmlElementSetAttr(data, "setting_prompt_cancel", set10);
 	mxmlElementSetAttr(data, "setting_last_boot", setting_last_boot);
-	char set12[2];
-	sprintf(set12, "%i", setting_show_updated);
-	mxmlElementSetAttr(data, "setting_show_updated", set12);
 	char set13[2];
 	sprintf(set13, "%i", setting_use_sd);
 	mxmlElementSetAttr(data, "setting_use_sd", set13);
@@ -1477,16 +1465,10 @@ void load_settings() {
 			if (mxmlElementGetAttr(data,"setting_tool_tip")) {
 				setting_tool_tip = atoi(mxmlElementGetAttr(data,"setting_tool_tip"));
 			}
-			if (mxmlElementGetAttr(data,"setting_prompt_cancel")) {
-				setting_prompt_cancel = atoi(mxmlElementGetAttr(data,"setting_prompt_cancel"));
-			}
 			if (mxmlElementGetAttr(data,"setting_last_boot")) {
 				if (atoi(mxmlElementGetAttr(data,"setting_last_boot")) > 0) {
 					strcpy(setting_last_boot, mxmlElementGetAttr(data,"setting_last_boot"));
 				}
-			}
-			if (mxmlElementGetAttr(data,"setting_show_updated")) {
-				setting_show_updated = atoi(mxmlElementGetAttr(data,"setting_show_updated"));
 			}
 			if (mxmlElementGetAttr(data,"setting_use_sd")) {
 				setting_use_sd = atoi(mxmlElementGetAttr(data,"setting_use_sd"));
@@ -2703,165 +2685,6 @@ void add_to_stats() {
 	net_close(main_server);
 }
 
-
-// Check for new applications
-void apps_check() {
-
-	long setting_last_boot_num = atoi(setting_last_boot);
-
-	// If able to read settings
-	if (setting_last_boot_num > 0 && setting_show_updated == true) {
-
-		printf("Checking for new/updated applications... ");
-
-		// Request this time from server
-		s32 main_server = server_connect(0);
-
-		char http_request[1000];
-		strcpy(http_request,"GET /hbb/apps_check_new.php?t=");
-		strcat(http_request, setting_last_boot);
-
-		if (codemii_backup == false) {
-			strcat(http_request," HTTP/1.0\r\nHost: " MAIN_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
-		}
-		else {
-			strcat(http_request," HTTP/1.0\r\nHost: " FALLBACK_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
-		}
-
-		write_http_reply(main_server, http_request);
-
-		bool http_data = false;
-		long first_time = 0;
-		char timebuf[50];
-		char buf[BUFFER_SIZE];
-		s32 offset = 0;
-		s32 bytes_read;
-		int count = 0;
-		while (offset < (BUFFER_SIZE - 1)) {
-			char *offset_buf = buf + offset;
-			if ((bytes_read = net_read(main_server, offset_buf, BUFFER_SIZE - 1 - offset)) < 0) {
-				printf("%s\nError code %i in apps_check\n\n", get_error_msg(bytes_read), bytes_read);
-				net_close(main_server);
-				sleep(1);
-			} else if (bytes_read == 0) {
-				break; // EOF from client
-			}
-			offset += bytes_read;
-			buf[offset] = '\0';
-
-			char *next;
-			char *end;
-			for (next = buf; (end = strstr(next, CRLF)); next = end + CRLF_LENGTH) {
-				*end = '\0';
-
-				if (*next) {
-					char *cmd_line = next;
-
-					// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
-					if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
-						printf("The server appears to be having an issue (apps_check). Retrying...\n");
-						net_close(main_server);
-						sleep(1);
-					}
-
-					if (strlen(cmd_line) == 1) {
-						http_data = true;
-					}
-
-					if (http_data == true) {
-						long temp_time = 0;
-						char app_text[100];
-						char app_version_from[100];
-						char app_version[100];
-						char app_text_total[200];
-
-						if (count >= 1) {
-							if (count == 1) {
-								// Time
-								temp_time = atoi(cmd_line);
-
-								if (first_time == 0) {
-									if (temp_time > 120000) {
-										char set1[14];
-										sprintf(set1, "%li", temp_time + 1);
-										strcpy(setting_last_boot, set1);
-									}
-									first_time = 1;
-								}
-							}
-
-							if (count == 1) {
-								app_time = temp_time;
-								timeinfo = localtime ( &app_time );
-								strftime (timebuf,50,"%d %b %Y",timeinfo);
-							}
-
-							// Text
-							if (count == 2) {
-								strcpy(app_text, cmd_line);
-							}
-
-							// Version from
-							if (count == 3) {
-								strcpy(app_version_from, cmd_line);
-							}
-
-							// Version to
-							if (count == 4) {
-								strcpy(app_version, cmd_line);
-							}
-
-							// New or updated?
-							if (count == 5) {
-								if (strcmp(cmd_line, "a") == 0) {
-									strcpy(app_text_total, timebuf);
-									strcat(app_text_total, " - ");
-									strcat(app_text_total, app_text);
-									strcat(app_text_total, " ");
-									strcat(app_text_total, app_version);
-									strcat(app_text_total, " added");
-								}
-								else {
-									strcpy(app_text_total, timebuf);
-									strcat(app_text_total, " - ");
-									strcat(app_text_total, app_text);
-									strcat(app_text_total, " ");
-									strcat(app_text_total, app_version_from);
-									strcat(app_text_total, " -> ");
-									strcat(app_text_total, app_version);
-								}
-
-								// Add text
-								strcpy(updated_apps_list[updated_apps_count].text, app_text_total);
-
-								updated_apps_count++;
-								count = 0;
-							}
-						}
-						count++;
-					}
-				}
-			}
-
-			if (next != buf) { // some lines were processed
-				offset = strlen(next);
-				char tmp_buf[offset];
-				memcpy(tmp_buf, next, offset);
-				memcpy(buf, tmp_buf, offset);
-			}
-		}
-
-		net_close(main_server);
-
-		if (count >= 1) {
-			printf("Checked.\n\n");
-		}
-		if (updated_apps_count >= 1) {
-			show_updated_apps = true;
-		}
-	}
-}
-
 void repo_check() {
 
 	// Setting in settings which will just be a number, 0 for HBB, 1 for another one, etc.
@@ -3708,13 +3531,7 @@ s32 request_file(s32 server, FILE *f) {
 			return -1;
 		}
 
-		if (cancel_download == true && setting_prompt_cancel == false) {
-			return -2;
-		}
-		else if (cancel_download == true && setting_prompt_cancel == true && cancel_confirmed == true) {
-			return -2;
-		}
-		else if (hbb_updating == true && cancel_download == true) {
+		if ((cancel_download == true && cancel_confirmed == true) || (hbb_updating == true && cancel_download == true)) {
 			return -2;
 		}
 	}

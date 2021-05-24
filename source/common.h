@@ -86,8 +86,6 @@ extern bool setting_rumble;
 extern bool setting_update_icon;
 extern bool setting_tool_tip;
 extern char setting_last_boot[14];
-extern bool setting_show_updated;
-extern bool setting_prompt_cancel;
 extern bool setting_use_sd;
 extern int setting_repo;
 extern int setting_sort;
@@ -128,9 +126,6 @@ extern int repo_count;
 extern int update_xml;
 extern char testy[200];
 
-extern bool show_updated_apps;
-extern int updated_apps_count;
-
 extern bool list_received;
 extern int no_manage_count;
 
@@ -159,7 +154,6 @@ int create_dir(char* path);
 bool unzipArchive(char * zipfilepath, char * unzipfolderpath);
 void check_missing_files();
 void check_temp_files();
-void apps_check();
 void save_xml_name();
 void copy_xml_name();
 void repo_check();
@@ -213,12 +207,6 @@ struct sort_homebrew_struct {
 	int app_time;
 };
 
-struct updated_apps_struct {
-	//char time[15];
-	char text[200];
-	void *str_text;
-};
-
 struct repo_struct {
 	char name[200];
 	char domain[100];
@@ -228,8 +216,6 @@ struct repo_struct {
 };
 
 extern struct repo_struct repo_list[200];
-
-extern struct updated_apps_struct updated_apps_list[1600];
 
 // List to show
 extern struct homebrew_struct homebrew_list[1600];

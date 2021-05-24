@@ -135,9 +135,9 @@ static int do_extract_currentfile(unzFile uf,const int* popt_extract_without_pat
             write_filename = filename_inzip;
         else
             write_filename = filename_withoutpath;
-			
+
 		bool ok_to_unzip = true;
-			
+
 		int d;
 		for (d = 0; d < no_unzip_count; d++) {
 			//printf("SECOND = %s\n", no_unzip_list[d]);
@@ -148,7 +148,7 @@ static int do_extract_currentfile(unzFile uf,const int* popt_extract_without_pat
 				}
 			}
 		}
-		
+
 		if (ok_to_unzip == true) {
 
 			err = unzOpenCurrentFilePassword(uf,password);
@@ -210,16 +210,16 @@ static int do_extract_currentfile(unzFile uf,const int* popt_extract_without_pat
 					printf("error opening %s\n",write_filename);
 				}
 			}
-			
+
 			if (fout!=NULL)
 			{
 				//printf(" extracting: %s\n",write_filename);
-				
+
 				int temp_size = 0;
 				do
 				{
 					err = unzReadCurrentFile(uf,buf,size_buf);
-					
+
 					if (err<0)
 					{
 						printf("error %d with zipfile in unzReadCurrentFile\n",err);
@@ -234,15 +234,12 @@ static int do_extract_currentfile(unzFile uf,const int* popt_extract_without_pat
 							err=UNZ_ERRNO;
 							break;
 						}
-						
+
 						zip_progress += size_buf;
 						temp_size += size_buf;
 						//updating_current_size += size_buf;
 						
-						if (cancel_extract == true && setting_prompt_cancel == false) {
-							err = -1;
-						}
-						else if ((cancel_download == true || cancel_extract == true) && setting_prompt_cancel == true && cancel_confirmed == true) {
+						if ((cancel_download == true || cancel_extract == true) && cancel_confirmed == true) {
 							cancel_download = false;
 							cancel_extract = true;
 							err = -1;
@@ -251,18 +248,18 @@ static int do_extract_currentfile(unzFile uf,const int* popt_extract_without_pat
 							err = -1;
 						}
 					}
-						
+
 				}
 				while (err>0);
-				
-				
+
+
 				if (temp_size > file_info.uncompressed_size) {
 					zip_progress -= temp_size;
 					zip_progress += file_info.uncompressed_size;
 					//updating_current_size -= temp_size;
 					//updating_current_size += file_info.uncompressed_size;
 				}
-				
+
 				if (fout)
 						fclose(fout);
 				}
@@ -298,10 +295,10 @@ int zipInfo(unzFile uf)
     for (i=0;i<gi.number_entry;i++)
     {
 		err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
-		
+
 		if (err!=UNZ_OK)
 			return err;
-		
+
 		totalSize += file_info.uncompressed_size;
 
         if ((i+1)<gi.number_entry)
@@ -311,7 +308,7 @@ int zipInfo(unzFile uf)
 				return err;
         }
     }
-	
+
 	err = unzGoToFirstFile(uf);
 		if (err!=UNZ_OK)
 			return err;
@@ -326,7 +323,7 @@ int extractZip(unzFile uf,int opt_extract_without_path,int opt_overwrite,const c
 	zip_size = zipInfo(uf);
 	extract_part_size = (int) (zip_size / 100);
 	//printf("Zipped up total size: %i\n",zip_size);
-	
+
 	uLong i;
     unz_global_info gi;
     int err;
@@ -336,13 +333,13 @@ int extractZip(unzFile uf,int opt_extract_without_path,int opt_overwrite,const c
     {
         printf("error %d with zipfile in unzGetGlobalInfo \n",err);
     }
-		
+
 	unzip_file_count = gi.number_entry;
-	
+
     for (i=0;i<gi.number_entry;i++)
     {
 		unzip_file_counter = (i+1);
-		
+
 		//printf("%li / %li done, zip progress = %li / %i\n", (i+1), gi.number_entry, zip_progress, zip_size);
 		printf(".");
         if (do_extract_currentfile(uf,&opt_extract_without_path,
@@ -379,5 +376,3 @@ int extractZipOnefile(unzFile uf,const char* filename,int opt_extract_without_pa
     else
         return 1;
 }
-
-
