@@ -7,6 +7,15 @@
 #define STR_SORT_BY_DATE "Sort by Date"
 #define STR_QUEUE "Queue"
 
+#define STR_EMPTY_QUEUE_0 "The download queue is empty. To add an"
+#define STR_EMPTY_QUEUE_1 "application to the queue, find one from"
+#define STR_EMPTY_QUEUE_2 "one of the above categories, point at it,"
+#define STR_EMPTY_QUEUE_3 "and press the (+) button."
+
+#define STR_EMPTY_SD_0 "The Homebrew Browser could not find any"
+#define STR_EMPTY_SD_1 "recognised homebrew applications on"
+#define STR_EMPTY_SD_2 "your SD/USB device."
+
 #define STR_ABOUT "About"
 #define STR_CONTROLLER "Controller"
 
