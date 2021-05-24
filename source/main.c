@@ -109,8 +109,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "res.h"
 #include "strings.h"
 
-#include "GRRLIB/GRRLIB.h"
-
 #define METHOD_SD 1
 #define METHOD_USB 2
 
@@ -1316,10 +1314,6 @@ int main(int argc, char **argv) {
 		if (hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) {
 			if (sort_up_down == 0) { GRRLIB_DrawImg(619, 220, sort_arrow_down_img, 0, 1, 1, 0xFFFFFFFF); }
 			if (sort_up_down == 1) { GRRLIB_DrawImg(619, 204, sort_arrow_up_img, 0, 1, 1, 0xFFFFFFFF); }
-			if (sort_up_down == 2) { GRRLIB_DrawImg(619, 270, sort_arrow_down_img, 0, 1, 1, 0xFFFFFFFF); }
-			if (sort_up_down == 3) { GRRLIB_DrawImg(619, 254, sort_arrow_up_img, 0, 1, 1, 0xFFFFFFFF); }
-			if (sort_up_down == 4) { GRRLIB_DrawImg(619, 320, sort_arrow_down_img, 0, 1, 1, 0xFFFFFFFF); }
-			if (sort_up_down == 5) { GRRLIB_DrawImg(619, 304, sort_arrow_up_img, 0, 1, 1, 0xFFFFFFFF); }
 			if (sort_up_down == 6) { GRRLIB_DrawImg(619, 170, sort_arrow_down_img, 0, 1, 1, 0xFFFFFFFF); }
 			if (sort_up_down == 7) { GRRLIB_DrawImg(619, 154, sort_arrow_up_img, 0, 1, 1, 0xFFFFFFFF); }
 		}
