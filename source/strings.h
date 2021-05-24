@@ -7,6 +7,9 @@
 #define STR_SORT_BY_DATE "Sort by Date"
 #define STR_QUEUE "Queue"
 
+#define STR_ABOUT "About"
+#define STR_CONTROLLER "Controller"
+
 #define STR_SETTINGS "Settings"
 #define STR_RETURN_TO_WII_MENU "Return to Wii Menu"
 #define STR_RETURN_TO_LOADER "Return to Loader"
