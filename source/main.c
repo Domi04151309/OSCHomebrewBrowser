@@ -105,6 +105,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "prev_png.h"
 #include "prev_hover_png.h"
 
+#include "activities.h"
 #include "ui.h"
 #include "res.h"
 #include "strings.h"
@@ -141,7 +142,6 @@ int display_message_counter = 0;
 
 int wait_a_press = 0;
 int held_counter = 0;
-bool in_help = false;
 int help_section = 0;
 int menu_section = 0;
 bool free_icon_info = false;
@@ -167,15 +167,14 @@ void WiimotePowerPressed(s32 chan) {
 }
 
 void close_windows() {
-	hbb_app_about = false;
 	select_repo = false;
 	select_category = false;
 	select_sort = false;
-	if (in_menu == true) {
-		in_menu = false;
+	if (activity == ACTIVITY_SETTINGS) {
 		update_settings();
 	}
-	in_help = false;
+	activity = ACTIVITY_MAIN;
+	help_section = 0;
 	menu_section = 0;
 	refresh_list = -1;
 	current_app = 0;
@@ -370,7 +369,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *str_res_size = NULL;
 	GRRLIB_texImg *str_res_date = NULL;
 
-
 	// About text description
 	GRRLIB_texImg *string1 = NULL;
 	GRRLIB_texImg *string2 = NULL;
@@ -394,7 +392,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *str_delete_app_failed = GRRLIB_TextToTexture("Deleting application folder failed.", FONTSIZE_SMALL, 0x575757);
 	GRRLIB_texImg *str_free_space_failed = GRRLIB_TextToTexture("Not enough free space.", FONTSIZE_SMALL, 0x575757);
 	GRRLIB_texImg *str_no_wifi = GRRLIB_TextToTexture("Unable to initialise network.", FONTSIZE_SMALL, 0x575757);
-
 
 	GRRLIB_texImg *str_sd_card = NULL;
 	GRRLIB_texImg *str_icon_info = NULL;
@@ -518,12 +515,12 @@ int main(int argc, char **argv) {
 	bool doRumble = false;
 	bool free_string = false;
 	int string_count = 6;
-	//int string_count2 = 0;
 	int start_updated = -1;
 	int finish_updated = 0;
 	int ypos_updated = 184;
 
-	while(1){
+	// Main Thread
+	while(1) {
 
 		WPAD_ScanPads();
 		u32 pressed = WPAD_ButtonsDown(0);
@@ -603,21 +600,11 @@ int main(int argc, char **argv) {
 
 		// Refresh list
 		if (refresh_list != start) {
-			if (icon1_img) {
-				GRRLIB_FreeTexture(icon1_img);
-			}
-			if (icon2_img) {
-				GRRLIB_FreeTexture(icon2_img);
-			}
-			if (icon3_img) {
-				GRRLIB_FreeTexture(icon3_img);
-			}
-			if (icon4_img) {
-				GRRLIB_FreeTexture(icon4_img);
-			}
-			if (icon5_img) {
-				GRRLIB_FreeTexture(icon5_img);
-			}
+			if (icon1_img) GRRLIB_FreeTexture(icon1_img);
+			if (icon2_img) GRRLIB_FreeTexture(icon2_img);
+			if (icon3_img) GRRLIB_FreeTexture(icon3_img);
+			if (icon4_img) GRRLIB_FreeTexture(icon4_img);
+			if (icon5_img) GRRLIB_FreeTexture(icon5_img);
 
 			// Load images as needed, store them into memory as well as text
 			int c;
@@ -751,177 +738,176 @@ int main(int argc, char **argv) {
 			ypos = ypos_updated;
 		}
 
-		// Dpad up / down
-		if (setting_wiiside == false) {
-			if ((held & WPAD_BUTTON_DOWN || held_gc & PAD_BUTTON_DOWN) && ((strlen(homebrew_list[finish+1].name) > 1 && hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) || (select_repo == true && finish_updated+1 < repo_count))) { ypos-= 4; }
-			if ((held & WPAD_BUTTON_UP || held_gc & PAD_BUTTON_UP) && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) && hbb_app_about == false && updating == -1 && ((in_menu == false && select_repo == false) || (in_menu == true && select_repo == true)) && in_help == false) { ypos+= 4; }
-		}
-
-		// Scrolling by B button
-		if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
-			ir_pitch = orient.pitch;
-			ir_x = ir.x;
-			ir_y = ir.y;
-			ir_rotation = ir.angle;
-		}
-
-		// Wiimote sideways
-		if (held & WPAD_BUTTON_1) {
-			if (held & WPAD_BUTTON_LEFT && ((strlen(homebrew_list[finish+1].name) > 1 && hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) || (select_repo == true && finish_updated+1 < repo_count))) {
-				ypos-= 5;
+		if (activity == ACTIVITY_MAIN && updating == -1) {
+			// Dpad up / down
+			if (setting_wiiside == false) {
+				if ((held & WPAD_BUTTON_DOWN || held_gc & PAD_BUTTON_DOWN) && ((strlen(homebrew_list[finish+1].name) > 1 && updating == -1) || (select_repo == true && finish_updated+1 < repo_count))) { ypos-= 4; }
+				if ((held & WPAD_BUTTON_UP || held_gc & PAD_BUTTON_UP) && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) && updating == -1) { ypos+= 4; }
 			}
-			if (held & WPAD_BUTTON_RIGHT && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) && hbb_app_about == false && updating == -1 && ((in_menu == false && select_repo == false) || (in_menu == true && select_repo == true)) && in_help == false) {
-				ypos+= 5;
+
+			// Scrolling by B button
+			if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
+				ir_pitch = orient.pitch;
+				ir_x = ir.x;
+				ir_y = ir.y;
+				ir_rotation = ir.angle;
 			}
-		}
 
-		// Wiimote scrolling
-		if (held & WPAD_BUTTON_B) {
-			float pitch_dir = orient.pitch - ir_pitch;
-
-			// If moving up
-			if ((pitch_dir > 2 && strlen(homebrew_list[finish+1].name) > 1 && select_repo == false) || (pitch_dir > 2 && select_repo == true && finish_updated+1 < repo_count)) {
-				ypos-= 1;
-				if (pitch_dir > 4) {
-					ypos-= 1;
-				}
-				if (pitch_dir > 6) {
-					ypos-= 1;
-				}
-				if (pitch_dir > 8) {
-					ypos-= 1;
-				}
-				if (pitch_dir > 10) {
-					ypos-= 2;
-				}
-				if (pitch_dir > 12) {
-					ypos-= 2;
-				}
-				if (pitch_dir > 30) {
+			// Wiimote sideways
+			if (held & WPAD_BUTTON_1) {
+				if (held & WPAD_BUTTON_LEFT && ((strlen(homebrew_list[finish+1].name) > 1 && updating == -1) || (select_repo == true && finish_updated+1 < repo_count))) {
 					ypos-= 5;
 				}
-			}
-
-			// If moving down
-			if (pitch_dir < -2 && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180))) {
-				ypos+= 1;
-				if (pitch_dir < -4) {
-					ypos+= 1;
-				}
-				if (pitch_dir < -6) {
-					ypos+= 1;
-				}
-				if (pitch_dir < -8) {
-					ypos+= 1;
-				}
-				if (pitch_dir < -10) {
-					ypos+= 2;
-				}
-				if (pitch_dir < -12) {
-					ypos+= 2;
-				}
-				if (pitch_dir < -30) {
+				if (held & WPAD_BUTTON_RIGHT && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) && updating == -1) {
 					ypos+= 5;
 				}
 			}
 
-			// Set IR not to move
-			ir.x = ir_x;
-			ir.y = ir_y;
-			ir.angle = ir_rotation;
-		}
+			// Wiimote scrolling
+			if (held & WPAD_BUTTON_B) {
+				float pitch_dir = orient.pitch - ir_pitch;
 
-		// GC scrolling
-		if ((strlen(homebrew_list[finish+1].name) > 1 && select_repo == false) || (select_repo == true && finish_updated+1 < repo_count)) {
-			if (PAD_SubStickY(0) < -18) {
-				ypos-= 2;
-			}
-			if (PAD_SubStickY(0) < -28) {
-				ypos-= 1;
-			}
-			if (PAD_SubStickY(0) < -38) {
-				ypos-= 1;
-			}
-			if (PAD_SubStickY(0) < -48) {
-				ypos-= 1;
-			}
-			if (PAD_SubStickY(0) < -60) {
-				ypos-= 5;
-			}
-		}
-		if ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) {
-			if (PAD_SubStickY(0) > 18) {
-				ypos+= 2;
-			}
-			if (PAD_SubStickY(0) > 28) {
-				ypos+= 1;
-			}
-			if (PAD_SubStickY(0) > 38) {
-				ypos+= 1;
-			}
-			if (PAD_SubStickY(0) > 48) {
-				ypos+= 1;
-			}
-			if (PAD_SubStickY(0) > 60) {
-				ypos+= 5;
-			}
-		}
+				// If moving up
+				if ((pitch_dir > 2 && strlen(homebrew_list[finish+1].name) > 1 && select_repo == false) || (pitch_dir > 2 && select_repo == true && finish_updated+1 < repo_count)) {
+					ypos-= 1;
+					if (pitch_dir > 4) {
+						ypos-= 1;
+					}
+					if (pitch_dir > 6) {
+						ypos-= 1;
+					}
+					if (pitch_dir > 8) {
+						ypos-= 1;
+					}
+					if (pitch_dir > 10) {
+						ypos-= 2;
+					}
+					if (pitch_dir > 12) {
+						ypos-= 2;
+					}
+					if (pitch_dir > 30) {
+						ypos-= 5;
+					}
+				}
 
-		// Nunchuck scrolling
-		struct expansion_t data;
-		WPAD_Expansion(WPAD_CHAN_0, &data);
-		if (data.type == WPAD_EXP_NUNCHUK) {
+				// If moving down
+				if (pitch_dir < -2 && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180))) {
+					ypos+= 1;
+					if (pitch_dir < -4) {
+						ypos+= 1;
+					}
+					if (pitch_dir < -6) {
+						ypos+= 1;
+					}
+					if (pitch_dir < -8) {
+						ypos+= 1;
+					}
+					if (pitch_dir < -10) {
+						ypos+= 2;
+					}
+					if (pitch_dir < -12) {
+						ypos+= 2;
+					}
+					if (pitch_dir < -30) {
+						ypos+= 5;
+					}
+				}
+
+				// Set IR not to move
+				ir.x = ir_x;
+				ir.y = ir_y;
+				ir.angle = ir_rotation;
+			}
+
+			// GC scrolling
 			if ((strlen(homebrew_list[finish+1].name) > 1 && select_repo == false) || (select_repo == true && finish_updated+1 < repo_count)) {
-				if (data.nunchuk.js.pos.y < 120) {
+				if (PAD_SubStickY(0) < -18) {
 					ypos-= 2;
 				}
-				if (data.nunchuk.js.pos.y < 110) {
+				if (PAD_SubStickY(0) < -28) {
 					ypos-= 1;
 				}
-				if (data.nunchuk.js.pos.y < 100) {
+				if (PAD_SubStickY(0) < -38) {
 					ypos-= 1;
 				}
-				if (data.nunchuk.js.pos.y < 80) {
+				if (PAD_SubStickY(0) < -48) {
 					ypos-= 1;
 				}
-				if (data.nunchuk.js.pos.y < 70) {
-					ypos-= 1;
-				}
-				if (data.nunchuk.js.pos.y < 50) {
+				if (PAD_SubStickY(0) < -60) {
 					ypos-= 5;
 				}
 			}
 			if ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) {
-				if (data.nunchuk.js.pos.y > 140) {
+				if (PAD_SubStickY(0) > 18) {
 					ypos+= 2;
 				}
-				if (data.nunchuk.js.pos.y > 150) {
+				if (PAD_SubStickY(0) > 28) {
 					ypos+= 1;
 				}
-				if (data.nunchuk.js.pos.y > 160) {
+				if (PAD_SubStickY(0) > 38) {
 					ypos+= 1;
 				}
-				if (data.nunchuk.js.pos.y > 180) {
+				if (PAD_SubStickY(0) > 48) {
 					ypos+= 1;
 				}
-				if (data.nunchuk.js.pos.y > 190) {
-					ypos+= 1;
-				}
-				if (data.nunchuk.js.pos.y > 210) {
+				if (PAD_SubStickY(0) > 60) {
 					ypos+= 5;
 				}
 			}
-		}
 
-		// Update ypos updated from ypos
-		if (select_repo == true) {
-			ypos_updated = ypos;
-			ypos = 142;
-		}
+			// Nunchuck scrolling
+			struct expansion_t data;
+			WPAD_Expansion(WPAD_CHAN_0, &data);
+			if (data.type == WPAD_EXP_NUNCHUK) {
+				if ((strlen(homebrew_list[finish+1].name) > 1 && select_repo == false) || (select_repo == true && finish_updated+1 < repo_count)) {
+					if (data.nunchuk.js.pos.y < 120) {
+						ypos-= 2;
+					}
+					if (data.nunchuk.js.pos.y < 110) {
+						ypos-= 1;
+					}
+					if (data.nunchuk.js.pos.y < 100) {
+						ypos-= 1;
+					}
+					if (data.nunchuk.js.pos.y < 80) {
+						ypos-= 1;
+					}
+					if (data.nunchuk.js.pos.y < 70) {
+						ypos-= 1;
+					}
+					if (data.nunchuk.js.pos.y < 50) {
+						ypos-= 5;
+					}
+				}
+				if ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) {
+					if (data.nunchuk.js.pos.y > 140) {
+						ypos+= 2;
+					}
+					if (data.nunchuk.js.pos.y > 150) {
+						ypos+= 1;
+					}
+					if (data.nunchuk.js.pos.y > 160) {
+						ypos+= 1;
+					}
+					if (data.nunchuk.js.pos.y > 180) {
+						ypos+= 1;
+					}
+					if (data.nunchuk.js.pos.y > 190) {
+						ypos+= 1;
+					}
+					if (data.nunchuk.js.pos.y > 210) {
+						ypos+= 5;
+					}
+				}
+			}
 
-		// Highlighting and display tick, question mark or plus
-		if (hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) {
+			// Update ypos updated from ypos
+			if (select_repo == true) {
+				ypos_updated = ypos;
+				ypos = 142;
+			}
 
+			// Highlighting and display tick, question mark or plus
 			int b;
 			for(b = 0; b <= 4; b++) {
 				if (strlen(homebrew_list[(start + b)].name) >= 2 && strcmp(homebrew_list[(start + b)].name,"000") != 0) {
@@ -929,22 +915,22 @@ int main(int argc, char **argv) {
 						doRumble = true;
 						UI_highlight(35, ypos + (76 * (start + b)), 530, 64);
 
-						if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && hbb_app_about == false) {
-							hbb_app_about = true;
+						if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A)) {
+							activity = ACTIVITY_APP;
 							update_about = true;
 							current_app = start + b;
 							wait_a_press = 10;
 						}
-						if ((pressed & WPAD_BUTTON_PLUS || pressed_gc & PAD_TRIGGER_R) && hbb_app_about == false && homebrew_list[(start + b)].local_app_size > 0 && homebrew_list[(start + b)].in_download_queue == 2) {
+						if ((pressed & WPAD_BUTTON_PLUS || pressed_gc & PAD_TRIGGER_R) && homebrew_list[(start + b)].local_app_size > 0 && homebrew_list[(start + b)].in_download_queue == 2) {
 							homebrew_list[(start + b)].in_download_queue = false;
 						}
-						else if ((pressed & WPAD_BUTTON_PLUS || pressed_gc & PAD_TRIGGER_R) && hbb_app_about == false && homebrew_list[(start + b)].local_app_size != homebrew_list[(start + b)].app_size) {
+						else if ((pressed & WPAD_BUTTON_PLUS || pressed_gc & PAD_TRIGGER_R) && homebrew_list[(start + b)].local_app_size != homebrew_list[(start + b)].app_size) {
 							homebrew_list[(start + b)].in_download_queue = true;
 						}
-						else if ((pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L) && hbb_app_about == false && homebrew_list[(start + b)].local_app_size != homebrew_list[(start + b)].app_size && homebrew_list[(start + b)].in_download_queue == true) {
+						else if ((pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L) && homebrew_list[(start + b)].local_app_size != homebrew_list[(start + b)].app_size && homebrew_list[(start + b)].in_download_queue == true) {
 							homebrew_list[(start + b)].in_download_queue = false;
 						}
-						else if ((pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L) && hbb_app_about == false && homebrew_list[(start + b)].local_app_size > 0) {
+						else if ((pressed & WPAD_BUTTON_MINUS || pressed_gc & PAD_TRIGGER_L) && homebrew_list[(start + b)].local_app_size > 0) {
 							homebrew_list[(start + b)].in_download_queue = 2;
 						}
 					}
@@ -977,31 +963,112 @@ int main(int argc, char **argv) {
 					}
 				}
 			}
+
+			//Sorting icons
+			if (UI_isOnImg(ir, 580, 150, name_img)) {
+				doRumble = true;
+				GRRLIB_DrawImg(580, 150, name_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+				if (setting_tool_tip == true) { UI_drawTooltip(580, 150, STR_SORT_BY_NAME); }
+				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
+					// Free list strings
+					free_string = true;
+					if (sort_up_down == 6) { sort_up_down = 7; sort_by_name(1); refresh_list = -1; ypos = 142; }
+					else { sort_up_down = 6; sort_by_name(0); refresh_list = -1; ypos = 142; }
+				}
+			} else {
+				GRRLIB_DrawImg(580, 150, name_img, 0, 1, 1, 0xFFFFFFFF);
+			}
+			if (UI_isOnImg(ir, 580, 200, date_img)) {
+				doRumble = true;
+				GRRLIB_DrawImg(580, 200, date_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+				if (setting_tool_tip == true) { UI_drawTooltip(580, 200, STR_SORT_BY_DATE); }
+				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
+					// Free list strings
+					free_string = true;
+					if (sort_up_down == 0) { sort_up_down = 1; sort_by_date(1); refresh_list = -1; ypos = 142; }
+					else { sort_up_down = 0; sort_by_date(0); refresh_list = -1; ypos = 142; }
+				}
+			} else {
+				GRRLIB_DrawImg(580, 200, date_img, 0, 1, 1, 0xFFFFFFFF);
+			}
+
+			if (sort_up_down == 0) GRRLIB_DrawImg(619, 220, sort_arrow_down_img, 0, 1, 1, 0xFFFFFFFF);
+			else if (sort_up_down == 1) GRRLIB_DrawImg(619, 204, sort_arrow_up_img, 0, 1, 1, 0xFFFFFFFF);
+			else if (sort_up_down == 6) GRRLIB_DrawImg(619, 170, sort_arrow_down_img, 0, 1, 1, 0xFFFFFFFF);
+			else if (sort_up_down == 7) GRRLIB_DrawImg(619, 154, sort_arrow_up_img, 0, 1, 1, 0xFFFFFFFF);
+
+			//Queue icon
+			if (UI_isOnImg(ir, 580, 370, down_img)) {
+				doRumble = true;
+				GRRLIB_DrawImg(580, 370, down_highlight_img, 0, 1, 1, 0xFFFFFFFF);
+				if (setting_tool_tip == true) { UI_drawTooltip(580, 370, STR_QUEUE); }
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && download_in_progress == false) {
+					if (category_selection == 5 && updating == -1 && array_length (homebrew_list) >= 1) {
+						category_selection = 7;
+						updated_cat = true;
+					}
+					else {
+						if ((category_selection == 6 || category_selection == 7) && updating == -1 && strcmp(homebrew_list[0].name,"000") != 0 && array_length (homebrew_list) >= 1) {
+							if (setting_online == true && hide_apps_updated() == true) {
+								clear_temp_list();
+								updating = 0;
+								free_update = true;
+								download_queue_size();
+							}
+						}
+						else {
+							category_old_selection = category_selection;
+							category_selection = 6;
+							updated_cat = true;
+						}
+					}
+				}
+			} else {
+				GRRLIB_DrawImg(580, 370, down_img, 0, 1, 1, 0xFFFFFFFF);
+			}
+
+			// Display icons, text
+			GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
+			GRRLIB_DrawImg(210, ypos + (76 * start) + 4, str_name, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawImg(210, ypos + (76 * start) + 30, str_short_desc, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+			GRRLIB_DrawImg(60, ypos + (76 * (start+1) + 4), icon2_img, 0, 1, 1, 0xFFFFFFC8);
+			GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 4, str_name1, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 30, str_short_desc1, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+			GRRLIB_DrawImg(60, ypos + (76 * (start+2) + 4), icon3_img, 0, 1, 1, 0xFFFFFFC8);
+			GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 4, str_name2, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 30, str_short_desc2, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+			GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
+			GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 4, str_name3, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 30, str_short_desc3, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+			GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
+			GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 4, str_name4, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 30, str_short_desc4, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+			GRRLIB_Rectangle(35, 440, 530, 40, WINDOW_BACKGROUND, true);
+			GRRLIB_Rectangle(35, 66, 530, 64, WINDOW_BACKGROUND, true);
+
+			// Category Change DPAD
+			if (setting_wiiside == false) {
+				if ((pressed & WPAD_BUTTON_LEFT || pressed_gc & PAD_BUTTON_LEFT) && category_selection > 0 && category_selection < 5 && updating == -1) {
+					if ((category_selection-1 == 0 && array_length(demos_list) >= 1) || (category_selection-1 == 1 && array_length(emulators_list) >= 1) || (category_selection-1 == 2 && array_length(games_list) >= 1) || (category_selection-1 == 3 && array_length(media_list) >= 1) || (category_selection-1 == 4 && array_length(utilities_list) >= 1)) {
+						category_old_selection = category_selection;
+						category_selection--;
+						updated_cat = true;
+					}
+				}
+				if ((pressed & WPAD_BUTTON_RIGHT || pressed_gc & PAD_BUTTON_RIGHT) && category_selection < 4 && updating == -1) {
+					if ((category_selection+1 == 0 && array_length(demos_list) >= 1) || (category_selection+1 == 1 && array_length(emulators_list) >= 1) || (category_selection+1 == 2 && array_length(games_list) >= 1) || (category_selection+1 == 3 && array_length(media_list) >= 1) || (category_selection+1 == 4 && array_length(utilities_list) >= 1)) {
+						category_old_selection = category_selection;
+						category_selection++;
+						updated_cat = true;
+					}
+				}
+			}
 		}
-
-		// Display icons, text
-		GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * start) + 4, str_name, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * start) + 30, str_short_desc, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_DrawImg(60, ypos + (76 * (start+1) + 4), icon2_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 4, str_name1, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 30, str_short_desc1, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_DrawImg(60, ypos + (76 * (start+2) + 4), icon3_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 4, str_name2, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 30, str_short_desc2, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 4, str_name3, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 30, str_short_desc3, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 4, str_name4, 0, 1.0, 1.0, 0xFFFFFFFF);
-		GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 30, str_short_desc4, 0, 1.0, 1.0, 0xFFFFFFFF);
-
-		GRRLIB_Rectangle(35, 440, 530, 40, WINDOW_BACKGROUND, true);
-		GRRLIB_Rectangle(35, 66, 530, 64, WINDOW_BACKGROUND, true);
 
 		// Category selection
 		GRRLIB_DrawImg(36, 103, cat_all_img, 0, 1, 1, 0xFFFFFFFF);
@@ -1071,34 +1138,13 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(466, 103, cat_utilities_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 		}
 
-		// Category Change DPAD
-		if (setting_wiiside == false) {
-			if ((pressed & WPAD_BUTTON_LEFT || pressed_gc & PAD_BUTTON_LEFT) && category_selection > 0 && category_selection < 5 && hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) {
-				if ((category_selection-1 == 0 && array_length(demos_list) >= 1) || (category_selection-1 == 1 && array_length(emulators_list) >= 1) || (category_selection-1 == 2 && array_length(games_list) >= 1) || (category_selection-1 == 3 && array_length(media_list) >= 1) || (category_selection-1 == 4 && array_length(utilities_list) >= 1)) {
-					category_old_selection = category_selection;
-					category_selection--;
-					updated_cat = true;
-				}
-			}
-			if ((pressed & WPAD_BUTTON_RIGHT || pressed_gc & PAD_BUTTON_RIGHT) && category_selection < 4 && hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) {
-				if ((category_selection+1 == 0 && array_length(demos_list) >= 1) || (category_selection+1 == 1 && array_length(emulators_list) >= 1) || (category_selection+1 == 2 && array_length(games_list) >= 1) || (category_selection+1 == 3 && array_length(media_list) >= 1) || (category_selection+1 == 4 && array_length(utilities_list) >= 1)) {
-					category_old_selection = category_selection;
-					category_selection++;
-					updated_cat = true;
-				}
-			}
-		}
-
 		// Changed category
 		if (category_selection != category_old_selection && updated_cat == true) {
 			ypos = 142;
 			icons_loaded = 0;
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 
-			if (in_help == true) {
-				help_section = 0;
-				in_help = false;
-			}
+			if (activity != ACTIVITY_MAIN) close_windows();
 
 			// Tell downloading icon thread to sleep until we've loaded the new category
 			if (download_icon > 0 && download_in_progress == false) {
@@ -1214,15 +1260,15 @@ int main(int argc, char **argv) {
 
 		if (held & WPAD_BUTTON_1) {
 			if (held & WPAD_BUTTON_DOWN) { yy -= 3; }
-			if (held & WPAD_BUTTON_UP) { yy += 3; }
-			if (held & WPAD_BUTTON_LEFT) { xx -= 3; }
-			if (held & WPAD_BUTTON_RIGHT) { xx += 3; }
+			else if (held & WPAD_BUTTON_UP) { yy += 3; }
+			else if (held & WPAD_BUTTON_LEFT) { xx -= 3; }
+			else if (held & WPAD_BUTTON_RIGHT) { xx += 3; }
 		}
 
 		if (pressed & WPAD_BUTTON_DOWN) { yy -= 1; }
-		if (pressed & WPAD_BUTTON_UP) { yy += 1; }
-		if (pressed & WPAD_BUTTON_LEFT) { xx -= 1; }
-		if (pressed & WPAD_BUTTON_RIGHT) { xx += 1; }
+		else if (pressed & WPAD_BUTTON_UP) { yy += 1; }
+		else if (pressed & WPAD_BUTTON_LEFT) { xx -= 1; }
+		else if (pressed & WPAD_BUTTON_RIGHT) { xx += 1; }
 
 
 		// Main menu icons
@@ -1246,80 +1292,14 @@ int main(int argc, char **argv) {
 			if (setting_tool_tip == true) { UI_drawTooltip(546, 25, STR_INFO); }
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1) {
 				close_windows();
-				in_help = true;
-				help_section = 0;
+				activity = ACTIVITY_INFO;
 			}
 		} else {
 			GRRLIB_DrawImg(546, 16, help_img, 0, 1, 1, 0xFFFFFFFF);
 		}
 
-		if (hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) {
-			if (UI_isOnImg(ir, 580, 150, name_img)) {
-				doRumble = true;
-				GRRLIB_DrawImg(580, 150, name_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if (setting_tool_tip == true) { UI_drawTooltip(580, 150, STR_SORT_BY_NAME); }
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					// Free list strings
-					free_string = true;
-					if (sort_up_down == 6) { sort_up_down = 7; sort_by_name(1); refresh_list = -1; ypos = 142; }
-					else { sort_up_down = 6; sort_by_name(0); refresh_list = -1; ypos = 142; }
-				}
-			} else {
-				GRRLIB_DrawImg(580, 150, name_img, 0, 1, 1, 0xFFFFFFFF);
-			}
-			if (UI_isOnImg(ir, 580, 200, date_img)) {
-				doRumble = true;
-				GRRLIB_DrawImg(580, 200, date_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if (setting_tool_tip == true) { UI_drawTooltip(580, 200, STR_SORT_BY_DATE); }
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					// Free list strings
-					free_string = true;
-					if (sort_up_down == 0) { sort_up_down = 1; sort_by_date(1); refresh_list = -1; ypos = 142; }
-					else { sort_up_down = 0; sort_by_date(0); refresh_list = -1; ypos = 142; }
-				}
-			} else {
-				GRRLIB_DrawImg(580, 200, date_img, 0, 1, 1, 0xFFFFFFFF);
-			}
-			if (UI_isOnImg(ir, 580, 370, down_img)) {
-				doRumble = true;
-				GRRLIB_DrawImg(580, 370, down_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if (setting_tool_tip == true) { UI_drawTooltip(580, 370, STR_QUEUE); }
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && download_in_progress == false) {
-					if (category_selection == 5 && updating == -1 && array_length (homebrew_list) >= 1) {
-						category_selection = 7;
-						updated_cat = true;
-					}
-					else {
-						if ((category_selection == 6 || category_selection == 7) && updating == -1 && strcmp(homebrew_list[0].name,"000") != 0 && array_length (homebrew_list) >= 1) {
-							if (setting_online == true && hide_apps_updated() == true) {
-								clear_temp_list();
-								updating = 0;
-								free_update = true;
-								download_queue_size();
-							}
-						}
-						else {
-							category_old_selection = category_selection;
-							category_selection = 6;
-							updated_cat = true;
-						}
-					}
-				}
-			} else {
-				GRRLIB_DrawImg(580, 370, down_img, 0, 1, 1, 0xFFFFFFFF);
-			}
-		}
-
-		// Up down arrows
-		if (hbb_app_about == false && updating == -1 && in_menu == false && in_help == false) {
-			if (sort_up_down == 0) { GRRLIB_DrawImg(619, 220, sort_arrow_down_img, 0, 1, 1, 0xFFFFFFFF); }
-			if (sort_up_down == 1) { GRRLIB_DrawImg(619, 204, sort_arrow_up_img, 0, 1, 1, 0xFFFFFFFF); }
-			if (sort_up_down == 6) { GRRLIB_DrawImg(619, 170, sort_arrow_down_img, 0, 1, 1, 0xFFFFFFFF); }
-			if (sort_up_down == 7) { GRRLIB_DrawImg(619, 154, sort_arrow_up_img, 0, 1, 1, 0xFFFFFFFF); }
-		}
-
 		// Updating
-		if (updating >= 0 && strcmp(homebrew_list[0].name,"000") != 0 && in_menu == false && in_help == false) {
+		if (updating >= 0 && strcmp(homebrew_list[0].name,"000") != 0) {
 			if (free_update == true) {
 				char temp[50];
 				sprintf (temp, "Processing %i/%i applications", new_updating + 1, array_length (homebrew_list));
@@ -1601,7 +1581,7 @@ int main(int argc, char **argv) {
 
 
 		// About
-		if (hbb_app_about == true && updating == -1 && in_menu == false && in_help == false) {
+		if (activity == ACTIVITY_APP && updating == -1) {
 			if (update_about == true) {
 				str_res_title = GRRLIB_TextToTexture(homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 				str_res_author = GRRLIB_TextToTexture(homebrew_list[current_app].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
@@ -2008,7 +1988,7 @@ int main(int argc, char **argv) {
 			}
 
 			if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B || pressed_gc & PAD_BUTTON_START) && ((download_in_progress == false && extract_in_progress == false && delete_in_progress == false) || strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) && display_message_counter == 0 && wait_a_press == 0) {
-				hbb_app_about = false;
+				activity = ACTIVITY_MAIN;
 				free_about = true;
 				download_arrow = 0;
 				if (download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
@@ -2018,20 +1998,20 @@ int main(int argc, char **argv) {
 		}
 
 		// Empty messages
-		if ((category_selection == 6 || category_selection == 7) && strcmp(homebrew_list[0].name,"000") == 0 && wait_a_press == 0 && in_menu == false && in_help == false) {
+		if ((category_selection == 6 || category_selection == 7) && strcmp(homebrew_list[0].name,"000") == 0 && wait_a_press == 0) {
 			GRRLIB_DrawImg(88, 159, str_empty_queue, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(88, 189, str_empty_queue1, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(88, 219, str_empty_queue2, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(88, 249, str_empty_queue3, 0, 1.0, 1.0, 0xFFFFFFFF);
 		}
-		if (category_selection == 5 && strcmp(homebrew_list[0].name,"000") == 0 && wait_a_press == 0 && in_menu == false && in_help == false) {
+		if (category_selection == 5 && strcmp(homebrew_list[0].name,"000") == 0 && wait_a_press == 0) {
 			GRRLIB_DrawImg(88, 159, str_empty_sd, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(88, 189, str_empty_sd1, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(88, 219, str_empty_sd2, 0, 1.0, 1.0, 0xFFFFFFFF);
 		}
 
-		// Help
-		if (in_help == true) {
+		// Info
+		if (activity == ACTIVITY_INFO) {
 			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 
 			if (help_section == 0) {
@@ -2113,18 +2093,15 @@ int main(int argc, char **argv) {
 			if (wait_a_press > 0) {
 				wait_a_press--;
 			}
-			if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_START || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0 && help_section == 0) {
-				in_help = false;
-				wait_a_press = 10;
-			}
-			else if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_START || pressed_gc & PAD_BUTTON_B) && help_section != 0 && wait_a_press == 0) {
+			if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_START || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0) {
+				activity = ACTIVITY_MAIN;
 				help_section = 0;
 				wait_a_press = 10;
 			}
 		}
 
 		// Menu
-		if (in_menu == true && in_help == false) {
+		if (activity == ACTIVITY_MENU) {
 			UI_roundedRect(35, 130, 530, 310, COLOUR_WHITE);
 			GRRLIB_DrawImg(82, 146, gear_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
@@ -2187,7 +2164,7 @@ int main(int argc, char **argv) {
 
 				// Exit
 				if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_START || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0) {
-					in_menu = false;
+					activity = ACTIVITY_MAIN;
 				}
 			}
 			else {
@@ -2378,8 +2355,8 @@ int main(int argc, char **argv) {
 			}
 		}
 		else {
-			if ((pressed & WPAD_BUTTON_HOME || pressed_gc & PAD_BUTTON_START) && hbb_app_about == false && updating == -1) {
-				in_menu = true;
+			if ((pressed & WPAD_BUTTON_HOME || pressed_gc & PAD_BUTTON_START) && updating == -1) {
+				activity = ACTIVITY_MENU;
 				wait_a_press = 10;
 			}
 		}

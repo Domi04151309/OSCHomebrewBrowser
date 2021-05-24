@@ -77,7 +77,6 @@ extern bool sd_card_update;
 extern long long sd_card_free;
 
 extern int download_icon;
-extern bool in_menu;
 
 extern bool setting_sd_card;
 extern bool setting_hide_installed;
@@ -119,7 +118,6 @@ extern int updating_part_size;
 extern long updating_current_size;
 extern bool changing_cat;
 extern bool exiting;
-extern bool hbb_app_about;
 extern bool download_icon_sleeping;
 extern int repo_count;
 

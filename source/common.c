@@ -37,6 +37,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 
 #include <sys/param.h>
 
+#include "activities.h"
 #include "ui.h"
 #include "res.h"
 
@@ -135,7 +136,6 @@ int load_icon = 0;
 int download_icon = 0;
 
 int sort_up_down = 0;
-bool in_menu = false;
 
 bool setting_sd_card = true;
 bool setting_hide_installed = false;
@@ -165,7 +165,6 @@ int progress_number = 0;
 int progress_size = 0;
 bool changing_cat = false;
 bool exiting = false;
-bool hbb_app_about = false;
 int retry = 0;
 int update_xml = 0;
 
@@ -285,7 +284,7 @@ static void *run_icons_thread(void *arg) {
 			sleep(3);
 		}
 
-		while (download_in_progress == true || extract_in_progress == true || delete_in_progress == true || in_menu == true) {
+		while (download_in_progress == true || extract_in_progress == true || delete_in_progress == true || activity == ACTIVITY_MENU) {
 			download_icon_sleeping = true;
 			sleep(3);
 		}
@@ -681,7 +680,7 @@ static void *run_download_thread(void *arg) {
 
 		remove_file(extractzipfile);
 
-		if (hbb_app_about == false && updating == -1) {
+		if (activity != ACTIVITY_APP && updating == -1) {
 			download_in_progress = false;
 			extract_in_progress = false;
 			delete_in_progress = false;
@@ -902,7 +901,7 @@ static void *run_download_thread(void *arg) {
 		}
 	}
 
-	if (hbb_app_about == false) {
+	if (activity != ACTIVITY_APP) {
 		download_in_progress = false;
 		if (extract_in_progress != -1) {
 			extract_in_progress = false;
