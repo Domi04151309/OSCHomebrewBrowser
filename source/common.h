@@ -12,6 +12,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #define _COMMON_H_
 
 #include <ogcsys.h>
+#include <stdio.h>
 #include "GRRLIB/GRRLIB.h"
 
 extern const char *CRLF;
