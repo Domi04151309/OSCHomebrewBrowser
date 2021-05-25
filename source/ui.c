@@ -59,7 +59,7 @@ void UI_drawBlockButton(int x, int y, const char *text, uint8_t state) {
   else color = BTN_COLOR;
 
   UI_roundedRect(x, y, UI_BLOCK_BTN_W, UI_BLOCK_BTN_H, color);
-  GRRLIB_DrawText(x + UI_PADDING, y + UI_PADDING, text, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
+  GRRLIB_DrawText(x + (UI_BLOCK_BTN_W - GRRLIB_TextWidth(text, FONTSIZE_SMALL)) / 2, y + UI_PADDING, text, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 }
 
 int UI_isOnSquare(ir_t ir, int x, int y, int w, int h) {
