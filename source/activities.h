@@ -17,6 +17,24 @@
 
 #define ACTIVITY_SETTINGS 8
 
-extern uint8_t activity;
+#define ACTIVITIES_STACK_SIZE 16
+
+struct stack {
+  int size;
+  int top;
+  uint8_t *items;
+};
+
+struct stack* newStack(int capacity);
+int size(struct stack *pt);
+int isEmpty(struct stack *pt);
+int isFull(struct stack *pt);
+void push(struct stack *pt, uint8_t x);
+uint8_t peek(struct stack *pt);
+uint8_t pop(struct stack *pt);
+
+void ACTIVITIES_open(uint8_t activity);
+uint8_t ACTIVITIES_current();
+void ACTIVITIES_goBack();
 
 #endif

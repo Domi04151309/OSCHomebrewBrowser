@@ -131,7 +131,6 @@ extern time_t app_time;
 
 int category_selection = 2;
 bool update_about = false;
-bool free_about = false;
 bool free_update = false;
 bool free_sd_size = false;
 bool updated_cat = false;
@@ -166,18 +165,19 @@ void WiimotePowerPressed(s32 chan) {
 	}
 }
 
-void close_windows() {
+bool close_windows() {
+	bool state = select_repo || select_category || select_sort;
 	select_repo = false;
 	select_category = false;
 	select_sort = false;
-	if (activity == ACTIVITY_SETTINGS) {
+	if (ACTIVITIES_current() == ACTIVITY_SETTINGS) {
 		update_settings();
 	}
-	activity = ACTIVITY_MAIN;
 	help_section = 0;
 	menu_section = 0;
 	refresh_list = -1;
 	current_app = 0;
+	return state;
 }
 
 int main(int argc, char **argv) {
@@ -511,6 +511,7 @@ int main(int argc, char **argv) {
 	int ypos_updated = 184;
 
 	// Main Thread
+	ACTIVITIES_open(ACTIVITY_MAIN);
 	while(1) {
 
 		WPAD_ScanPads();
@@ -729,19 +730,11 @@ int main(int argc, char **argv) {
 			ypos = ypos_updated;
 		}
 
-		if (activity == ACTIVITY_MAIN && updating == -1) {
+		if (ACTIVITIES_current() == ACTIVITY_MAIN && updating == -1) {
 			// Dpad up / down
 			if (setting_wiiside == false) {
 				if ((held & WPAD_BUTTON_DOWN || held_gc & PAD_BUTTON_DOWN) && ((strlen(homebrew_list[finish+1].name) > 1 && updating == -1) || (select_repo == true && finish_updated+1 < repo_count))) { ypos-= 4; }
 				if ((held & WPAD_BUTTON_UP || held_gc & PAD_BUTTON_UP) && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) && updating == -1) { ypos+= 4; }
-			}
-
-			// Scrolling by B button
-			if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
-				ir_pitch = orient.pitch;
-				ir_x = ir.x;
-				ir_y = ir.y;
-				ir_rotation = ir.angle;
 			}
 
 			// Wiimote sideways
@@ -752,62 +745,6 @@ int main(int argc, char **argv) {
 				if (held & WPAD_BUTTON_RIGHT && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) && updating == -1) {
 					ypos+= 5;
 				}
-			}
-
-			// Wiimote scrolling
-			if (held & WPAD_BUTTON_B) {
-				float pitch_dir = orient.pitch - ir_pitch;
-
-				// If moving up
-				if ((pitch_dir > 2 && strlen(homebrew_list[finish+1].name) > 1 && select_repo == false) || (pitch_dir > 2 && select_repo == true && finish_updated+1 < repo_count)) {
-					ypos-= 1;
-					if (pitch_dir > 4) {
-						ypos-= 1;
-					}
-					if (pitch_dir > 6) {
-						ypos-= 1;
-					}
-					if (pitch_dir > 8) {
-						ypos-= 1;
-					}
-					if (pitch_dir > 10) {
-						ypos-= 2;
-					}
-					if (pitch_dir > 12) {
-						ypos-= 2;
-					}
-					if (pitch_dir > 30) {
-						ypos-= 5;
-					}
-				}
-
-				// If moving down
-				if (pitch_dir < -2 && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180))) {
-					ypos+= 1;
-					if (pitch_dir < -4) {
-						ypos+= 1;
-					}
-					if (pitch_dir < -6) {
-						ypos+= 1;
-					}
-					if (pitch_dir < -8) {
-						ypos+= 1;
-					}
-					if (pitch_dir < -10) {
-						ypos+= 2;
-					}
-					if (pitch_dir < -12) {
-						ypos+= 2;
-					}
-					if (pitch_dir < -30) {
-						ypos+= 5;
-					}
-				}
-
-				// Set IR not to move
-				ir.x = ir_x;
-				ir.y = ir_y;
-				ir.angle = ir_rotation;
 			}
 
 			// GC scrolling
@@ -902,12 +839,12 @@ int main(int argc, char **argv) {
 			int b;
 			for(b = 0; b <= 4; b++) {
 				if (strlen(homebrew_list[(start + b)].name) >= 2 && strcmp(homebrew_list[(start + b)].name,"000") != 0) {
-					if (UI_isOnSquare(ir, 35, ypos + (76 * (start + b)), 530, 64) && !(held & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || held_gc & PAD_BUTTON_B)) {
+					if (UI_isOnSquare(ir, 35, ypos + (76 * (start + b)), 530, 64)) {
 						doRumble = true;
 						UI_highlight(35, ypos + (76 * (start + b)), 530, 64);
 
 						if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A)) {
-							activity = ACTIVITY_APP;
+							ACTIVITIES_open(ACTIVITY_APP);
 							update_about = true;
 							current_app = start + b;
 							wait_a_press = 10;
@@ -1076,7 +1013,7 @@ int main(int argc, char **argv) {
 
 		// Category selection
 		GRRLIB_DrawImg(36, 103, cat_all_img, 0, 1, 1, 0xFFFFFFFF);
-		if (activity == ACTIVITY_MAIN) {
+		if (ACTIVITIES_current() == ACTIVITY_MAIN) {
 			if (category_selection == 0) {
 				GRRLIB_DrawImg(34, 103, cat_demo_img, 0, 1, 1, 0xFFFFFFFF);
 			} else if (category_selection == 1) {
@@ -1095,7 +1032,6 @@ int main(int argc, char **argv) {
 				category_old_selection = category_selection;
 				category_selection = 0;
 				updated_cat = true;
-				close_windows();
 			}
 			GRRLIB_DrawImg(34, 103, cat_demo_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 		}
@@ -1105,7 +1041,6 @@ int main(int argc, char **argv) {
 				category_old_selection = category_selection;
 				category_selection = 1;
 				updated_cat = true;
-				close_windows();
 			}
 			GRRLIB_DrawImg(147, 103, cat_emulator_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 		}
@@ -1115,7 +1050,6 @@ int main(int argc, char **argv) {
 				category_old_selection = category_selection;
 				category_selection = 2;
 				updated_cat = true;
-				close_windows();
 			}
 			GRRLIB_DrawImg(252, 103, cat_games_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 		}
@@ -1125,7 +1059,6 @@ int main(int argc, char **argv) {
 				category_old_selection = category_selection;
 				category_selection = 3;
 				updated_cat = true;
-				close_windows();
 			}
 			GRRLIB_DrawImg(359, 103, cat_media_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 		}
@@ -1135,7 +1068,6 @@ int main(int argc, char **argv) {
 				category_old_selection = category_selection;
 				category_selection = 4;
 				updated_cat = true;
-				close_windows();
 			}
 			GRRLIB_DrawImg(466, 103, cat_utilities_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 		}
@@ -1146,7 +1078,8 @@ int main(int argc, char **argv) {
 			icons_loaded = 0;
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 
-			if (activity != ACTIVITY_MAIN) close_windows();
+			close_windows();
+			ACTIVITIES_open(ACTIVITY_MAIN);
 
 			// Tell downloading icon thread to sleep until we've loaded the new category
 			if (download_icon > 0 && download_in_progress == false) {
@@ -1283,7 +1216,6 @@ int main(int argc, char **argv) {
 				category_old_selection = category_selection;
 				category_selection = 5;
 				updated_cat = true;
-				close_windows();
 			}
 		} else {
 			GRRLIB_DrawImg(483, 16, sd_card_img, 0, 1, 1, 0xFFFFFFFF);
@@ -1294,7 +1226,7 @@ int main(int argc, char **argv) {
 			if (setting_tool_tip == true) { UI_drawTooltip(546, 25, STR_INFO); }
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1) {
 				close_windows();
-				activity = ACTIVITY_INFO;
+				ACTIVITIES_open(ACTIVITY_INFO);
 			}
 		} else {
 			GRRLIB_DrawImg(546, 16, help_img, 0, 1, 1, 0xFFFFFFFF);
@@ -1579,7 +1511,7 @@ int main(int argc, char **argv) {
 
 
 		// About
-		if (activity == ACTIVITY_APP && updating == -1) {
+		if (ACTIVITIES_current() == ACTIVITY_APP && updating == -1) {
 			if (update_about == true) {
 				str_res_title = GRRLIB_TextToTexture(homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 				str_res_author = GRRLIB_TextToTexture(homebrew_list[current_app].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
@@ -1981,18 +1913,17 @@ int main(int argc, char **argv) {
 				}
 			}
 
-			if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B || pressed_gc & PAD_BUTTON_START) && ((download_in_progress == false && extract_in_progress == false && delete_in_progress == false) || strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) && display_message_counter == 0 && wait_a_press == 0) {
-				activity = ACTIVITY_MAIN;
+			/*if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B || pressed_gc & PAD_BUTTON_START) && ((download_in_progress == false && extract_in_progress == false && delete_in_progress == false) || strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) && display_message_counter == 0 && wait_a_press == 0) {
 				free_about = true;
 				download_arrow = 0;
 				if (download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
 					strcpy(store_homebrew_list[0].name, " ");
 				}
-			}
+			}*/
 		}
 
 		// Info
-		if (activity == ACTIVITY_INFO) {
+		if (ACTIVITIES_current() == ACTIVITY_INFO) {
 			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 			GRRLIB_DrawImg(82, 146, help_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
@@ -2000,46 +1931,41 @@ int main(int argc, char **argv) {
 				doRumble = true;
 				UI_highlight(164, 146, 440, 44);
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					activity = ACTIVITY_ABOUT;
+					ACTIVITIES_open(ACTIVITY_ABOUT);
 				}
 			} else if (UI_isOnSquare(ir, 164, 196, 440, 44)) {
 				doRumble = true;
 				UI_highlight(164, 196, 440, 44);
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					activity = ACTIVITY_HELP_CONTROLLER;
+					ACTIVITIES_open(ACTIVITY_HELP_CONTROLLER);
 				}
 			} else if (UI_isOnSquare(ir, 164, 246, 440, 44)) {
 				doRumble = true;
 				UI_highlight(164, 246, 440, 44);
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					activity = ACTIVITY_HELP_QUEUE;
+					ACTIVITIES_open(ACTIVITY_HELP_QUEUE);
 				}
 			}
 
 			GRRLIB_DrawText(172, 160, STR_ABOUT, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
 			GRRLIB_DrawText(172, 210, STR_CONTROLLER, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
 			GRRLIB_DrawText(172, 260, STR_QUEUE, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-
-			if ((pressed & WPAD_BUTTON_HOME || pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_START || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0) {
-				activity = ACTIVITY_MAIN;
-				wait_a_press = 10;
-			}
 		}
 
 		// About
-		if (activity == ACTIVITY_ABOUT) {
+		if (ACTIVITIES_current() == ACTIVITY_ABOUT) {
 			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 			GRRLIB_DrawImg(32, 128, help_about_img, 0, 1, 1, 0xFFFFFFFF);
 		}
 
 		// Help Controller
-		if (activity == ACTIVITY_HELP_CONTROLLER) {
+		if (ACTIVITIES_current() == ACTIVITY_HELP_CONTROLLER) {
 			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 			GRRLIB_DrawImg(32, 128, help_controller_img, 0, 1, 1, 0xFFFFFFFF);
 		}
 
 		// Help Queue
-		if (activity == ACTIVITY_HELP_QUEUE) {
+		if (ACTIVITIES_current() == ACTIVITY_HELP_QUEUE) {
 			UI_roundedRect(35, 130, 584, 310, COLOUR_WHITE);
 			if (help_section == 0) {
 				GRRLIB_DrawImg(32, 128, help_queue_img, 0, 1, 1, 0xFFFFFFFF);
@@ -2090,14 +2016,14 @@ int main(int argc, char **argv) {
 		}
 
 		// Menu
-		if (activity == ACTIVITY_MENU) {
+		if (ACTIVITIES_current() == ACTIVITY_MENU) {
 			GRRLIB_DrawImg(82, 146, gear_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (UI_isOnBlockButton(ir, 283, 155)) {
 				doRumble = true;
 				UI_drawBlockButton(283, 155, STR_SETTINGS, 1);
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					activity = ACTIVITY_SETTINGS;
+					ACTIVITIES_open(ACTIVITY_SETTINGS);
 				}
 			} else {
 				UI_drawBlockButton(283, 155, STR_SETTINGS, 0);
@@ -2149,7 +2075,7 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		if (activity == ACTIVITY_SETTINGS) {
+		if (ACTIVITIES_current() == ACTIVITY_SETTINGS) {
 			GRRLIB_DrawImg(82, 146, gear_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (menu_section == 0) {
@@ -2328,18 +2254,25 @@ int main(int argc, char **argv) {
 				}
 			}
 
-			if ((pressed & WPAD_BUTTON_HOME || ((pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) && select_repo == false && select_category == false) || pressed_gc & PAD_BUTTON_START || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0) {
+			if ((pressed & WPAD_BUTTON_HOME || pressed_gc & PAD_BUTTON_START || pressed & WPAD_BUTTON_B || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0) {
 				menu_section = 0;
-				select_repo = false;
-				select_category = false;
 				update_settings();
 			}
 		}
 
 		// Home button press
-		if ((pressed & WPAD_BUTTON_HOME || pressed_gc & PAD_BUTTON_START) && updating == -1) {
-			if (activity == ACTIVITY_MENU) activity = ACTIVITY_MAIN;
-			else activity = ACTIVITY_MENU;
+		if ((pressed & WPAD_BUTTON_HOME || pressed_gc & PAD_BUTTON_START) && updating == -1 && !download_in_progress && !extract_in_progress && !delete_in_progress) {
+			if (ACTIVITIES_current() == ACTIVITY_MENU) ACTIVITIES_goBack();
+			else {
+				close_windows();
+				ACTIVITIES_open(ACTIVITY_MENU);
+			}
+			wait_a_press = 10;
+		}
+
+		// B button press
+		if ((pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) && updating == -1 && !download_in_progress && !extract_in_progress && !delete_in_progress) {
+			if (!close_windows()) ACTIVITIES_goBack();
 			wait_a_press = 10;
 		}
 
@@ -2373,7 +2306,7 @@ int main(int argc, char **argv) {
 					}
 					if (start_updated >= 0) {
 
-						if (UI_isOnSquare(ir, 150, ypos_updated + (25 * x) - 1, 328, 24) && !(held & WPAD_BUTTON_B || held_gc & PAD_BUTTON_B)) {
+						if (UI_isOnSquare(ir, 150, ypos_updated + (25 * x) - 1, 328, 24)) {
 							doRumble = true;
 							UI_highlight(150, ypos_updated + (25 * x) - 1, 328, 24);
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0) {
@@ -2401,11 +2334,6 @@ int main(int argc, char **argv) {
 					select_repo = false;
 					wait_a_press = 10;
 				}
-			}
-
-			if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
-				select_repo = false;
-				wait_a_press = 10;
 			}
 		}
 
@@ -2475,11 +2403,6 @@ int main(int argc, char **argv) {
 					wait_a_press = 10;
 				}
 			}
-
-			if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
-				select_category = false;
-				wait_a_press = 10;
-			}
 		}
 
 		// Select sort
@@ -2516,11 +2439,6 @@ int main(int argc, char **argv) {
 					select_sort = false;
 					wait_a_press = 10;
 				}
-			}
-
-			if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
-				select_sort = false;
-				wait_a_press = 10;
 			}
 		}
 
@@ -2601,21 +2519,6 @@ int main(int argc, char **argv) {
 		}
 
 		GRRLIB_Render();
-
-		// Free about text when out of about window
-		if (free_about == true) {
-			GRRLIB_FreeTexture(string1);
-			GRRLIB_FreeTexture(string2);
-			GRRLIB_FreeTexture(string3);
-			GRRLIB_FreeTexture(string4);
-			GRRLIB_FreeTexture(string5);
-			GRRLIB_FreeTexture(str_res_title);
-			GRRLIB_FreeTexture(str_res_author);
-			GRRLIB_FreeTexture(str_res_version);
-			GRRLIB_FreeTexture(str_res_size);
-			GRRLIB_FreeTexture(str_res_date);
-			free_about = false;
-		}
 
 		// Free the strings from the list
 		if (free_string == true) {

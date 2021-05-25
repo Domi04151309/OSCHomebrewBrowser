@@ -284,7 +284,7 @@ static void *run_icons_thread(void *arg) {
 			sleep(3);
 		}
 
-		while (download_in_progress == true || extract_in_progress == true || delete_in_progress == true || activity == ACTIVITY_MENU) {
+		while (download_in_progress == true || extract_in_progress == true || delete_in_progress == true || ACTIVITIES_current() == ACTIVITY_MENU) {
 			download_icon_sleeping = true;
 			sleep(3);
 		}
@@ -680,7 +680,7 @@ static void *run_download_thread(void *arg) {
 
 		remove_file(extractzipfile);
 
-		if (activity != ACTIVITY_APP && updating == -1) {
+		if (ACTIVITIES_current() != ACTIVITY_APP && updating == -1) {
 			download_in_progress = false;
 			extract_in_progress = false;
 			delete_in_progress = false;
@@ -901,7 +901,7 @@ static void *run_download_thread(void *arg) {
 		}
 	}
 
-	if (activity != ACTIVITY_APP) {
+	if (ACTIVITIES_current() != ACTIVITY_APP) {
 		download_in_progress = false;
 		if (extract_in_progress != -1) {
 			extract_in_progress = false;
