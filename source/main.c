@@ -56,17 +56,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "app_new_png.h"
 #include "help_png.h"
 #include "sd_card_png.h"
-#include "cat_all_png.h"
-#include "cat_demo_png.h"
-#include "cat_demo_highlight_png.h"
-#include "cat_emulator_png.h"
-#include "cat_emulator_highlight_png.h"
-#include "cat_games_png.h"
-#include "cat_games_highlight_png.h"
-#include "cat_media_png.h"
-#include "cat_media_highlight_png.h"
-#include "cat_utilities_png.h"
-#include "cat_utilities_highlight_png.h"
 #include "down_png.h"
 #include "blue_progress_png.h"
 #include "download_frame_png.h"
@@ -430,18 +419,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *sort_arrow_down_img=GRRLIB_LoadTexture(sort_arrow_down_png);
 	GRRLIB_texImg *sort_arrow_up_img=GRRLIB_LoadTexture(sort_arrow_up_png);
 
-	GRRLIB_texImg *cat_all_img=GRRLIB_LoadTexture(cat_all_png);
-	GRRLIB_texImg *cat_demo_img=GRRLIB_LoadTexture(cat_demo_png);
-	GRRLIB_texImg *cat_demo_highlight_img=GRRLIB_LoadTexture(cat_demo_highlight_png);
-	GRRLIB_texImg *cat_emulator_img=GRRLIB_LoadTexture(cat_emulator_png);
-	GRRLIB_texImg *cat_emulator_highlight_img=GRRLIB_LoadTexture(cat_emulator_highlight_png);
-	GRRLIB_texImg *cat_games_img=GRRLIB_LoadTexture(cat_games_png);
-	GRRLIB_texImg *cat_games_highlight_img=GRRLIB_LoadTexture(cat_games_highlight_png);
-	GRRLIB_texImg *cat_media_img=GRRLIB_LoadTexture(cat_media_png);
-	GRRLIB_texImg *cat_media_highlight_img=GRRLIB_LoadTexture(cat_media_highlight_png);
-	GRRLIB_texImg *cat_utilities_img=GRRLIB_LoadTexture(cat_utilities_png);
-	GRRLIB_texImg *cat_utilities_highlight_img=GRRLIB_LoadTexture(cat_utilities_highlight_png);
-
 	GRRLIB_texImg *help_about_img=GRRLIB_LoadTexture(help_about_png);
 	GRRLIB_texImg *help_controller_img=GRRLIB_LoadTexture(help_controller_png);
 	GRRLIB_texImg *help_queue_img=GRRLIB_LoadTexture(help_queue_png);
@@ -708,19 +685,19 @@ int main(int argc, char **argv) {
 			ypos = ypos_updated;
 		}
 
-		if (ACTIVITIES_current() == ACTIVITY_MAIN && updating == -1) {
+		if (ACTIVITIES_current() == ACTIVITY_MAIN) {
 			// Dpad up / down
 			if (setting_wiiside == false) {
-				if ((held & WPAD_BUTTON_DOWN || held_gc & PAD_BUTTON_DOWN) && ((strlen(homebrew_list[finish+1].name) > 1 && updating == -1) || (select_repo == true && finish_updated+1 < repo_count))) { ypos-= 4; }
-				if ((held & WPAD_BUTTON_UP || held_gc & PAD_BUTTON_UP) && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) && updating == -1) { ypos+= 4; }
+				if ((held & WPAD_BUTTON_DOWN || held_gc & PAD_BUTTON_DOWN) && ((strlen(homebrew_list[finish+1].name) > 1) || (select_repo == true && finish_updated+1 < repo_count))) { ypos-= 4; }
+				if ((held & WPAD_BUTTON_UP || held_gc & PAD_BUTTON_UP) && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180))) { ypos+= 4; }
 			}
 
 			// Wiimote sideways
 			if (held & WPAD_BUTTON_1) {
-				if (held & WPAD_BUTTON_LEFT && ((strlen(homebrew_list[finish+1].name) > 1 && updating == -1) || (select_repo == true && finish_updated+1 < repo_count))) {
+				if (held & WPAD_BUTTON_LEFT && ((strlen(homebrew_list[finish+1].name) > 1) || (select_repo == true && finish_updated+1 < repo_count))) {
 					ypos-= 5;
 				}
-				if (held & WPAD_BUTTON_RIGHT && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180)) && updating == -1) {
+				if (held & WPAD_BUTTON_RIGHT && ((select_repo == false && ypos <= 140) || (select_repo == true && ypos <= 180))) {
 					ypos+= 5;
 				}
 			}
@@ -871,6 +848,8 @@ int main(int argc, char **argv) {
 			}
 
 			// Display icons, text
+			GRRLIB_ClipDrawing(35, 130, 530, 310);
+
 			GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
 			GRRLIB_DrawImg(210, ypos + (76 * start) + 4, str_name, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(210, ypos + (76 * start) + 30, str_short_desc, 0, 1.0, 1.0, 0xFFFFFFFF);
@@ -891,8 +870,7 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 4, str_name4, 0, 1.0, 1.0, 0xFFFFFFFF);
 			GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 30, str_short_desc4, 0, 1.0, 1.0, 0xFFFFFFFF);
 
-			GRRLIB_Rectangle(35, 440, 530, 40, WINDOW_BACKGROUND, true);
-			GRRLIB_Rectangle(35, 66, 530, 64, WINDOW_BACKGROUND, true);
+			GRRLIB_ClipReset();
 
 			// Empty messages
 			if ((category_selection == 6 || category_selection == 7) && strcmp(homebrew_list[0].name,"000") == 0 && wait_a_press == 0) {
@@ -946,12 +924,12 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawImg(580, 370, down_img, 0, 1, 1, TOOLTIP_COLOR);
 				if (setting_tool_tip == true) { UI_drawTooltip(580, 370, STR_QUEUE); }
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && download_in_progress == false) {
-					if (category_selection == 5 && updating == -1 && array_length (homebrew_list) >= 1) {
+					if (category_selection == 5 && array_length (homebrew_list) >= 1) {
 						category_selection = 7;
 						updated_cat = true;
 					}
 					else {
-						if ((category_selection == 6 || category_selection == 7) && updating == -1 && strcmp(homebrew_list[0].name,"000") != 0 && array_length (homebrew_list) >= 1) {
+						if ((category_selection == 6 || category_selection == 7) && strcmp(homebrew_list[0].name,"000") != 0 && array_length (homebrew_list) >= 1) {
 							if (setting_online == true && hide_apps_updated() == true) {
 								clear_temp_list();
 								updating = 0;
@@ -990,64 +968,45 @@ int main(int argc, char **argv) {
 		}
 
 		// Category selection
-		GRRLIB_DrawImg(36, 103, cat_all_img, 0, 1, 1, 0xFFFFFFFF);
+		UI_CAT_drawBar();
 		if (ACTIVITIES_current() == ACTIVITY_MAIN) {
-			if (category_selection == 0) {
-				GRRLIB_DrawImg(34, 103, cat_demo_img, 0, 1, 1, 0xFFFFFFFF);
-			} else if (category_selection == 1) {
-				GRRLIB_DrawImg(147, 103, cat_emulator_img, 0, 1, 1, 0xFFFFFFFF);
-			} else if (category_selection == 2) {
-				GRRLIB_DrawImg(252, 103, cat_games_img, 0, 1, 1, 0xFFFFFFFF);
-			} else if (category_selection == 3) {
-				GRRLIB_DrawImg(359, 103, cat_media_img, 0, 1, 1, 0xFFFFFFFF);
-			} else if (category_selection == 4) {
-				GRRLIB_DrawImg(466, 103, cat_utilities_img, 0, 1, 1, 0xFFFFFFFF);
-			}
+			UI_CAT_highlight(category_selection, BTN_COLOR_SELECTED);
 		}
-		if (ir.x > 22 && ir.x < 130 && ir.y > 100 && ir.y < 126) {
+		if (UI_CAT_isOnCategory(ir, 0)) {
 			doRumble = true;
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1 && array_length(demos_list) >= 1) {
 				category_old_selection = category_selection;
 				category_selection = 0;
 				updated_cat = true;
 			}
-			GRRLIB_DrawImg(34, 103, cat_demo_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-		}
-		if (ir.x > 134 && ir.x < 234 && ir.y > 100 && ir.y < 126) {
+		} else if (UI_CAT_isOnCategory(ir, 1)) {
 			doRumble = true;
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1 && array_length(emulators_list) >= 1) {
 				category_old_selection = category_selection;
 				category_selection = 1;
 				updated_cat = true;
 			}
-			GRRLIB_DrawImg(147, 103, cat_emulator_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-		}
-		if (ir.x > 240 && ir.x < 342 && ir.y > 100 && ir.y < 126) {
+		} else if (UI_CAT_isOnCategory(ir, 2)) {
 			doRumble = true;
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1 && array_length(games_list) >= 1) {
 				category_old_selection = category_selection;
 				category_selection = 2;
 				updated_cat = true;
 			}
-			GRRLIB_DrawImg(252, 103, cat_games_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-		}
-		if (ir.x > 348 && ir.x < 448 && ir.y > 100 && ir.y < 126) {
+		} else if (UI_CAT_isOnCategory(ir, 3)) {
 			doRumble = true;
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1 && array_length(media_list) >= 1) {
 				category_old_selection = category_selection;
 				category_selection = 3;
 				updated_cat = true;
 			}
-			GRRLIB_DrawImg(359, 103, cat_media_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-		}
-		if (ir.x > 452 && ir.x < 548 && ir.y > 100 && ir.y < 126) {
+		} else if (UI_CAT_isOnCategory(ir, 4)) {
 			doRumble = true;
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1 && array_length(utilities_list) >= 1) {
 				category_old_selection = category_selection;
 				category_selection = 4;
 				updated_cat = true;
 			}
-			GRRLIB_DrawImg(466, 103, cat_utilities_highlight_img, 0, 1, 1, 0xFFFFFFFF);
 		}
 
 		// Changed category
@@ -1489,7 +1448,7 @@ int main(int argc, char **argv) {
 
 
 		// About
-		if (ACTIVITIES_current() == ACTIVITY_APP && updating == -1) {
+		if (ACTIVITIES_current() == ACTIVITY_APP) {
 			if (update_about == true) {
 				str_res_title = GRRLIB_TextToTexture(homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 				str_res_author = GRRLIB_TextToTexture(homebrew_list[current_app].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);

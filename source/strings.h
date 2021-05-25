@@ -3,6 +3,11 @@
 
 #define STR_INSTALLED_APPS "Installed Apps"
 #define STR_INFO "Info"
+#define STR_DEMOS "Demos"
+#define STR_EMULATORS "Emulators"
+#define STR_GAMES "Games"
+#define STR_MEDIA "Media"
+#define STR_UTILITIES "Utilities"
 #define STR_SORT_BY_NAME "Sort by Name"
 #define STR_SORT_BY_DATE "Sort by Date"
 #define STR_QUEUE "Queue"
