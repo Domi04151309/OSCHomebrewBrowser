@@ -118,7 +118,6 @@ int cancel_wait = 0;
 bool load_updated = false;
 int icons_loaded = 0;
 
-bool free_download_info = false;
 bool select_repo = false;
 bool select_category = false;
 bool select_sort = false;
@@ -140,7 +139,6 @@ bool close_windows() {
 	if (ACTIVITIES_current() == ACTIVITY_SETTINGS) update_settings();
 	menu_section = 0;
 	refresh_list = -1;
-	current_app = 0;
 	return state;
 }
 
@@ -318,10 +316,8 @@ int main(int argc, char **argv) {
 
 	// About text
 	GRRLIB_texImg *str_res_title = NULL;
-	GRRLIB_texImg *str_res_author = NULL;
-	GRRLIB_texImg *str_res_version = NULL;
-	GRRLIB_texImg *str_res_size = NULL;
-	GRRLIB_texImg *str_res_date = NULL;
+	char str_res_size[50];
+	char str_res_date[50];
 
 	// About text description
 	GRRLIB_texImg *string1 = NULL;
@@ -332,10 +328,10 @@ int main(int argc, char **argv) {
 
 	char str_sd_card[50];
 	char str_icon_info[50];
-	GRRLIB_texImg *str_download_info = NULL;
+	char str_download_info[50];
 
 	// Download queue
-	GRRLIB_texImg *str_title_status = NULL;
+	char str_title_status[50];
 
 	GRRLIB_texImg *mouse_img=GRRLIB_LoadTexture(mouse_png);
 
@@ -1012,19 +1008,14 @@ int main(int argc, char **argv) {
 		// Updating
 		if (updating >= 0 && strcmp(homebrew_list[0].name,"000") != 0) {
 			if (free_update) {
-				char temp[50];
-				sprintf (temp, "Processing %i/%i applications", new_updating + 1, array_length (homebrew_list));
-
-				str_title_status = GRRLIB_TextToTexture(temp, FONTSIZE_SMALL, 0x575757);
-
+				sprintf (str_title_status, "Processing %i/%i applications", new_updating + 1, array_length (homebrew_list));
 				str_res_title = GRRLIB_TextToTexture(homebrew_list[new_updating].app_name, FONTSIZE_SMALL, 0x575757);
-
 				free_update = false;
 			}
 
 			if ((updating < array_length (homebrew_list) && new_updating < array_length (homebrew_list)) || new_updating == 10000) {
 
-				GRRLIB_DrawImg(220, 152, str_title_status, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_DrawText(220, 152, str_title_status, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 				GRRLIB_DrawImg(348 - (strlen(homebrew_list[updating].app_name) * 5.5), 196, str_res_title, 0, 1.0, 1.0, 0xFFFFFFFF);
 
 				// Download
@@ -1042,13 +1033,10 @@ int main(int argc, char **argv) {
 					}
 
 					// Download info
-					char temp[50];
 					double temp_download_progress_counter = download_progress_counter;
 					double temp_total_app_size = homebrew_list[updating].total_app_size;
-					sprintf (temp, "%3.2fMB / %3.2fMB", (temp_download_progress_counter/1000/1000), (temp_total_app_size/1000/1000));
-					str_download_info = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, 0x575757);
-					GRRLIB_DrawImg(360, 278, str_download_info, 0, 1.0, 1.0, 0xFFFFFFFF);
-					free_download_info = true;
+					sprintf(str_download_info, "%3.2fMB / %3.2fMB", (temp_download_progress_counter/1000/1000), (temp_total_app_size/1000/1000));
+					GRRLIB_DrawText(360, 278, str_download_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 				}
 
 				// Extract
@@ -1067,13 +1055,10 @@ int main(int argc, char **argv) {
 					}
 
 					// Extract info
-					char temp[50];
 					int temp_extract_file_counter = unzip_file_counter;
 					int temp_extract_file_count = unzip_file_count;
-					sprintf (temp, "%i / %i", temp_extract_file_counter, temp_extract_file_count);
-					str_download_info = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, 0x575757);
-					GRRLIB_DrawImg(410, 278, str_download_info, 0, 1.0, 1.0, 0xFFFFFFFF);
-					free_download_info = true;
+					sprintf(str_download_info, "%i / %i", temp_extract_file_counter, temp_extract_file_count);
+					GRRLIB_DrawText(410, 278, str_download_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 				}
 
 				// Delete in progress
@@ -1255,26 +1240,18 @@ int main(int argc, char **argv) {
 		if (ACTIVITIES_current() == ACTIVITY_APP) {
 			if (update_about) {
 				str_res_title = GRRLIB_TextToTexture(homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
-				str_res_author = GRRLIB_TextToTexture(homebrew_list[current_app].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
-				str_res_version = GRRLIB_TextToTexture(homebrew_list[current_app].app_version, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
-				char temp[50];
 				if (homebrew_list[current_app].app_total_size > 0 && homebrew_list[current_app].app_total_size < 1048576) {
 					int appsize = homebrew_list[current_app].app_total_size / 1024;
-					sprintf (temp, "%i KB", appsize);
-				}
-				else {
+					sprintf(str_res_size, "%i KB", appsize);
+				} else {
 					float appsize = (float) (homebrew_list[current_app].app_total_size / 1024) / 1024;
-					sprintf (temp, "%1.1f MB", appsize);
+					sprintf(str_res_size, "%1.1f MB", appsize);
 				}
-				str_res_size = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
-
 
 				app_time = homebrew_list[current_app].app_time;
-				char timebuf[50];
-				timeinfo = localtime ( &app_time );
-				strftime (timebuf,50,"%d %b %Y",timeinfo);
-				str_res_date = GRRLIB_TextToTexture(timebuf, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+				timeinfo = localtime( &app_time );
+				strftime(str_res_date, 50, "%d %b %Y", timeinfo);
 
 				const int text_size = sizeof(homebrew_list[0].app_description);
 				char text_description[text_size];
@@ -1349,10 +1326,10 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawText(70, 330, STR_SIZE, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 			GRRLIB_DrawText(70, 350, STR_DATE, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 
-			GRRLIB_DrawImg(140, 290, str_res_author, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(140, 310, str_res_version, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(140, 330, str_res_date, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(140, 350, str_res_size, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(140, 290, homebrew_list[current_app].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(140, 310, homebrew_list[current_app].app_version, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(140, 330, str_res_date, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(140, 350, str_res_size, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
 			if (strstr(homebrew_list[current_app].app_controllers, "wwww")) {
 				GRRLIB_DrawImg(290, 330, control_wiimote_4_img, 0, 1, 1, 0xFFFFFFFF);
@@ -1481,13 +1458,10 @@ int main(int argc, char **argv) {
 				}
 
 				// Download info
-				char temp[50];
 				double temp_download_progress_counter = download_progress_counter;
 				double temp_total_app_size = store_homebrew_list[0].total_app_size;
-				sprintf (temp, "%3.2fMB / %3.2fMB", (temp_download_progress_counter/1000/1000), (temp_total_app_size/1000/1000));
-				str_download_info = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, 0x575757);
-				GRRLIB_DrawImg(360, 398, str_download_info, 0, 1.0, 1.0, 0xFFFFFFFF);
-				free_download_info = true;
+				sprintf(str_download_info, "%3.2fMB / %3.2fMB", (temp_download_progress_counter/1000/1000), (temp_total_app_size/1000/1000));
+				GRRLIB_DrawText(360, 398, str_download_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 			}
 
 			// Extracting in progress, display progress
@@ -1505,13 +1479,10 @@ int main(int argc, char **argv) {
 				}
 
 				// Extract info
-				char temp[50];
 				int temp_extract_file_counter = unzip_file_counter;
 				int temp_extract_file_count = unzip_file_count;
-				sprintf (temp, "%i / %i", temp_extract_file_counter, temp_extract_file_count);
-				str_download_info = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, 0x575757);
-				GRRLIB_DrawImg(410, 398, str_download_info, 0, 1.0, 1.0, 0xFFFFFFFF);
-				free_download_info = true;
+				sprintf(str_download_info, "%i / %i", temp_extract_file_counter, temp_extract_file_count);
+				GRRLIB_DrawText(410, 398, str_download_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 			}
 
 			// Cancel prompt
@@ -2128,12 +2099,6 @@ int main(int argc, char **argv) {
 			}
 			free_string = false;
 			string_count = 6;
-		}
-
-		// Download size progress
-		if (free_download_info) {
-			GRRLIB_FreeTexture(str_download_info);
-			free_download_info = false;
 		}
 
 		// Exit
