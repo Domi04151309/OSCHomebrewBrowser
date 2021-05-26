@@ -2,7 +2,6 @@
 #define _STRINGS_H_
 
 #define STR_INSTALLED_APPS "Installed Apps"
-#define STR_INFO "Info"
 #define STR_DEMOS "Demos"
 #define STR_EMULATORS "Emulators"
 #define STR_GAMES "Games"
@@ -24,7 +23,6 @@
 
 #define STR_ABOUT "About"
 #define STR_CONTROLLER "Controller"
-
 #define STR_SETTINGS "Settings"
 #define STR_RETURN_TO_WII_MENU "Return to Wii Menu"
 #define STR_RETURN_TO_LOADER "Return to Loader"

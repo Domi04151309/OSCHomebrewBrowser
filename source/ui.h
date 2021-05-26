@@ -32,6 +32,12 @@
 #define UI_CAT_Y (16 + 72 + 8)
 #define UI_CAT_W (UI_PAGE_W / 5)
 
+#define UI_MENU_BTN_1_Y UI_SORT_1_Y
+#define UI_MENU_BTN_2_Y (UI_MENU_BTN_1_Y + UI_BLOCK_BTN_H + UI_PADDING)
+#define UI_MENU_BTN_3_Y (UI_MENU_BTN_2_Y + UI_BLOCK_BTN_H + UI_PADDING)
+#define UI_MENU_BTN_4_Y (UI_MENU_BTN_3_Y + UI_BLOCK_BTN_H + UI_PADDING)
+#define UI_MENU_BTN_5_Y (UI_MENU_BTN_4_Y + UI_BLOCK_BTN_H + UI_PADDING)
+
 void UI_bootScreen(const char *string);
 void UI_bootScreenTwo(const char *string1, const char *string2);
 void UI_roundedRect(const f32 x, const f32 y, const f32 w, const f32 h, const u32 color);
@@ -41,9 +47,12 @@ void UI_drawButton(const f32 x, const f32 y, const char *text, const uint8_t sta
 void UI_drawBlockButton(const f32 x, const f32 y, const char *text, const uint8_t state);
 bool UI_isOnSquare(ir_t ir, const f32 x, const f32 y, const f32 w, const f32 h);
 bool UI_isOnImg(ir_t ir, const f32 x, const f32 y, const GRRLIB_texImg *img);
-bool UI_isOnButton(ir_t ir, const f32 x, const f32 y, const char * text);
-bool UI_isOnBlockButton(ir_t ir, const f32 x, const f32 y);
 
+// Easy buttons
+bool UI_button(ir_t ir, const f32 x, const f32 y, const char * string);
+bool UI_blockButton(ir_t ir, const f32 x, const f32 y, const char * string);
+
+// Category bar
 int UI_CAT_catTextOffset(const int index, const char *string);
 void UI_CAT_drawBar();
 void UI_CAT_highlightHelper(const int category, const char *string);

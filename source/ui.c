@@ -46,10 +46,8 @@ void UI_drawButton(const f32 x, const f32 y, const char *text, const uint8_t sta
   if (state == 1) color = BTN_COLOR_HOVER;
   else if (state == 2) color = BTN_COLOR_DISABLED;
   else color = BTN_COLOR;
-  f32 w = 2 * UI_PADDING + GRRLIB_TextWidth(text, FONTSIZE_SMALL);
 
-  UI_roundedRect(x, y, w, UI_BLOCK_BTN_H, color);
-
+  UI_roundedRect(x, y, (2 * UI_PADDING + GRRLIB_TextWidth(text, FONTSIZE_SMALL)), UI_BLOCK_BTN_H, color);
   GRRLIB_DrawText(x + UI_PADDING, y + UI_PADDING, text, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 }
 
@@ -72,15 +70,19 @@ bool UI_isOnImg(ir_t ir, const f32 x, const f32 y, const GRRLIB_texImg *img) {
   return UI_isOnSquare(ir, x, y, (*img).w, (*img).h);
 }
 
-bool UI_isOnButton(ir_t ir, const f32 x, const f32 y, const char *text) {
-  f32 w = 2 * UI_PADDING + GRRLIB_TextWidth(text, FONTSIZE_SMALL);
-  return UI_isOnSquare(ir, x, y, w, UI_BLOCK_BTN_H);
+// Easy buttons
+bool UI_button(ir_t ir, const f32 x, const f32 y, const char * string) {
+  bool hovered = UI_isOnSquare(ir, x, y, (2 * UI_PADDING + GRRLIB_TextWidth(string, FONTSIZE_SMALL)), UI_BLOCK_BTN_H);
+  UI_drawButton(x, y, string, hovered);
+  return hovered;
+}
+bool UI_blockButton(ir_t ir, const f32 x, const f32 y, const char * string) {
+  bool hovered = UI_isOnSquare(ir, x, y, UI_BLOCK_BTN_W, UI_BLOCK_BTN_H);
+  UI_drawBlockButton(x, y, string, hovered);
+  return hovered;
 }
 
-bool UI_isOnBlockButton(ir_t ir, const f32 x, const f32 y) {
-  return UI_isOnSquare(ir, x, y, UI_BLOCK_BTN_W, UI_BLOCK_BTN_H);
-}
-
+// Category bar
 int UI_CAT_catTextOffset(const int index, const char *string) {
   return UI_CAT_X + UI_CAT_W * index + (UI_CAT_W - GRRLIB_TextWidth(string, FONTSIZE_SMALL)) / 2;
 }
