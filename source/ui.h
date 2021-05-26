@@ -17,7 +17,7 @@
 #define UI_BLOCK_BTN_H (2 * UI_PADDING + FONTSIZE_SMALL)
 
 #define UI_PAGE_X 32
-#define UI_PAGE_Y UI_CAT_Y
+#define UI_PAGE_Y (16 + 72 + 8)
 #define UI_PAGE_W_SMALL (SCREEN_WIDTH - 32 - 8 - 36 - 8 - UI_PAGE_X)
 #define UI_PAGE_W (SCREEN_WIDTH - 32 - UI_PAGE_X)
 #define UI_PAGE_H (SCREEN_HEIGHT - 32 - UI_PAGE_Y)
@@ -29,7 +29,7 @@
 #define UI_SORT_3_Y (SCREEN_HEIGHT - 32 - UI_PADDING - 36)
 
 #define UI_CAT_X 32
-#define UI_CAT_Y (16 + 72 + 8)
+#define UI_CAT_Y UI_PAGE_Y
 #define UI_CAT_W (UI_PAGE_W / 5)
 
 #define UI_MENU_BTN_1_Y UI_SORT_1_Y
@@ -37,6 +37,8 @@
 #define UI_MENU_BTN_3_Y (UI_MENU_BTN_2_Y + UI_BLOCK_BTN_H + UI_PADDING)
 #define UI_MENU_BTN_4_Y (UI_MENU_BTN_3_Y + UI_BLOCK_BTN_H + UI_PADDING)
 #define UI_MENU_BTN_5_Y (UI_MENU_BTN_4_Y + UI_BLOCK_BTN_H + UI_PADDING)
+
+#define UI_BOTTOM_TEXT_Y (UI_PAGE_Y + UI_PAGE_H + 8)
 
 void UI_bootScreen(const char *string);
 void UI_bootScreenTwo(const char *string1, const char *string2);

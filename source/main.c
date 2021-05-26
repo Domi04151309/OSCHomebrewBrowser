@@ -104,7 +104,6 @@ extern time_t app_time;
 int category_selection = 2;
 bool update_about = false;
 bool free_update = false;
-bool free_sd_size = false;
 bool updated_cat = false;
 int current_app = 0;
 
@@ -114,7 +113,6 @@ int display_message_counter = 0;
 int wait_a_press = 0;
 int held_counter = 0;
 int menu_section = 0;
-bool free_icon_info = false;
 bool gc_control_used = false;
 int cancel_wait = 0;
 bool load_updated = false;
@@ -332,8 +330,8 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *string4 = NULL;
 	GRRLIB_texImg *string5 = NULL;
 
-	GRRLIB_texImg *str_sd_card = NULL;
-	GRRLIB_texImg *str_icon_info = NULL;
+	char str_sd_card[50];
+	char str_icon_info[50];
 	GRRLIB_texImg *str_download_info = NULL;
 
 	// Download queue
@@ -2084,22 +2082,11 @@ int main(int argc, char **argv) {
 				}
 			}
 
-			if (free_sd_size) {
-				GRRLIB_FreeTexture(str_sd_card);
-				free_sd_size = false;
-			}
-
-			char temp[50];
-			sprintf (temp, "%lli MB Free", sd_card_free);
-
-			str_sd_card = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, 0x9d9d9d);
+			sprintf(str_sd_card, "%lli MB Free", sd_card_free);
 			sd_card_update = false;
-			free_sd_size = true;
 		}
 
-		if (setting_sd_card) {
-			GRRLIB_DrawImg(468, 441, str_sd_card, 0, 1.0, 1.0, 0xFFFFFFFF);
-		}
+		if (setting_sd_card) GRRLIB_DrawText(468, UI_BOTTOM_TEXT_Y, str_sd_card, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 
 		// Rumble
 		if (setting_rumble) {
@@ -2118,18 +2105,15 @@ int main(int argc, char **argv) {
 
 		// Icon load info
 		if (download_icon > 0 && !download_in_progress && !extract_in_progress) {
-			char temp[50];
-			sprintf (temp, "Checking icon %i / %i", download_icon, array_length(total_list));
-			str_icon_info = GRRLIB_TextToTexture(temp, FONTSIZE_SMALLER, 0x9d9d9d);
-			GRRLIB_DrawImg(248, 441, str_icon_info, 0, 1.0, 1.0, 0xFFFFFFFF);
-			free_icon_info = true;
+			sprintf(str_icon_info, "Checking icon %i / %i", download_icon, array_length(total_list));
+			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, str_icon_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
 
 		if (download_in_progress && updating == -1 && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
-			GRRLIB_DrawText(248, 441, STR_DOWNLOADING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
+			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, STR_DOWNLOADING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
 		if (extract_in_progress && updating == -1 && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
-			GRRLIB_DrawText(248, 441, STR_EXTRACTING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
+			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, STR_EXTRACTING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
 
 		// Draw the IR pointer
@@ -2154,12 +2138,6 @@ int main(int argc, char **argv) {
 			}
 			free_string = false;
 			string_count = 6;
-		}
-
-		// Icon loading info
-		if (free_icon_info && download_icon > 0) {
-			GRRLIB_FreeTexture(str_icon_info);
-			free_icon_info = false;
 		}
 
 		// Download size progress
