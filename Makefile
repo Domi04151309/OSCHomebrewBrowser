@@ -29,7 +29,7 @@ FALLBACK_DOMAIN	:=	hbb2.oscwii.org
 # options for code generation
 #---------------------------------------------------------------------------------
 
-CFLAGS		:=	-g -O -mrvl -Wall
+CFLAGS		:=	-O3 -mrvl -Wall
 CFLAGS		+=	-DMAIN_DOMAIN=\"$(MAIN_DOMAIN)\" -DFALLBACK_DOMAIN=\"$(FALLBACK_DOMAIN)\" # -D_WANT_USE_LONG_TIME_T
 CFLAGS		+=	$(MACHDEP) $(INCLUDE)
 CXXFLAGS	:=	$(CFLAGS)

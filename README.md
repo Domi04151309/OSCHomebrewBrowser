@@ -11,4 +11,4 @@ With `DevKitPro` you can then build `GRRLIB` from source so that you can finally
 
 ## Useful Commands
 - `make clean` Cleans up
-- `make -j12` Builds the app
+- `make -j` Builds the app
