@@ -121,7 +121,6 @@ int icons_loaded = 0;
 bool select_repo = false;
 bool select_category = false;
 bool select_sort = false;
-bool repo_texted = false;
 
 int refresh_list = -1;
 int download_arrow = 0;
@@ -151,7 +150,6 @@ int main(int argc, char **argv) {
 	sprintf(setting_last_boot, "%li", current_time); // bug fix
 
 	GRRLIB_Init();
-	GRRLIB_InitFreetype();
 	GRRLIB_InitFont();
 	UI_bootScreen("Loading");
 
@@ -311,16 +309,16 @@ int main(int argc, char **argv) {
 	suspend_reset_thread();
 
 	// About text
-	GRRLIB_texImg *str_res_title = NULL;
+	char str_res_title[100];
 	char str_res_size[50];
 	char str_res_date[50];
 
 	// About text description
-	GRRLIB_texImg *string1 = NULL;
-	GRRLIB_texImg *string2 = NULL;
-	GRRLIB_texImg *string3 = NULL;
-	GRRLIB_texImg *string4 = NULL;
-	GRRLIB_texImg *string5 = NULL;
+	char string1[80];
+	char string2[80];
+	char string3[80];
+	char string4[80];
+	char string5[80];
 
 	char str_sd_card[50];
 	char str_icon_info[50];
@@ -932,14 +930,14 @@ int main(int argc, char **argv) {
 		if (updating >= 0 && strcmp(homebrew_list[0].name,"000") != 0) {
 			if (free_update) {
 				sprintf (str_title_status, "Processing %i/%i applications", new_updating + 1, array_length (homebrew_list));
-				str_res_title = GRRLIB_TextToTexture(homebrew_list[new_updating].app_name, FONTSIZE_SMALL, 0x575757);
+				strcpy(str_res_title, homebrew_list[new_updating].app_name);
 				free_update = false;
 			}
 
 			if ((updating < array_length (homebrew_list) && new_updating < array_length (homebrew_list)) || new_updating == 10000) {
 
 				GRRLIB_DrawText(220, 152, str_title_status, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
-				GRRLIB_DrawImg(348 - (strlen(homebrew_list[updating].app_name) * 5.5), 196, str_res_title, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_DrawText(348 - (strlen(homebrew_list[updating].app_name) * 5.5), 196, str_res_title, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 				// Download
 				if (download_in_progress) {
@@ -1161,8 +1159,6 @@ int main(int argc, char **argv) {
 		// About
 		if (ACTIVITIES_current() == ACTIVITY_APP) {
 			if (update_about) {
-				str_res_title = GRRLIB_TextToTexture(homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
-
 				if (homebrew_list[current_app].app_total_size > 0 && homebrew_list[current_app].app_total_size < 1048576) {
 					int appsize = homebrew_list[current_app].app_total_size / 1024;
 					sprintf(str_res_size, "%i KB", appsize);
@@ -1197,35 +1193,35 @@ int main(int argc, char **argv) {
 					count++;
 					if (x >= (55 * (textrow+1)) && x <= (75 * (textrow+1)) && text_description[x] == ' ' && textrow == 0) {
 						test[count] = '\0';
-						string1 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string1, test);
 						textrow = 1;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 1) {
 						test[count] = '\0';
-						string2 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string2, test);
 						textrow = 2;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 2) {
 						test[count] = '\0';
-						string3 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string3, test);
 						textrow = 3;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 3) {
 						test[count] = '\0';
-						string4 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string4, test);
 						textrow = 4;
 						offset+= count - 55;
 						count = 0;
 					}
 					if (x >= (55 * (textrow+1) + offset) && x <= (75 * (textrow+1) + offset) && text_description[x] == ' ' && textrow == 4) {
 						test[count] = '\0';
-						string5 = GRRLIB_TextToTexture(test, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+						strcpy(string5, test);
 						count = 0;
 						textrow = 5;
 						break;
@@ -1235,13 +1231,13 @@ int main(int argc, char **argv) {
 				update_about = false;
 			}
 
-			GRRLIB_DrawImg(330 - (strlen(homebrew_list[current_app].app_name) * 5.5), 140, str_res_title, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(330 - (strlen(homebrew_list[current_app].app_name) * 5.5), 140, homebrew_list[current_app].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
-			GRRLIB_DrawImg(70, 170, string1, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 190, string2, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 210, string3, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 230, string4, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(70, 250, string5, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(70, 170, string1, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(70, 190, string2, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(70, 210, string3, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(70, 230, string4, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(70, 250, string5, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
 			GRRLIB_DrawText(70, 290, STR_AUTHOR, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 			GRRLIB_DrawText(70, 310, STR_VERSION, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
@@ -1255,17 +1251,13 @@ int main(int argc, char **argv) {
 
 			if (strstr(homebrew_list[current_app].app_controllers, "wwww")) {
 				GRRLIB_DrawImg(290, 330, control_wiimote_4_img, 0, 1, 1, 0xFFFFFFFF);
-			}
-			else if (strstr(homebrew_list[current_app].app_controllers, "www")) {
+			} else if (strstr(homebrew_list[current_app].app_controllers, "www")) {
 				GRRLIB_DrawImg(290, 330, control_wiimote_3_img, 0, 1, 1, 0xFFFFFFFF);
-			}
-			else if (strstr(homebrew_list[current_app].app_controllers, "ww")) {
+			} else if (strstr(homebrew_list[current_app].app_controllers, "ww")) {
 				GRRLIB_DrawImg(290, 330, control_wiimote_2_img, 0, 1, 1, 0xFFFFFFFF);
-			}
-			else if (strstr(homebrew_list[current_app].app_controllers, "w")) {
+			} else if (strstr(homebrew_list[current_app].app_controllers, "w")) {
 				GRRLIB_DrawImg(290, 330, control_wiimote_img, 0, 1, 1, 0xFFFFFFFF);
-			}
-			else { GRRLIB_DrawImg(290, 330, control_wiimote_img, 0, 1, 1, 0xFFFFFF3C); }
+			} else { GRRLIB_DrawImg(290, 330, control_wiimote_img, 0, 1, 1, 0xFFFFFF3C); }
 			if (strstr(homebrew_list[current_app].app_controllers, "n")) {
 				GRRLIB_DrawImg(310, 330, control_nunchuck_img, 0, 1, 1, 0xFFFFFFFF);
 			} else { GRRLIB_DrawImg(310, 330, control_nunchuck_img, 0, 1, 1, 0xFFFFFF3C); }
@@ -1793,17 +1785,8 @@ int main(int argc, char **argv) {
 		if (select_repo) {
 			GRRLIB_DrawImg(123, 148, apps_repo_img, 0, 1, 1, 0xFFFFFFFF);
 
-			if (!repo_texted) {
-				int u;
-				for (u = 0; u < repo_count; u++) {
-					repo_list[u].str_text = GRRLIB_TextToTexture(repo_list[u].name, FONTSIZE_SMALLER, 0x575757);
-				}
-				repo_texted = true;
-			}
-
-			int x;
 			start_updated = -1;
-			for (x = 0; x < repo_count; x++) {
+			for (int x = 0; x < repo_count; x++) {
 				if (ypos_updated + (25 * x) >= 175 && ypos_updated + (25 * x) + 30 < 425) {
 					if (start_updated == -1) {
 						start_updated = x;
@@ -1818,7 +1801,7 @@ int main(int argc, char **argv) {
 							}
 						}
 
-						GRRLIB_DrawImg(150, (x * 25) + ypos_updated, repo_list[x].str_text, 0, 1.0, 1.0, 0xFFFFFFFF);
+						GRRLIB_DrawText(150, (x * 25) + ypos_updated, repo_list[x].name, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 
 						if (setting_repo == x) {
 							GRRLIB_DrawImg(150 + strlen(repo_list[x].name) * 10, ypos_updated + (25 * x), app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);

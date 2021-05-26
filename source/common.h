@@ -205,7 +205,6 @@ struct repo_struct {
 	char domain[100];
 	char list_file[200];
 	char apps_dir[100];
-	void *str_text;
 };
 
 extern struct repo_struct repo_list[200];
