@@ -18,16 +18,19 @@
 
 #define UI_PAGE_X 32
 #define UI_PAGE_Y UI_CAT_Y
-#define UI_PAGE_W (SCREEN_WIDTH - 32 - 8 - 36 - 8 - UI_PAGE_X)
-#define UI_PAGE_W_LARGE (SCREEN_WIDTH - 32 - UI_PAGE_X)
+#define UI_PAGE_W_SMALL (SCREEN_WIDTH - 32 - 8 - 36 - 8 - UI_PAGE_X)
+#define UI_PAGE_W (SCREEN_WIDTH - 32 - UI_PAGE_X)
 #define UI_PAGE_H (SCREEN_HEIGHT - 32 - UI_PAGE_Y)
 
 #define UI_SORT_X (SCREEN_WIDTH - 32 - 36 - 8)
 #define UI_SORT_ARROW_X (SCREEN_WIDTH - 32 - 12)
+#define UI_SORT_1_Y (UI_PAGE_Y + UI_BLOCK_BTN_H + UI_PADDING)
+#define UI_SORT_2_Y (UI_PAGE_Y + UI_BLOCK_BTN_H + UI_PADDING + 36 + 16)
+#define UI_SORT_3_Y (SCREEN_HEIGHT - 32 - UI_PADDING - 36)
 
 #define UI_CAT_X 32
 #define UI_CAT_Y (16 + 72 + 8)
-#define UI_CAT_W (UI_PAGE_W_LARGE / 5)
+#define UI_CAT_W (UI_PAGE_W / 5)
 
 void UI_bootScreen(const char *string);
 void UI_bootScreenTwo(const char *string1, const char *string2);

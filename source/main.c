@@ -54,8 +54,8 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "app_tick_small_png.h"
 #include "app_minus_png.h"
 #include "app_new_png.h"
-#include "help_png.h"
-#include "sd_card_png.h"
+#include "info_png.h"
+#include "list_png.h"
 #include "down_png.h"
 #include "blue_progress_png.h"
 #include "download_frame_png.h"
@@ -69,8 +69,8 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "help_queue_3_png.h"
 #include "home_bg_png.h"
 #include "gear_bg_png.h"
-#include "setting_cross_png.h"
-#include "help_bg_png.h"
+#include "app_cross_png.h"
+#include "info_bg_png.h"
 #include "cancel_download_prompt_png.h"
 #include "button_no_png.h"
 #include "button_no_highlight_png.h"
@@ -412,8 +412,8 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *app_tick_img=GRRLIB_LoadTexture(app_tick_png);
 	GRRLIB_texImg *app_tick_small_img=GRRLIB_LoadTexture(app_tick_small_png);
 	GRRLIB_texImg *app_new_img=GRRLIB_LoadTexture(app_new_png);
-	GRRLIB_texImg *help_img=GRRLIB_LoadTexture(help_png);
-	GRRLIB_texImg *sd_card_img=GRRLIB_LoadTexture(sd_card_png);
+	GRRLIB_texImg *info_img=GRRLIB_LoadTexture(info_png);
+	GRRLIB_texImg *list_img=GRRLIB_LoadTexture(list_png);
 	GRRLIB_texImg *down_img=GRRLIB_LoadTexture(down_png);
 	GRRLIB_texImg *blue_progress_img=GRRLIB_LoadTexture(blue_progress_png);
 	GRRLIB_texImg *download_frame_img=GRRLIB_LoadTexture(download_frame_png);
@@ -428,8 +428,8 @@ int main(int argc, char **argv) {
 
 	GRRLIB_texImg *gear_bg_img=GRRLIB_LoadTexture(gear_bg_png);
 	GRRLIB_texImg *home_bg_img=GRRLIB_LoadTexture(home_bg_png);
-	GRRLIB_texImg *setting_cross_img=GRRLIB_LoadTexture(setting_cross_png);
-	GRRLIB_texImg *help_bg_img=GRRLIB_LoadTexture(help_bg_png);
+	GRRLIB_texImg *app_cross_img=GRRLIB_LoadTexture(app_cross_png);
+	GRRLIB_texImg *info_bg_img=GRRLIB_LoadTexture(info_bg_png);
 
 	GRRLIB_texImg *cancel_download_prompt_img=GRRLIB_LoadTexture(cancel_download_prompt_png);
 	GRRLIB_texImg *button_no_img=GRRLIB_LoadTexture(button_no_png);
@@ -530,7 +530,7 @@ int main(int argc, char **argv) {
 		}
 
 		GRRLIB_FillScreen(WINDOW_BACKGROUND);
-		UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_LARGE, UI_PAGE_H, COLOUR_WHITE);
+		UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, COLOUR_WHITE);
 
 		int x;
 		int start = -1;
@@ -686,8 +686,8 @@ int main(int argc, char **argv) {
 		}
 
 		if (ACTIVITIES_current() == ACTIVITY_MAIN) {
-			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_LARGE, UI_PAGE_H, COLOUR_LIGHT_GRAY);
-			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, COLOUR_WHITE);
+			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, COLOUR_LIGHT_GRAY);
+			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_SMALL, UI_PAGE_H, COLOUR_WHITE);
 
 			// Dpad up / down
 			if (setting_wiiside == false) {
@@ -794,13 +794,13 @@ int main(int argc, char **argv) {
 			}
 
 			// Highlighting and display tick, question mark or plus
-			GRRLIB_ClipDrawing(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H);
+			GRRLIB_ClipDrawing(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_SMALL, UI_PAGE_H);
 			int b;
 			for(b = 0; b <= 4; b++) {
 				if (strlen(homebrew_list[(start + b)].name) >= 2 && strcmp(homebrew_list[(start + b)].name,"000") != 0) {
 					if (UI_isOnSquare(ir, UI_PAGE_X, ypos + (76 * (start + b)), 530, 64)) {
 						doRumble = true;
-						UI_highlight(UI_PAGE_X, ypos + (76 * (start + b)), UI_PAGE_W, 64);
+						UI_highlight(UI_PAGE_X, ypos + (76 * (start + b)), UI_PAGE_W_SMALL, 64);
 
 						if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A)) {
 							ACTIVITIES_open(ACTIVITY_APP);
@@ -888,10 +888,10 @@ int main(int argc, char **argv) {
 			}
 
 			//Sorting icons
-			if (UI_isOnImg(ir, UI_SORT_X, 150, name_img)) {
+			if (UI_isOnImg(ir, UI_SORT_X, UI_SORT_1_Y, name_img)) {
 				doRumble = true;
-				GRRLIB_DrawImg(UI_SORT_X, 150, name_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
-				if (setting_tool_tip == true) { UI_drawTooltip(UI_SORT_X, 150, STR_SORT_BY_NAME); }
+				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_1_Y, name_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
+				if (setting_tool_tip == true) { UI_drawTooltip(UI_SORT_X, UI_SORT_1_Y, STR_SORT_BY_NAME); }
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 					// Free list strings
 					free_string = true;
@@ -899,12 +899,12 @@ int main(int argc, char **argv) {
 					else { sort_up_down = 6; sort_by_name(0); refresh_list = -1; ypos = 142; }
 				}
 			} else {
-				GRRLIB_DrawImg(UI_SORT_X, 150, name_img, 0, 1, 1, LIGHT_BTN_COLOR);
+				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_1_Y, name_img, 0, 1, 1, LIGHT_BTN_COLOR);
 			}
-			if (UI_isOnImg(ir, UI_SORT_X, 200, date_img)) {
+			if (UI_isOnImg(ir, UI_SORT_X, UI_SORT_2_Y, date_img)) {
 				doRumble = true;
-				GRRLIB_DrawImg(UI_SORT_X, 200, date_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
-				if (setting_tool_tip == true) { UI_drawTooltip(UI_SORT_X, 200, STR_SORT_BY_DATE); }
+				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_2_Y, date_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
+				if (setting_tool_tip == true) { UI_drawTooltip(UI_SORT_X, UI_SORT_2_Y, STR_SORT_BY_DATE); }
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
 					// Free list strings
 					free_string = true;
@@ -912,19 +912,19 @@ int main(int argc, char **argv) {
 					else { sort_up_down = 0; sort_by_date(0); refresh_list = -1; ypos = 142; }
 				}
 			} else {
-				GRRLIB_DrawImg(UI_SORT_X, 200, date_img, 0, 1, 1, LIGHT_BTN_COLOR);
+				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_2_Y, date_img, 0, 1, 1, LIGHT_BTN_COLOR);
 			}
 
-			if (sort_up_down == 0) GRRLIB_DrawImg(UI_SORT_ARROW_X, 220, sort_arrow_down_img, 0, 1, 1, LIGHT_BTN_COLOR);
-			else if (sort_up_down == 1) GRRLIB_DrawImg(UI_SORT_ARROW_X, 204, sort_arrow_up_img, 0, 1, 1, LIGHT_BTN_COLOR);
-			else if (sort_up_down == 6) GRRLIB_DrawImg(UI_SORT_ARROW_X, 170, sort_arrow_down_img, 0, 1, 1, LIGHT_BTN_COLOR);
-			else if (sort_up_down == 7) GRRLIB_DrawImg(UI_SORT_ARROW_X, 154, sort_arrow_up_img, 0, 1, 1, LIGHT_BTN_COLOR);
+			if (sort_up_down == 0) GRRLIB_DrawImg(UI_SORT_ARROW_X, UI_SORT_2_Y + 20, sort_arrow_down_img, 0, 1, 1, LIGHT_BTN_COLOR);
+			else if (sort_up_down == 1) GRRLIB_DrawImg(UI_SORT_ARROW_X, UI_SORT_2_Y + 4, sort_arrow_up_img, 0, 1, 1, LIGHT_BTN_COLOR);
+			else if (sort_up_down == 6) GRRLIB_DrawImg(UI_SORT_ARROW_X, UI_SORT_1_Y + 20, sort_arrow_down_img, 0, 1, 1, LIGHT_BTN_COLOR);
+			else if (sort_up_down == 7) GRRLIB_DrawImg(UI_SORT_ARROW_X, UI_SORT_1_Y + 4, sort_arrow_up_img, 0, 1, 1, LIGHT_BTN_COLOR);
 
 			//Queue icon
-			if (UI_isOnImg(ir, UI_SORT_X, 370, down_img)) {
+			if (UI_isOnImg(ir, UI_SORT_X, UI_SORT_3_Y, down_img)) {
 				doRumble = true;
-				GRRLIB_DrawImg(UI_SORT_X, 370, down_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
-				if (setting_tool_tip == true) { UI_drawTooltip(UI_SORT_X, 370, STR_QUEUE); }
+				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_3_Y, down_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
+				if (setting_tool_tip == true) { UI_drawTooltip(UI_SORT_X, UI_SORT_3_Y, STR_QUEUE); }
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && download_in_progress == false) {
 					if (category_selection == 5 && array_length (homebrew_list) >= 1) {
 						category_selection = 7;
@@ -947,7 +947,7 @@ int main(int argc, char **argv) {
 					}
 				}
 			} else {
-				GRRLIB_DrawImg(UI_SORT_X, 370, down_img, 0, 1, 1, LIGHT_BTN_COLOR);
+				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_3_Y, down_img, 0, 1, 1, LIGHT_BTN_COLOR);
 			}
 
 			// Category Change DPAD
@@ -1147,9 +1147,9 @@ int main(int argc, char **argv) {
 
 		// Main menu icons
 		GRRLIB_DrawImg(UI_PAGE_X - 15, 16, logo_img, 0, 1, 1, 0xFFFFFFFF);
-		if (UI_isOnImg(ir, 483, 16, sd_card_img)) {
+		if (UI_isOnImg(ir, 483, 16, list_img)) {
 			doRumble = true;
-			GRRLIB_DrawImg(483, 16, sd_card_img, 0, 1, 1, BTN_COLOR_HOVER);
+			GRRLIB_DrawImg(483, 16, list_img, 0, 1, 1, BTN_COLOR_HOVER);
 			if (setting_tool_tip == true) { UI_drawTooltip(483, 25, STR_INSTALLED_APPS); }
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1) {
 				category_old_selection = category_selection;
@@ -1157,18 +1157,18 @@ int main(int argc, char **argv) {
 				updated_cat = true;
 			}
 		} else {
-			GRRLIB_DrawImg(483, 16, sd_card_img, 0, 1, 1, BTN_COLOR);
+			GRRLIB_DrawImg(483, 16, list_img, 0, 1, 1, BTN_COLOR);
 		}
-		if (UI_isOnImg(ir, 546, 16, help_img)) {
+		if (UI_isOnImg(ir, 546, 16, info_img)) {
 			doRumble = true;
-			GRRLIB_DrawImg(546, 16, help_img, 0, 1, 1, BTN_COLOR_HOVER);
+			GRRLIB_DrawImg(546, 16, info_img, 0, 1, 1, BTN_COLOR_HOVER);
 			if (setting_tool_tip == true) { UI_drawTooltip(546, 25, STR_INFO); }
 			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && updating == -1) {
 				close_windows();
 				ACTIVITIES_open(ACTIVITY_INFO);
 			}
 		} else {
-			GRRLIB_DrawImg(546, 16, help_img, 0, 1, 1, BTN_COLOR);
+			GRRLIB_DrawImg(546, 16, info_img, 0, 1, 1, BTN_COLOR);
 		}
 
 		// Updating
@@ -1851,7 +1851,7 @@ int main(int argc, char **argv) {
 
 		// Info
 		if (ACTIVITIES_current() == ACTIVITY_INFO) {
-			GRRLIB_DrawImg(82, 146, help_bg_img, 0, 1, 1, 0xFFFFFFFF);
+			GRRLIB_DrawImg(82, 146, info_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
 			if (UI_isOnSquare(ir, 164, 146, 440, 44)) {
 				doRumble = true;
@@ -2050,15 +2050,15 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawText(112, 360, STR_OFFLINE_MODE, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
 
 				if (setting_sd_card == true) GRRLIB_DrawImg(498, 148, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 148, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 148, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_hide_installed == true) GRRLIB_DrawImg(498, 198, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 198, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 198, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_rumble == true) GRRLIB_DrawImg(498, 248, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 248, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 248, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_update_icon == true) GRRLIB_DrawImg(498, 298, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 298, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 298, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_online == false) GRRLIB_DrawImg(498, 348, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 348, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 348, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 
 				GRRLIB_DrawText(355, 418, STR_1_OF_3, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 			} else if (menu_section == 1) {
@@ -2108,9 +2108,9 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawText(112, 360, STR_START_UP_SORTING, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
 
 				if (setting_tool_tip == true) GRRLIB_DrawImg(498, 148, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 148, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 148, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_use_sd == true) GRRLIB_DrawImg(498, 198, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 198, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 198, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 
 				GRRLIB_DrawText(355, 418, STR_2_OF_3, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 			} else if (menu_section == 2) {
@@ -2142,11 +2142,11 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawText(112, 260, STR_USE_SECONDARY_SERVER, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
 
 				if (setting_disusb == true) GRRLIB_DrawImg(498, 148, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 148, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 148, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_wiiside == true) GRRLIB_DrawImg(498, 198, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 198, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 198, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 				if (setting_server == true) GRRLIB_DrawImg(498, 248, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-				else GRRLIB_DrawImg(498, 248, setting_cross_img, 0, 1, 1, 0xFFFFFFFF);
+				else GRRLIB_DrawImg(498, 248, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 
 				GRRLIB_DrawText(355, 418, STR_3_OF_3, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 			}
