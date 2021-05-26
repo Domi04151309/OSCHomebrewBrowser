@@ -194,12 +194,6 @@ struct homebrew_struct {
 
 };
 
-struct text_struct {
-	int text;
-	GRRLIB_texImg *str_name;
-	GRRLIB_texImg *str_short_description;
-};
-
 struct sort_homebrew_struct {
 	char name[100];
 	char app_name[100];
@@ -218,7 +212,6 @@ extern struct repo_struct repo_list[200];
 
 // List to show
 extern struct homebrew_struct homebrew_list[1600];
-extern struct text_struct text_list[1600];
 
 extern struct homebrew_struct emulators_list[300];
 extern struct homebrew_struct games_list[600];

@@ -68,7 +68,6 @@ struct repo_struct repo_list[200];
 
 // List to show
 struct homebrew_struct homebrew_list[1600];
-struct text_struct text_list[1600];
 
 struct homebrew_struct emulators_list[300];
 struct homebrew_struct games_list[600];

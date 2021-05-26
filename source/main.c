@@ -310,10 +310,6 @@ int main(int argc, char **argv) {
 
 	suspend_reset_thread();
 
-	// App listing text
-	GRRLIB_texImg *str_name = NULL; GRRLIB_texImg *str_name1 = NULL; GRRLIB_texImg *str_name2 = NULL; GRRLIB_texImg *str_name3 = NULL; GRRLIB_texImg *str_name4 = NULL;
-	GRRLIB_texImg *str_short_desc = NULL; GRRLIB_texImg *str_short_desc1 = NULL; GRRLIB_texImg *str_short_desc2 = NULL; GRRLIB_texImg *str_short_desc3 = NULL; GRRLIB_texImg *str_short_desc4 = NULL;
-
 	// About text
 	GRRLIB_texImg *str_res_title = NULL;
 	char str_res_size[50];
@@ -394,8 +390,6 @@ int main(int argc, char **argv) {
 	int ypos = 142;
 	int rumble_count = 0;
 	bool doRumble = false;
-	bool free_string = false;
-	int string_count = 6;
 	int start_updated = -1;
 	int finish_updated = 0;
 	int ypos_updated = 184;
@@ -529,79 +523,28 @@ int main(int argc, char **argv) {
 					changing_cat = false;
 					icons_loaded = 0;
 				}
-
-				// Text list
-				if (text_list[c].text == 0) {
-					text_list[c].str_name = GRRLIB_TextToTexture(homebrew_list[c].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
-					text_list[c].str_short_description = GRRLIB_TextToTexture(homebrew_list[c].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
-					text_list[c].text = 1;
-
-					if (c > string_count) string_count++;
-
-					int a = c - 8;
-					if (a > 0) {
-						for (a = c - 7; a > 0; a--) {
-							if (text_list[a].text != 0) {
-								text_list[a].text = 0;
-
-								GRRLIB_FreeTexture(text_list[a].str_name);
-								GRRLIB_FreeTexture(text_list[a].str_short_description);
-							}
-						}
-					}
-
-					a = c + 8;
-					if (a < array_length(homebrew_list)) {
-						for (a = c + 7; a < array_length(homebrew_list); a++) {
-							if (text_list[a].text != 0) {
-								text_list[a].text = 0;
-
-								GRRLIB_FreeTexture(text_list[a].str_name);
-								GRRLIB_FreeTexture(text_list[a].str_short_description);
-							}
-						}
-					}
-
-				}
 			}
 
 			// Display images
-			if (homebrew_list[start].file_found == 1 && strcmp(homebrew_list[start].name,"000") != 0) {
-				icon1_img=GRRLIB_LoadTexture(homebrew_list[start].content);
-			} else if (strlen(homebrew_list[start].name) >= 3 && strcmp(homebrew_list[start].name,"000") != 0) { icon1_img=GRRLIB_LoadTexture(no_image_png); }
-			else { icon1_img=GRRLIB_LoadTexture(blank_png); }
+			if (homebrew_list[start].file_found == 1 && strcmp(homebrew_list[start].name,"000") != 0) icon1_img=GRRLIB_LoadTexture(homebrew_list[start].content);
+			else if (strlen(homebrew_list[start].name) >= 3 && strcmp(homebrew_list[start].name,"000") != 0) icon1_img=GRRLIB_LoadTexture(no_image_png);
+			else icon1_img=GRRLIB_LoadTexture(blank_png);
 
-			if (homebrew_list[(start+1)].file_found == 1 && strcmp(homebrew_list[(start+1)].name,"000") != 0) {
-				icon2_img=GRRLIB_LoadTexture(homebrew_list[(start+1)].content);
-			} else if (strlen(homebrew_list[(start+1)].name) >= 3 && strcmp(homebrew_list[(start+1)].name,"000") != 0) { icon2_img=GRRLIB_LoadTexture(no_image_png); }
-			else { icon2_img=GRRLIB_LoadTexture(blank_png); }
+			if (homebrew_list[(start+1)].file_found == 1 && strcmp(homebrew_list[(start+1)].name,"000") != 0) icon2_img=GRRLIB_LoadTexture(homebrew_list[(start+1)].content);
+			else if (strlen(homebrew_list[(start+1)].name) >= 3 && strcmp(homebrew_list[(start+1)].name,"000") != 0) icon2_img=GRRLIB_LoadTexture(no_image_png);
+			else icon2_img=GRRLIB_LoadTexture(blank_png);
 
-			if (homebrew_list[(start+2)].file_found == 1 && strcmp(homebrew_list[(start+2)].name,"000") != 0) {
-				icon3_img=GRRLIB_LoadTexture(homebrew_list[(start+2)].content);
-			} else if (strlen(homebrew_list[(start+2)].name) >= 3 && strcmp(homebrew_list[(start+2)].name,"000") != 0) { icon3_img=GRRLIB_LoadTexture(no_image_png); }
-			else { icon3_img=GRRLIB_LoadTexture(blank_png); }
+			if (homebrew_list[(start+2)].file_found == 1 && strcmp(homebrew_list[(start+2)].name,"000") != 0) icon3_img=GRRLIB_LoadTexture(homebrew_list[(start+2)].content);
+			else if (strlen(homebrew_list[(start+2)].name) >= 3 && strcmp(homebrew_list[(start+2)].name,"000") != 0) icon3_img=GRRLIB_LoadTexture(no_image_png);
+			else icon3_img=GRRLIB_LoadTexture(blank_png);
 
-			if (homebrew_list[(start+3)].file_found == 1 && strcmp(homebrew_list[(start+3)].name,"000") != 0) {
-				icon4_img=GRRLIB_LoadTexture(homebrew_list[(start+3)].content);
-			} else if (strlen(homebrew_list[(start+3)].name) >= 3 && strcmp(homebrew_list[(start+3)].name,"000") != 0) { icon4_img=GRRLIB_LoadTexture(no_image_png); }
-			else { icon4_img=GRRLIB_LoadTexture(blank_png); }
+			if (homebrew_list[(start+3)].file_found == 1 && strcmp(homebrew_list[(start+3)].name,"000") != 0) icon4_img=GRRLIB_LoadTexture(homebrew_list[(start+3)].content);
+			else if (strlen(homebrew_list[(start+3)].name) >= 3 && strcmp(homebrew_list[(start+3)].name,"000") != 0) icon4_img=GRRLIB_LoadTexture(no_image_png);
+			else icon4_img=GRRLIB_LoadTexture(blank_png);
 
-			if (strlen(homebrew_list[(start+4)].name) >= 3 && homebrew_list[(start+4)].file_found == 1 && strcmp(homebrew_list[(start+4)].name,"000") != 0) {
-				icon5_img=GRRLIB_LoadTexture(homebrew_list[(start+4)].content);
-			} else if (strlen(homebrew_list[(start+4)].name) >= 3 && strcmp(homebrew_list[(start+4)].name,"000") != 0) { icon5_img=GRRLIB_LoadTexture(no_image_png); }
-			else { icon5_img=GRRLIB_LoadTexture(blank_png); }
-
-			// Name and Descriptions
-			str_name = text_list[start].str_name;
-			str_name1 = text_list[(start+1)].str_name;
-			str_name2 = text_list[(start+2)].str_name;
-			str_name3 = text_list[(start+3)].str_name;
-			str_name4 = text_list[(start+4)].str_name;
-			str_short_desc = text_list[start].str_short_description;
-			str_short_desc1 = text_list[(start+1)].str_short_description;
-			str_short_desc2 = text_list[(start+2)].str_short_description;
-			str_short_desc3 = text_list[(start+3)].str_short_description;
-			str_short_desc4 = text_list[(start+4)].str_short_description;
+			if (strlen(homebrew_list[(start+4)].name) >= 3 && homebrew_list[(start+4)].file_found == 1 && strcmp(homebrew_list[(start+4)].name,"000") != 0) icon5_img=GRRLIB_LoadTexture(homebrew_list[(start+4)].content);
+			else if (strlen(homebrew_list[(start+4)].name) >= 3 && strcmp(homebrew_list[(start+4)].name,"000") != 0) icon5_img=GRRLIB_LoadTexture(no_image_png);
+			else icon5_img=GRRLIB_LoadTexture(blank_png);
 
 			refresh_list = start;
 		}
@@ -671,8 +614,7 @@ int main(int argc, char **argv) {
 
 			// Highlighting and display tick, question mark or plus
 			GRRLIB_ClipDrawing(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_SMALL, UI_PAGE_H);
-			int b;
-			for(b = 0; b <= 4; b++) {
+			for (int b = 0; b < 5; b++) {
 				if (strlen(homebrew_list[(start + b)].name) >= 2 && strcmp(homebrew_list[(start + b)].name,"000") != 0) {
 					if (UI_isOnSquare(ir, UI_PAGE_X, ypos + (76 * (start + b)), 530, 64)) {
 						doRumble = true;
@@ -698,23 +640,20 @@ int main(int argc, char **argv) {
 					if (homebrew_list[(start + b)].local_app_size > 0 && homebrew_list[(start + b)].in_download_queue == false) {
 						if (homebrew_list[(start + b)].local_app_size == homebrew_list[(start + b)].app_size && homebrew_list[(start + b)].in_download_queue != 2) {
 							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-						}
-						else if (homebrew_list[(start + b)].local_app_size != homebrew_list[(start + b)].app_size && homebrew_list[(start + b)].in_download_queue != 2 && homebrew_list[(start + b)].no_manage == false) {
+						} else if (homebrew_list[(start + b)].local_app_size != homebrew_list[(start + b)].app_size && homebrew_list[(start + b)].in_download_queue != 2 && homebrew_list[(start + b)].no_manage == false) {
 							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_question_img, 0, 1, 1, 0xFFFFFFFF);
 						}
 
 						if (homebrew_list[(start + b)].no_manage == true) {
 							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
 						}
-					}
-					else if ((homebrew_list[(start + b)].app_time + 432000) > current_time && (strcmp (store_homebrew_list[0].name, homebrew_list[(start + b)].name) != 0)) {
+					} else if ((homebrew_list[(start + b)].app_time + 432000) > current_time && (strcmp (store_homebrew_list[0].name, homebrew_list[(start + b)].name) != 0)) {
 						GRRLIB_DrawImg(468, ypos + (76 * (start + b)) - 6, app_new_img, 0, 1, 1, 0xFFFFFFFF);
 					}
 
 					if (homebrew_list[(start + b)].in_download_queue == true) {
 						GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_GREEN);
-					}
-					else if (homebrew_list[(start + b)].in_download_queue == 2) {
+					} else if (homebrew_list[(start + b)].in_download_queue == 2) {
 						GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_RED);
 					}
 
@@ -726,24 +665,15 @@ int main(int argc, char **argv) {
 
 			// Display icons, text
 			GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(210, ypos + (76 * start) + 4, str_name, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(210, ypos + (76 * start) + 30, str_short_desc, 0, 1.0, 1.0, 0xFFFFFFFF);
-
 			GRRLIB_DrawImg(60, ypos + (76 * (start+1) + 4), icon2_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 4, str_name1, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(210, ypos + (76 * (start+1)) + 30, str_short_desc1, 0, 1.0, 1.0, 0xFFFFFFFF);
-
 			GRRLIB_DrawImg(60, ypos + (76 * (start+2) + 4), icon3_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 4, str_name2, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(210, ypos + (76 * (start+2)) + 30, str_short_desc2, 0, 1.0, 1.0, 0xFFFFFFFF);
-
 			GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 4, str_name3, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(210, ypos + (76 * (start+3)) + 30, str_short_desc3, 0, 1.0, 1.0, 0xFFFFFFFF);
-
 			GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 4, str_name4, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(210, ypos + (76 * (start+4)) + 30, str_short_desc4, 0, 1.0, 1.0, 0xFFFFFFFF);
+
+			for (int b = 0; b < 5; b++) {
+				GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 4, homebrew_list[start + b].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+				GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, homebrew_list[start + b].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+			}
 
 			GRRLIB_ClipReset();
 
@@ -766,8 +696,6 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_1_Y, name_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
 				if (setting_tool_tip == true) { UI_drawTooltip(UI_SORT_X, UI_SORT_1_Y, STR_SORT_BY_NAME); }
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					// Free list strings
-					free_string = true;
 					if (sort_up_down == 6) { sort_up_down = 7; sort_by_name(1); refresh_list = -1; ypos = 142; }
 					else { sort_up_down = 6; sort_by_name(0); refresh_list = -1; ypos = 142; }
 				}
@@ -779,8 +707,6 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_2_Y, date_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
 				if (setting_tool_tip == true) { UI_drawTooltip(UI_SORT_X, UI_SORT_2_Y, STR_SORT_BY_DATE); }
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					// Free list strings
-					free_string = true;
 					if (sort_up_down == 0) { sort_up_down = 1; sort_by_date(1); refresh_list = -1; ypos = 142; }
 					else { sort_up_down = 0; sort_by_date(0); refresh_list = -1; ypos = 142; }
 				}
@@ -904,9 +830,6 @@ int main(int argc, char **argv) {
 
 				// Clear homebrew list
 				clear_list();
-
-				// Free list strings
-				free_string = true;
 			}
 
 			// Update category
@@ -1195,7 +1118,6 @@ int main(int argc, char **argv) {
 					category_selection = 9;
 					updated_cat = true;
 					refresh_list = -1;
-					free_string = true;
 				}
 			}
 
@@ -2084,22 +2006,6 @@ int main(int argc, char **argv) {
 		}
 
 		GRRLIB_Render();
-
-		// Free the strings from the list
-		if (free_string) {
-			int a = 0;
-			for (a = 0; a < string_count; a++) {
-				if (text_list[a].text != 0) {
-					text_list[a].text = 0;
-
-					GRRLIB_FreeTexture(text_list[a].str_name);
-					GRRLIB_FreeTexture(text_list[a].str_short_description);
-				}
-
-			}
-			free_string = false;
-			string_count = 6;
-		}
 
 		// Exit
 		if ((held & WPAD_BUTTON_HOME || held_gc & PAD_BUTTON_START) && held_counter >= 1) {
