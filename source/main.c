@@ -337,16 +337,6 @@ int main(int argc, char **argv) {
 	// Download queue
 	GRRLIB_texImg *str_title_status = NULL;
 
-	// Settings
-	GRRLIB_texImg *str_cat_1 = GRRLIB_TextToTexture("Demos", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_cat_2 = GRRLIB_TextToTexture("Emulators", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_cat_3 = GRRLIB_TextToTexture("Games", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_cat_4 = GRRLIB_TextToTexture("Media", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_cat_5 = GRRLIB_TextToTexture("Utilities", FONTSIZE_SMALL1, 0x575757);
-
-	GRRLIB_texImg *str_sort_1 = GRRLIB_TextToTexture("Name", FONTSIZE_SMALL1, 0x575757);
-	GRRLIB_texImg *str_sort_2 = GRRLIB_TextToTexture("Date", FONTSIZE_SMALL1, 0x575757);
-
 	GRRLIB_texImg *mouse_img=GRRLIB_LoadTexture(mouse_png);
 
 	GRRLIB_texImg *control_wiimote_img=GRRLIB_LoadTexture(control_wiimote_png);
@@ -1962,11 +1952,11 @@ int main(int argc, char **argv) {
 		if (select_category) {
 			GRRLIB_DrawImg(123, 148, apps_start_cat_img, 0, 1, 1, 0xFFFFFFFF);
 
-			GRRLIB_DrawImg(180, 195, str_cat_1, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(180, 225, str_cat_2, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(180, 255, str_cat_3, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(180, 285, str_cat_4, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(180, 315, str_cat_5, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(180, 195, STR_DEMOS, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(180, 225, STR_EMULATORS, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(180, 255, STR_GAMES, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(180, 285, STR_MEDIA, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(180, 315, STR_UTILITIES, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
 
 			if (UI_isOnSquare(ir, 165, 197, 224, 24)) {
 				doRumble = true;
@@ -2030,8 +2020,8 @@ int main(int argc, char **argv) {
 		if (select_sort) {
 			GRRLIB_DrawImg(123, 148, apps_start_sort_img, 0, 1, 1, 0xFFFFFFFF);
 
-			GRRLIB_DrawImg(180, 195, str_sort_1, 0, 1.0, 1.0, 0xFFFFFFFF);
-			GRRLIB_DrawImg(180, 225, str_sort_2, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(180, 195, STR_SORT_BY_NAME, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(180, 225, STR_SORT_BY_DATE, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
 
 			if (UI_isOnSquare(ir, 165, 197, 224, 24)) {
 				doRumble = true;
