@@ -248,36 +248,31 @@ int main(int argc, char **argv) {
 	int set_cat = setting_category; // So we don't mess with the user's settings
 	while (array_length(homebrew_list) == 0) {
 		if (set_cat == 0) {
-			int i;
-			for (i = 0; i < array_length(demos_list); i++) {
+			for (int i = 0; i < array_length(demos_list); i++) {
 				homebrew_list[i] = demos_list[i];
 			}
 			category_selection = 0;
 			category_old_selection = 0;
 		} else if (set_cat == 1) {
-			int i;
-			for (i = 0; i < array_length(emulators_list); i++) {
+			for (int i = 0; i < array_length(emulators_list); i++) {
 				homebrew_list[i] = emulators_list[i];
 			}
 			category_selection = 1;
 			category_old_selection = 1;
 		} else if (set_cat == 2) {
-			int i;
-			for (i = 0; i < array_length(games_list); i++) {
+			for (int i = 0; i < array_length(games_list); i++) {
 				homebrew_list[i] = games_list[i];
 			}
 			category_selection = 2;
 			category_old_selection = 2;
 		} else if (set_cat == 3) {
-			int i;
-			for (i = 0; i < array_length(media_list); i++) {
+			for (int i = 0; i < array_length(media_list); i++) {
 				homebrew_list[i] = media_list[i];
 			}
 			category_selection = 3;
 			category_old_selection = 3;
 		} else if (set_cat == 4) {
-			int i;
-			for (i = 0; i < array_length(utilities_list); i++) {
+			for (int i = 0; i < array_length(utilities_list); i++) {
 				homebrew_list[i] = utilities_list[i];
 			}
 			category_selection = 4;
@@ -457,10 +452,9 @@ int main(int argc, char **argv) {
 		GRRLIB_FillScreen(WINDOW_BACKGROUND);
 		UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, RES_COLOR_WHITE);
 
-		int x;
 		int start = -1;
 		int finish = 0;
-		for (x = 0; x < array_length(homebrew_list); x++) {
+		for (int x = 0; x < array_length(homebrew_list); x++) {
 			if (ypos + (76 * x) >= 94 && ypos + (76 * x) + 30 < 400) {
 				if (start == -1) {
 					start = x;
@@ -479,13 +473,10 @@ int main(int argc, char **argv) {
 			if (icon5_img) GRRLIB_FreeTexture(icon5_img);
 
 			// Load images as needed, store them into memory as well as text
-			int c;
-			for (c = start; c <= (start+4); c++) {
-
+			for (int c = start; c <= (start+4); c++) {
 				icons_loaded++;
 
 				if (homebrew_list[c].file_found == 0 || homebrew_list[c].file_found == 2) {
-
 					if (homebrew_list[c].file_found == 0) {
 						// Check image file size
 						char img_path[100] = "sd:/apps/homebrew_browser/temp/";
@@ -612,7 +603,7 @@ int main(int argc, char **argv) {
 
 			// Highlighting and display tick, question mark or plus
 			GRRLIB_ClipDrawing(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_SMALL, UI_PAGE_H);
-			for (int b = 0; b < 5; b++) {
+			for (uint8_t b = 0; b < 5; b++) {
 				if (strlen(homebrew_list[(start + b)].name) >= 2 && strcmp(homebrew_list[(start + b)].name,"000") != 0) {
 					if (UI_isOnSquare(ir, UI_PAGE_X, ypos + (76 * (start + b)), 530, 64)) {
 						doRumble = true;
@@ -668,7 +659,7 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
 			GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
 
-			for (int b = 0; b < 5; b++) {
+			for (uint8_t b = 0; b < 5; b++) {
 				GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 4, homebrew_list[start + b].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 				GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, homebrew_list[start + b].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 			}
@@ -832,37 +823,31 @@ int main(int argc, char **argv) {
 
 			// Update category
 			if (category_selection == 0) {
-				int i;
-				for (i = 0; i < array_length (demos_list); i++) {
+				for (int i = 0; i < array_length (demos_list); i++) {
 					homebrew_list[i] = demos_list[i];
 				}
 			} else if (category_selection == 1) {
-				int i;
-				for (i = 0; i < array_length (emulators_list); i++) {
+				for (int i = 0; i < array_length (emulators_list); i++) {
 					homebrew_list[i] = emulators_list[i];
 				}
 			} else if (category_selection == 2) {
-				int i;
-				for (i = 0; i < array_length (games_list); i++) {
+				for (int i = 0; i < array_length (games_list); i++) {
 					homebrew_list[i] = games_list[i];
 				}
 			} else if (category_selection == 3) {
-				int i;
-				for (i = 0; i < array_length (media_list); i++) {
+				for (int i = 0; i < array_length (media_list); i++) {
 					homebrew_list[i] = media_list[i];
 				}
 			} else if (category_selection == 4) {
-				int i;
-				for (i = 0; i < array_length (utilities_list); i++) {
+				for (int i = 0; i < array_length (utilities_list); i++) {
 					homebrew_list[i] = utilities_list[i];
 				}
 			} else if (category_selection == 5) {
-				int i;
-				for (i = 0; i < 4; i++) {
+				for (int i = 0; i < 4; i++) {
 					strcpy(homebrew_list[i].name,"000");
 				}
 				int j = 0;
-				for (i = 0; i < array_length (total_list); i++) {
+				for (int i = 0; i < array_length (total_list); i++) {
 					if (total_list[i].local_app_size > 0) {
 						homebrew_list[j] = total_list[i];
 						j++;
@@ -870,12 +855,11 @@ int main(int argc, char **argv) {
 				}
 				wait_a_press = 7;
 			} else if (category_selection == 6) {
-				int i;
-				for (i = 0; i < 4; i++) {
+				for (int i = 0; i < 4; i++) {
 					strcpy(homebrew_list[i].name,"000");
 				}
 				int j = 0;
-				for (i = 0; i < array_length (total_list); i++) {
+				for (int i = 0; i < array_length (total_list); i++) {
 					if (total_list[i].in_download_queue >= 1) {
 						homebrew_list[j] = total_list[i];
 						j++;
@@ -1093,21 +1077,18 @@ int main(int argc, char **argv) {
 				if (category_selection == 6) {
 					clear_temp_list();
 
-					int x;
-					for (x = 0; x < array_length (homebrew_list); x++) {
+					for (int x = 0; x < array_length (homebrew_list); x++) {
 						temp_list2[x] = homebrew_list[x];
 					}
 
 					clear_list();
 
-					int i;
-					for (i = 0; i < 4; i++) {
+					for (uint8_t i = 0; i < 4; i++) {
 						strcpy(homebrew_list[i].name,"000");
 					}
 
-					i = 0;
 					int j = 0;
-					for (i = 0; i < array_length (temp_list2); i++) {
+					for (int i = 0; i < array_length (temp_list2); i++) {
 						homebrew_list[j] = temp_list2[i];
 						j++;
 					}
@@ -1175,20 +1156,18 @@ int main(int argc, char **argv) {
 				char text_description[text_size];
 				strcpy(text_description, homebrew_list[current_app].app_description);
 
-				int s;
 				int l = 0;
-				for(s = strlen(text_description); s < text_size; s++) {
+				for(int s = strlen(text_description); s < text_size; s++) {
 					text_description[s] = text_white[0];
 					l = text_size > s ? s : text_size;
 				}
 				text_description[l] = '\0';
 
-				int x;
 				int count = 0;
 				int textrow = 0;
 				int offset = 0;
 				char test[80];
-				for (x = 0; x < strlen(text_description); x++) {
+				for (int x = 0; x < strlen(text_description); x++) {
 					test[count] = text_description[x];
 					count++;
 					if (x >= (55 * (textrow+1)) && x <= (75 * (textrow+1)) && text_description[x] == ' ' && textrow == 0) {
