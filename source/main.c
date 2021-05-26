@@ -332,25 +332,12 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *string4 = NULL;
 	GRRLIB_texImg *string5 = NULL;
 
-	GRRLIB_texImg *str_deleting = GRRLIB_TextToTexture("Deleting ...", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_download_zip_failed = GRRLIB_TextToTexture("Downloading zip file failed.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_create_folder_failed = GRRLIB_TextToTexture("Creating folders failed.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_download_icon_failed = GRRLIB_TextToTexture("Downloading icon file failed.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_extract_zip_failed = GRRLIB_TextToTexture("Extracting zip file failed.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_boot_file_failed = GRRLIB_TextToTexture("Problem checking boot.dol/elf file.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_delete_file_failed = GRRLIB_TextToTexture("Deleting boot/meta/icon files failed.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_delete_folder_failed = GRRLIB_TextToTexture("Deleting folders failed.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_delete_app_failed = GRRLIB_TextToTexture("Deleting application folder failed.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_free_space_failed = GRRLIB_TextToTexture("Not enough free space.", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_no_wifi = GRRLIB_TextToTexture("Unable to initialise network.", FONTSIZE_SMALL, 0x575757);
-
 	GRRLIB_texImg *str_sd_card = NULL;
 	GRRLIB_texImg *str_icon_info = NULL;
 	GRRLIB_texImg *str_download_info = NULL;
 
 	// Download queue
 	GRRLIB_texImg *str_title_status = NULL;
-	GRRLIB_texImg *str_overall_progress = GRRLIB_TextToTexture("Overall Progress", FONTSIZE_SMALL, 0x575757);
 
 	// Settings
 	GRRLIB_texImg *str_cat_1 = GRRLIB_TextToTexture("Demos", FONTSIZE_SMALL1, 0x575757);
@@ -1103,7 +1090,7 @@ int main(int argc, char **argv) {
 
 				// Delete in progress
 				if (delete_in_progress) {
-					GRRLIB_DrawImg(290, 276, str_deleting, 0, 1.0, 1.0, 0xFFFFFFFF);
+					GRRLIB_DrawText(290, 276, STR_DELETING, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 					if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
 						cancel_delete = true;
 						new_updating = 10000;
@@ -1160,7 +1147,7 @@ int main(int argc, char **argv) {
 
 				GRRLIB_Rectangle(139, 370, 400, 32, TOOLTIP_COLOR, true);
 				GRRLIB_Rectangle(139, 370, overall_progress * 4, 32, RES_COLOR_BLUE, true);
-				GRRLIB_DrawImg(270, 376, str_overall_progress, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_DrawText(270, 376, STR_OVERALL_PROGRESS, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 
 
 				if (new_updating != 10000 && (updating != new_updating || updating == 0) && !download_in_progress && !extract_in_progress && !delete_in_progress) {
@@ -1243,30 +1230,14 @@ int main(int argc, char **argv) {
 			if (download_in_progress == -1 || extract_in_progress == -1 || delete_in_progress == -1) {
 
 				// Display what error occured
-				if (error_number == 1) {
-					GRRLIB_DrawImg(210, 276, str_download_zip_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				}
-				if (error_number == 2) {
-					GRRLIB_DrawImg(210, 276, str_create_folder_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				}
-				if (error_number == 3) {
-					GRRLIB_DrawImg(210, 276, str_download_icon_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				}
-				if (error_number == 4) {
-					GRRLIB_DrawImg(210, 276, str_extract_zip_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				}
-				if (error_number == 5) {
-					GRRLIB_DrawImg(190, 276, str_boot_file_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				}
-				if (error_number == 6) {
-					GRRLIB_DrawImg(210, 396, str_delete_file_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				}
-				if (error_number == 9) {
-					GRRLIB_DrawImg(240, 276, str_free_space_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				}
-				if (error_number == 10) {
-					GRRLIB_DrawImg(240, 276, str_no_wifi, 0, 1.0, 1.0, 0xFFFFFFFF);
-				}
+				if (error_number == 1) GRRLIB_DrawText(210, 276, STR_DOWNLOAD_ZIP_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 2) GRRLIB_DrawText(210, 276, STR_CREATE_FOLDER_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 3) GRRLIB_DrawText(210, 276, STR_DOWNLOAD_ICON_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 4) GRRLIB_DrawText(210, 276, STR_EXTRACT_ZIP_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 5) GRRLIB_DrawText(190, 276, STR_BOOT_FILE_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 6) GRRLIB_DrawText(210, 396, STR_DELETE_FILE_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 9) GRRLIB_DrawText(240, 276, STR_FREE_SPACE_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 10) GRRLIB_DrawText(240, 276, STR_NO_WIFI, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
 				// Reset vars
 				if ((pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0) {
@@ -1600,7 +1571,7 @@ int main(int argc, char **argv) {
 
 			// Delete in progress
 			if (delete_in_progress && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) == 0) {
-				GRRLIB_DrawImg(270, 396, str_deleting, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_DrawText(270, 396, STR_DELETING, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 			}
 
 
@@ -1621,16 +1592,16 @@ int main(int argc, char **argv) {
 				display_message_counter--;
 
 				// Display what error occured
-				if (error_number == 1) GRRLIB_DrawImg(190, 396, str_download_zip_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 2) GRRLIB_DrawImg(190, 396, str_create_folder_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 3) GRRLIB_DrawImg(190, 396, str_download_icon_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 4) GRRLIB_DrawImg(190, 396, str_extract_zip_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 5) GRRLIB_DrawImg(190, 396, str_boot_file_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 6) GRRLIB_DrawImg(190, 396, str_delete_file_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 7) GRRLIB_DrawImg(210, 396, str_delete_folder_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 8) GRRLIB_DrawImg(190, 396, str_delete_app_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 9) GRRLIB_DrawImg(190, 396, str_free_space_failed, 0, 1.0, 1.0, 0xFFFFFFFF);
-				else if (error_number == 10) GRRLIB_DrawImg(190, 396, str_no_wifi, 0, 1.0, 1.0, 0xFFFFFFFF);
+				if (error_number == 1) GRRLIB_DrawText(190, 396, STR_DOWNLOAD_ZIP_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 2) GRRLIB_DrawText(190, 396, STR_CREATE_FOLDER_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 3) GRRLIB_DrawText(190, 396, STR_DOWNLOAD_ICON_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 4) GRRLIB_DrawText(190, 396, STR_EXTRACT_ZIP_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 5) GRRLIB_DrawText(190, 396, STR_BOOT_FILE_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 6) GRRLIB_DrawText(190, 396, STR_DELETE_FILE_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 7) GRRLIB_DrawText(210, 396, STR_DELETE_FOLDER_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 8) GRRLIB_DrawText(190, 396, STR_DELETE_APP_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 9) GRRLIB_DrawText(190, 396, STR_FREE_SPACE_FAILED, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+				else if (error_number == 10) GRRLIB_DrawText(190, 396, STR_NO_WIFI, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
 				if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
 					display_message_counter = 1;

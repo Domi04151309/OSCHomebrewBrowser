@@ -17,6 +17,20 @@
 #define STR_EXTRACTING "Extracting..."
 #define STR_EXTRACTING_SMALL "Extraction in progress"
 
+#define STR_DELETING "Deleting ..."
+#define STR_DOWNLOAD_ZIP_FAILED "Downloading zip file failed."
+#define STR_CREATE_FOLDER_FAILED "Creating folders failed."
+#define STR_DOWNLOAD_ICON_FAILED "Downloading icon file failed."
+#define STR_EXTRACT_ZIP_FAILED "Extracting zip file failed."
+#define STR_BOOT_FILE_FAILED "Problem checking boot.dol/elf file."
+#define STR_DELETE_FILE_FAILED "Deleting boot/meta/icon files failed."
+#define STR_DELETE_FOLDER_FAILED "Deleting folders failed."
+#define STR_DELETE_APP_FAILED "Deleting application folder failed."
+#define STR_FREE_SPACE_FAILED "Not enough free space."
+#define STR_NO_WIFI "Unable to initialise network."
+
+#define STR_OVERALL_PROGRESS "Overall Progress"
+
 #define STR_EMPTY_QUEUE_0 "The queue is empty. To add an application,"
 #define STR_EMPTY_QUEUE_1 "find one in the above categories, point"
 #define STR_EMPTY_QUEUE_2 "at it, and press the (+) button. Press the"
