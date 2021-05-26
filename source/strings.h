@@ -12,6 +12,11 @@
 #define STR_QUEUE "Queue"
 #define STR_RUN "Run"
 
+#define STR_DOWNLOADING "Downloading..."
+#define STR_DOWNLOADING_SMALL "Download in progress"
+#define STR_EXTRACTING "Extracting..."
+#define STR_EXTRACTING_SMALL "Extraction in progress"
+
 #define STR_EMPTY_QUEUE_0 "The queue is empty. To add an application,"
 #define STR_EMPTY_QUEUE_1 "find one in the above categories, point"
 #define STR_EMPTY_QUEUE_2 "at it, and press the (+) button. Press the"

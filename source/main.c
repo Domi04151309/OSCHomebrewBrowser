@@ -55,8 +55,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "app_new_png.h"
 #include "list_png.h"
 #include "download_png.h"
-#include "blue_progress_png.h"
-#include "download_frame_png.h"
 #include "blank_png.h"
 #include "sort_arrow_down_png.h"
 #include "sort_arrow_up_png.h"
@@ -334,11 +332,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *string4 = NULL;
 	GRRLIB_texImg *string5 = NULL;
 
-	GRRLIB_texImg *str_downloading = GRRLIB_TextToTexture("Downloading ...", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_downloading_small = GRRLIB_TextToTexture("Downloading in progress", FONTSIZE_SMALLER, 0x9d9d9d);
-	GRRLIB_texImg *str_extracting = GRRLIB_TextToTexture("Extracting ...", FONTSIZE_SMALL, 0x575757);
-	GRRLIB_texImg *str_extracting_small = GRRLIB_TextToTexture("Extracting in progress", FONTSIZE_SMALLER, 0x9d9d9d);
-
 	GRRLIB_texImg *str_deleting = GRRLIB_TextToTexture("Deleting ...", FONTSIZE_SMALL, 0x575757);
 	GRRLIB_texImg *str_download_zip_failed = GRRLIB_TextToTexture("Downloading zip file failed.", FONTSIZE_SMALL, 0x575757);
 	GRRLIB_texImg *str_create_folder_failed = GRRLIB_TextToTexture("Creating folders failed.", FONTSIZE_SMALL, 0x575757);
@@ -391,8 +384,6 @@ int main(int argc, char **argv) {
 	GRRLIB_texImg *app_new_img=GRRLIB_LoadTexture(app_new_png);
 	GRRLIB_texImg *list_img=GRRLIB_LoadTexture(list_png);
 	GRRLIB_texImg *download_img=GRRLIB_LoadTexture(download_png);
-	GRRLIB_texImg *blue_progress_img=GRRLIB_LoadTexture(blue_progress_png);
-	GRRLIB_texImg *download_frame_img=GRRLIB_LoadTexture(download_frame_png);
 	GRRLIB_texImg *sort_arrow_down_img=GRRLIB_LoadTexture(sort_arrow_down_png);
 	GRRLIB_texImg *sort_arrow_up_img=GRRLIB_LoadTexture(sort_arrow_up_png);
 
@@ -1064,15 +1055,11 @@ int main(int argc, char **argv) {
 				// Download
 				if (download_in_progress) {
 					int download_progress_count = (int) download_progress_counter / download_part_size;
-					if (download_progress_count > 99) { download_progress_count = 100; }
+					if (download_progress_count > 99) download_progress_count = 100;
 
-					int x;
-					for (x = 0; x < download_progress_count; x++) {
-						GRRLIB_DrawImg(139 + (x * 4), 270, blue_progress_img, 0, 1, 1, 0xFFFFFFFF);
-					}
-
-					GRRLIB_DrawImg(124, 261, download_frame_img, 0, 1, 1, 0xFFFFFFFF);
-					GRRLIB_DrawImg(208, 276, str_downloading, 0, 1.0, 1.0, 0xFFFFFFFF);
+					GRRLIB_Rectangle(139, 270, 400, 32, TOOLTIP_COLOR, true);
+					GRRLIB_Rectangle(139, 270, download_progress_count * 4, 32, RES_COLOR_BLUE, true);
+					GRRLIB_DrawText(208, 276, STR_DOWNLOADING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 
 					if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
 						cancel_download = true;
@@ -1093,15 +1080,11 @@ int main(int argc, char **argv) {
 				if (extract_in_progress) {
 
 					int extract_progress_count = (int) (zip_progress / extract_part_size);
-					if (extract_progress_count > 100) { extract_progress_count = 100; }
+					if (extract_progress_count > 100) extract_progress_count = 100;
 
-					int x;
-					for (x = 0; x < extract_progress_count; x++) {
-						GRRLIB_DrawImg(139 + (x * 4), 270, blue_progress_img, 0, 1, 1, 0xFFFFFFFF);
-					}
-
-					GRRLIB_DrawImg(124, 261, download_frame_img, 0, 1, 1, 0xFFFFFFFF);
-					GRRLIB_DrawImg(270, 276, str_extracting, 0, 1.0, 1.0, 0xFFFFFFFF);
+					GRRLIB_Rectangle(139, 270, 400, 32, TOOLTIP_COLOR, true);
+					GRRLIB_Rectangle(139, 270, extract_progress_count * 4, 32, RES_COLOR_BLUE, true);
+					GRRLIB_DrawText(270, 276, STR_EXTRACTING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 
 					if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
 						cancel_extract = true;
@@ -1173,14 +1156,10 @@ int main(int argc, char **argv) {
 
 				// Overall progress
 				int overall_progress = (int) (updating_current_size / updating_part_size);
-				if (overall_progress > 98) { overall_progress = 100; }
+				if (overall_progress > 98) overall_progress = 100;
 
-				int x;
-				for (x = 0; x < overall_progress; x++) {
-					GRRLIB_DrawImg(139 + (x * 4), 370, blue_progress_img, 0, 1, 1, 0xFFFFFFFF);
-				}
-
-				GRRLIB_DrawImg(124, 361, download_frame_img, 0, 1, 1, 0xFFFFFFFF);
+				GRRLIB_Rectangle(139, 370, 400, 32, TOOLTIP_COLOR, true);
+				GRRLIB_Rectangle(139, 370, overall_progress * 4, 32, RES_COLOR_BLUE, true);
 				GRRLIB_DrawImg(270, 376, str_overall_progress, 0, 1.0, 1.0, 0xFFFFFFFF);
 
 
@@ -1532,15 +1511,11 @@ int main(int argc, char **argv) {
 			if (download_in_progress && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) == 0) {
 
 				int download_progress_count = (int) download_progress_counter / download_part_size;
-				if (download_progress_count > 99) { download_progress_count = 100; }
+				if (download_progress_count > 99) download_progress_count = 100;
 
-				int x;
-				for (x = 0; x < download_progress_count; x++) {
-					GRRLIB_DrawImg(139 + (x * 4), 390, blue_progress_img, 0, 1, 1, 0xFFFFFFFF);
-				}
-
-				GRRLIB_DrawImg(124, 381, download_frame_img, 0, 1, 1, 0xFFFFFFFF);
-				GRRLIB_DrawImg(208, 396, str_downloading, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_Rectangle(139, 390, 400, 32, TOOLTIP_COLOR, true);
+				GRRLIB_Rectangle(139, 390, download_progress_count * 4, 32, RES_COLOR_BLUE, true);
+				GRRLIB_DrawText(208, 396, STR_DOWNLOADING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 
 				if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
 					cancel_download = true;
@@ -1560,15 +1535,11 @@ int main(int argc, char **argv) {
 			if (extract_in_progress && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) == 0) {
 
 				int extract_progress_count = (int) (zip_progress / extract_part_size);
-				if (extract_progress_count > 100) { extract_progress_count = 100; }
+				if (extract_progress_count > 100) extract_progress_count = 100;
 
-				int x;
-				for (x = 0; x < extract_progress_count; x++) {
-					GRRLIB_DrawImg(139 + (x * 4), 390, blue_progress_img, 0, 1, 1, 0xFFFFFFFF);
-				}
-
-				GRRLIB_DrawImg(124, 381, download_frame_img, 0, 1, 1, 0xFFFFFFFF);
-				GRRLIB_DrawImg(270, 396, str_extracting, 0, 1.0, 1.0, 0xFFFFFFFF);
+				GRRLIB_Rectangle(139, 390, 400, 32, TOOLTIP_COLOR, true);
+				GRRLIB_Rectangle(139, 390, extract_progress_count * 4, 32, RES_COLOR_BLUE, true);
+				GRRLIB_DrawText(270, 396, STR_EXTRACTING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
 
 				if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1 || pressed_gc & PAD_BUTTON_B) {
 					cancel_extract = true;
@@ -2184,10 +2155,10 @@ int main(int argc, char **argv) {
 		}
 
 		if (download_in_progress && updating == -1 && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
-			GRRLIB_DrawImg(248, 441, str_downloading_small, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(248, 441, STR_DOWNLOADING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
 		if (extract_in_progress && updating == -1 && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
-			GRRLIB_DrawImg(248, 441, str_extracting_small, 0, 1.0, 1.0, 0xFFFFFFFF);
+			GRRLIB_DrawText(248, 441, STR_EXTRACTING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
 
 		// Draw the IR pointer
