@@ -11,11 +11,12 @@
 #define STR_SORT_BY_NAME "Sort by Name"
 #define STR_SORT_BY_DATE "Sort by Date"
 #define STR_QUEUE "Queue"
+#define STR_RUN "Run"
 
-#define STR_EMPTY_QUEUE_0 "The download queue is empty. To add an"
-#define STR_EMPTY_QUEUE_1 "application to the queue, find one from"
-#define STR_EMPTY_QUEUE_2 "one of the above categories, point at it,"
-#define STR_EMPTY_QUEUE_3 "and press the (+) button."
+#define STR_EMPTY_QUEUE_0 "The queue is empty. To add an application,"
+#define STR_EMPTY_QUEUE_1 "find one in the above categories, point"
+#define STR_EMPTY_QUEUE_2 "at it, and press the (+) button. Press the"
+#define STR_EMPTY_QUEUE_3 "(-) button to remove it from the queue."
 
 #define STR_EMPTY_SD_0 "The Homebrew Browser could not find any"
 #define STR_EMPTY_SD_1 "recognised homebrew applications on"
