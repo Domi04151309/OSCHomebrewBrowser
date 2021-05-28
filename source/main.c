@@ -37,12 +37,14 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "blank_png.h"
 #include "no_image_png.h"
 
-#include "activities.h"
-#include "ui.h"
 #include "res/drawables.h"
 #include "res/res.h"
+#include "activities.h"
 #include "strings.h"
+#include "ui.h"
+#include "utils.h"
 
+#include "activities/menu.h"
 #include "activities/about.h"
 #include "activities/help_controller.h"
 
@@ -52,7 +54,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 extern Mtx GXmodelView2D;
 
 // Wiimote IR
-ir_t ir;
 orient_t orient;
 
 float ir_x = 0;
@@ -301,7 +302,6 @@ int main(int argc, char **argv) {
 
 	int ypos = 142;
 	int rumble_count = 0;
-	bool doRumble = false;
 	int start_updated = -1;
 	int finish_updated = 0;
 	int ypos_updated = 184;
@@ -311,11 +311,11 @@ int main(int argc, char **argv) {
 	while(1) {
 
 		WPAD_ScanPads();
-		u32 pressed = WPAD_ButtonsDown(0);
+		pressed = WPAD_ButtonsDown(0);
 		u32 held = WPAD_ButtonsHeld(0);
 
 		PAD_ScanPads();
-		u32 pressed_gc = PAD_ButtonsDown(0);
+		pressed_gc = PAD_ButtonsDown(0);
 		u32 held_gc = PAD_ButtonsHeld(0);
 
 		int old_irx = ir.x;
@@ -1391,67 +1391,7 @@ int main(int argc, char **argv) {
 
 		// Menu
 		if (ACTIVITIES_current() == ACTIVITY_MENU) {
-			GRRLIB_DrawImg(82, 146, home_bg_img, 0, 1, 1, 0xFFFFFFFF);
-
-			if (UI_blockButton(ir, 283, UI_MENU_BTN_1_Y, STR_ABOUT)) {
-				doRumble = true;
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					ACTIVITIES_open(ACTIVITY_ABOUT);
-				}
-			}
-
-			if (UI_blockButton(ir, 283, UI_MENU_BTN_2_Y, STR_CONTROLLER)) {
-				doRumble = true;
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					ACTIVITIES_open(ACTIVITY_HELP_CONTROLLER);
-				}
-			}
-
-			if (UI_blockButton(ir, 283, UI_MENU_BTN_3_Y, STR_SETTINGS)) {
-				doRumble = true;
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					ACTIVITIES_open(ACTIVITY_SETTINGS);
-				}
-			}
-
-			if (UI_blockButton(ir, 283, UI_MENU_BTN_4_Y, STR_RETURN_TO_WII_MENU)) {
-				doRumble = true;
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					WPAD_Rumble(WPAD_CHAN_0, 0);
-					WPAD_Rumble(WPAD_CHAN_0, 0);
-					exiting = true;
-					if (download_icon > 0) {
-						changing_cat = true;
-						while (download_icon_sleeping != true) {
-							usleep(10000);
-						}
-					}
-					usleep(300000);
-					fatUnmount("sd:");
-					fatUnmount("usb:");
-					WII_Initialize();
-					WII_ReturnToMenu();
-				}
-			}
-
-			if (UI_blockButton(ir, 283, UI_MENU_BTN_5_Y, STR_RETURN_TO_LOADER)) {
-				doRumble = true;
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-					WPAD_Rumble(WPAD_CHAN_0, 0);
-					WPAD_Rumble(WPAD_CHAN_0, 0);
-					exiting = true;
-					usleep(300000);
-					if (download_icon > 0) {
-						changing_cat = true;
-						while (download_icon_sleeping != true) {
-							usleep(10000);
-						}
-					}
-					fatUnmount("sd:");
-					fatUnmount("usb:");
-					exit(0);
-				}
-			}
+			MENU_render();
 		}
 
 		// About
@@ -1895,7 +1835,6 @@ int main(int argc, char **argv) {
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			update_lists();
-			exiting = true;
 			usleep(300000);
 			if (download_icon > 0) {
 				changing_cat = true;
@@ -1912,7 +1851,6 @@ int main(int argc, char **argv) {
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 			update_lists();
-			exiting = true;
 			usleep(300000);
 			if (download_icon > 0) {
 				changing_cat = true;

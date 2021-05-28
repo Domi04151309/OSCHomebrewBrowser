@@ -163,7 +163,6 @@ long updating_current_size = 0;
 int progress_number = 0;
 int progress_size = 0;
 bool changing_cat = false;
-bool exiting = false;
 int retry = 0;
 int update_xml = 0;
 
