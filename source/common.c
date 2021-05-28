@@ -248,6 +248,7 @@ static void *run_reset_thread(void *arg) {
 	}
 	printf("\nHomebrew Browser shutting down...\n");
 	exitApp(0);
+	return 0;
 }
 
 u8 initialise_reset_button() {

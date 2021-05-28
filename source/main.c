@@ -43,6 +43,9 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "res/res.h"
 #include "strings.h"
 
+#include "activities/about.h"
+#include "activities/help_controller.h"
+
 #define METHOD_SD 1
 #define METHOD_USB 2
 
@@ -1453,12 +1456,12 @@ int main(int argc, char **argv) {
 
 		// About
 		if (ACTIVITIES_current() == ACTIVITY_ABOUT) {
-			GRRLIB_DrawImg(UI_PAGE_X, 128, help_about_img, 0, 1, 1, 0xFFFFFFFF);
+			ABOUT_render();
 		}
 
 		// Help Controller
 		if (ACTIVITIES_current() == ACTIVITY_HELP_CONTROLLER) {
-			GRRLIB_DrawImg(UI_PAGE_X, 128, help_controller_img, 0, 1, 1, 0xFFFFFFFF);
+			HELP_CONTROLLER_render();
 		}
 
 		// Settings

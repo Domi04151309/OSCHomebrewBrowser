@@ -22,14 +22,6 @@ struct stack {
   uint8_t *items;
 };
 
-struct stack* newStack(int capacity);
-int size(struct stack *pt);
-int isEmpty(struct stack *pt);
-int isFull(struct stack *pt);
-void push(struct stack *pt, uint8_t x);
-uint8_t peek(struct stack *pt);
-uint8_t pop(struct stack *pt);
-
 void ACTIVITIES_open(uint8_t activity);
 uint8_t ACTIVITIES_current();
 void ACTIVITIES_goBack();

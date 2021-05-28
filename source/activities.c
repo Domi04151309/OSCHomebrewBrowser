@@ -4,7 +4,7 @@
 
 struct stack *activityStack = NULL;
 
-struct stack* newStack(int capacity) {
+static struct stack* newStack(int capacity) {
   struct stack *pt = (struct stack*)malloc(sizeof(struct stack));
 
   pt->size = capacity;
@@ -14,29 +14,25 @@ struct stack* newStack(int capacity) {
   return pt;
 }
 
-int size(struct stack *pt) {
-  return pt->top + 1;
-}
-
-int isEmpty(struct stack *pt) {
+static int isEmpty(struct stack *pt) {
   return pt->top == -1;
 }
 
-int isFull(struct stack *pt) {
+static int isFull(struct stack *pt) {
   return pt->top == pt->size - 1;
 }
 
-void push(struct stack *pt, uint8_t x) {
+static void push(struct stack *pt, uint8_t x) {
   if (isFull(pt)) exit(EXIT_FAILURE);
   pt->items[++pt->top] = x;
 }
 
-uint8_t peek(struct stack *pt) {
+static uint8_t peek(struct stack *pt) {
   if (isEmpty(pt)) return -1;
   else return pt->items[pt->top];
 }
 
-uint8_t pop(struct stack *pt) {
+static uint8_t pop(struct stack *pt) {
   if (isEmpty(pt)) exit(EXIT_FAILURE);
   return pt->items[pt->top--];
 }
