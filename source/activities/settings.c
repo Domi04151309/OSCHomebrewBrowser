@@ -194,9 +194,4 @@ void SETTINGS_render() {
       GRRLIB_DrawImg(452, 400, next_img, 0, 1, 1, BTN_COLOR);
     }
   }
-
-  if ((pressed & WPAD_BUTTON_HOME || pressed_gc & PAD_BUTTON_START || pressed & WPAD_BUTTON_B || pressed_gc & PAD_BUTTON_B) && wait_a_press == 0) {
-    menu_section = 0;
-    update_settings();
-  }
 }
