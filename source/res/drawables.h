@@ -28,7 +28,6 @@ extern GRRLIB_texImg *download_img;
 extern GRRLIB_texImg *sort_arrow_down_img;
 extern GRRLIB_texImg *sort_arrow_up_img;
 
-extern GRRLIB_texImg *help_about_img;
 extern GRRLIB_texImg *help_controller_img;
 
 extern GRRLIB_texImg *gear_bg_img;

@@ -24,7 +24,6 @@
 #include "download_png.h"
 #include "sort_arrow_down_png.h"
 #include "sort_arrow_up_png.h"
-#include "help_about_png.h"
 #include "help_controller_png.h"
 #include "home_bg_png.h"
 #include "gear_bg_png.h"
@@ -68,7 +67,6 @@ GRRLIB_texImg *download_img;
 GRRLIB_texImg *sort_arrow_down_img;
 GRRLIB_texImg *sort_arrow_up_img;
 
-GRRLIB_texImg *help_about_img;
 GRRLIB_texImg *help_controller_img;
 
 GRRLIB_texImg *gear_bg_img;
@@ -114,7 +112,6 @@ void DRAWABLES_load() {
 	sort_arrow_down_img = GRRLIB_LoadTexture(sort_arrow_down_png);
 	sort_arrow_up_img = GRRLIB_LoadTexture(sort_arrow_up_png);
 
-	help_about_img = GRRLIB_LoadTexture(help_about_png);
 	help_controller_img = GRRLIB_LoadTexture(help_controller_png);
 
 	gear_bg_img = GRRLIB_LoadTexture(gear_bg_png);

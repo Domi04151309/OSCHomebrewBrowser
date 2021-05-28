@@ -78,4 +78,13 @@
 #define STR_UPDATE "Update"
 #define STR_DELETE "Delete"
 
+#define STR_ABOUT_1 "Programming: Domi04151309 & teknecal"
+#define STR_ABOUT_2 "Special thanks to:"
+#define STR_ABOUT_3 "- joedj (ftpii source for network read and write)"
+#define STR_ABOUT_4 "- NoNameNo & Redshare (GRRLIB)"
+#define STR_ABOUT_5 "- Tantric (Unzip library)"
+#define STR_ABOUT_6 "- Lowlines & DayDreamOz (old HBB designs)"
+#define STR_ABOUT_7 "- All the Wii homebrew developers and icon artists"
+#define STR_ABOUT_8 "- TeamTwiizers"
+
 #endif
