@@ -5,7 +5,8 @@
 
 #include "common.h"
 #include "beer_png.h"
-#include "res.h"
+#include "res/res.h"
+#include "strings.h"
 
 void UI_bootScreen(const char *string) {
   UI_bootScreenTwo(string, " ");

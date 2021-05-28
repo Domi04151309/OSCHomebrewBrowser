@@ -34,52 +34,13 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include <dirent.h>
 #include <sys/statvfs.h>
 
-#include "mouse_png.h"
-#include "control_wiimote_png.h"
-#include "control_wiimote_2_png.h"
-#include "control_wiimote_3_png.h"
-#include "control_wiimote_4_png.h"
-#include "control_nunchuck_png.h"
-#include "control_classic_png.h"
-#include "control_gcn_png.h"
-#include "control_keyboard_png.h"
-#include "control_zapper_png.h"
-#include "logo_png.h"
-#include "no_image_png.h"
-#include "date_png.h"
-#include "app_question_png.h"
-#include "app_tick_png.h"
-#include "app_tick_small_png.h"
-#include "stack_png.h"
-#include "run_png.h"
-#include "app_new_png.h"
-#include "list_png.h"
-#include "download_png.h"
 #include "blank_png.h"
-#include "sort_arrow_down_png.h"
-#include "sort_arrow_up_png.h"
-#include "help_about_png.h"
-#include "help_controller_png.h"
-#include "home_bg_png.h"
-#include "gear_bg_png.h"
-#include "app_cross_png.h"
-#include "cancel_download_prompt_png.h"
-#include "button_no_png.h"
-#include "button_no_highlight_png.h"
-#include "button_yes_png.h"
-#include "button_yes_highlight_png.h"
-#include "updated_close_png.h"
-#include "updated_close_highlight_png.h"
-#include "name_png.h"
-#include "apps_repo_png.h"
-#include "apps_start_cat_png.h"
-#include "apps_start_sort_png.h"
-#include "next_png.h"
-#include "prev_png.h"
+#include "no_image_png.h"
 
 #include "activities.h"
 #include "ui.h"
-#include "res.h"
+#include "res/drawables.h"
+#include "res/res.h"
 #include "strings.h"
 
 #define METHOD_SD 1
@@ -288,12 +249,10 @@ int main(int argc, char **argv) {
 	}
 
 	// Sort
-	if (setting_sort == 0) { sort_by_name(0); }
-	else if (setting_sort == 1) { sort_by_date(0); }
+	if (setting_sort == 0) sort_by_name(0);
+	else if (setting_sort == 1) sort_by_date(0);
 
-	if (setting_hide_installed) {
-		hide_apps_installed();
-	}
+	if (setting_hide_installed) hide_apps_installed();
 
 	if (setting_online && setting_repo == 0) {
 		check_missing_files();
@@ -322,50 +281,7 @@ int main(int argc, char **argv) {
 	// Download queue
 	char str_title_status[50];
 
-	GRRLIB_texImg *mouse_img=GRRLIB_LoadTexture(mouse_png);
-
-	GRRLIB_texImg *control_wiimote_img=GRRLIB_LoadTexture(control_wiimote_png);
-	GRRLIB_texImg *control_wiimote_2_img=GRRLIB_LoadTexture(control_wiimote_2_png);
-	GRRLIB_texImg *control_wiimote_3_img=GRRLIB_LoadTexture(control_wiimote_3_png);
-	GRRLIB_texImg *control_wiimote_4_img=GRRLIB_LoadTexture(control_wiimote_4_png);
-	GRRLIB_texImg *control_nunchuck_img=GRRLIB_LoadTexture(control_nunchuck_png);
-	GRRLIB_texImg *control_classic_img=GRRLIB_LoadTexture(control_classic_png);
-	GRRLIB_texImg *control_gcn_img=GRRLIB_LoadTexture(control_gcn_png);
-	GRRLIB_texImg *control_keyboard_img=GRRLIB_LoadTexture(control_keyboard_png);
-	GRRLIB_texImg *control_zapper_img=GRRLIB_LoadTexture(control_zapper_png);
-	GRRLIB_texImg *logo_img=GRRLIB_LoadTexture(logo_png);
-	GRRLIB_texImg *date_img=GRRLIB_LoadTexture(date_png);
-	GRRLIB_texImg *name_img=GRRLIB_LoadTexture(name_png);
-	GRRLIB_texImg *stack_img=GRRLIB_LoadTexture(stack_png);
-	GRRLIB_texImg *run_img=GRRLIB_LoadTexture(run_png);
-	GRRLIB_texImg *app_question_img=GRRLIB_LoadTexture(app_question_png);
-	GRRLIB_texImg *app_tick_img=GRRLIB_LoadTexture(app_tick_png);
-	GRRLIB_texImg *app_tick_small_img=GRRLIB_LoadTexture(app_tick_small_png);
-	GRRLIB_texImg *app_new_img=GRRLIB_LoadTexture(app_new_png);
-	GRRLIB_texImg *list_img=GRRLIB_LoadTexture(list_png);
-	GRRLIB_texImg *download_img=GRRLIB_LoadTexture(download_png);
-	GRRLIB_texImg *sort_arrow_down_img=GRRLIB_LoadTexture(sort_arrow_down_png);
-	GRRLIB_texImg *sort_arrow_up_img=GRRLIB_LoadTexture(sort_arrow_up_png);
-
-	GRRLIB_texImg *help_about_img=GRRLIB_LoadTexture(help_about_png);
-	GRRLIB_texImg *help_controller_img=GRRLIB_LoadTexture(help_controller_png);
-
-	GRRLIB_texImg *gear_bg_img=GRRLIB_LoadTexture(gear_bg_png);
-	GRRLIB_texImg *home_bg_img=GRRLIB_LoadTexture(home_bg_png);
-	GRRLIB_texImg *app_cross_img=GRRLIB_LoadTexture(app_cross_png);
-
-	GRRLIB_texImg *cancel_download_prompt_img=GRRLIB_LoadTexture(cancel_download_prompt_png);
-	GRRLIB_texImg *button_no_img=GRRLIB_LoadTexture(button_no_png);
-	GRRLIB_texImg *button_no_highlight_img=GRRLIB_LoadTexture(button_no_highlight_png);
-	GRRLIB_texImg *button_yes_img=GRRLIB_LoadTexture(button_yes_png);
-	GRRLIB_texImg *button_yes_highlight_img=GRRLIB_LoadTexture(button_yes_highlight_png);
-	GRRLIB_texImg *updated_close_img=GRRLIB_LoadTexture(updated_close_png);
-	GRRLIB_texImg *updated_close_highlight_img=GRRLIB_LoadTexture(updated_close_highlight_png);
-	GRRLIB_texImg *apps_repo_img=GRRLIB_LoadTexture(apps_repo_png);
-	GRRLIB_texImg *apps_start_cat_img=GRRLIB_LoadTexture(apps_start_cat_png);
-	GRRLIB_texImg *apps_start_sort_img=GRRLIB_LoadTexture(apps_start_sort_png);
-	GRRLIB_texImg *next_img=GRRLIB_LoadTexture(next_png);
-	GRRLIB_texImg *prev_img=GRRLIB_LoadTexture(prev_png);
+	DRAWABLES_load();
 
 	GRRLIB_texImg *icon1_img = NULL;
 	GRRLIB_texImg *icon2_img = NULL;
@@ -434,16 +350,13 @@ int main(int argc, char **argv) {
 			if (held & WPAD_BUTTON_RIGHT) {
 				ir.y -=5 ;
 				gc_control_used = true;
-			}
-			if (held & WPAD_BUTTON_LEFT) {
+			} else if (held & WPAD_BUTTON_LEFT) {
 				ir.y+=5;
 				gc_control_used = true;
-			}
-			if (held & WPAD_BUTTON_DOWN) {
+			} else if (held & WPAD_BUTTON_DOWN) {
 				ir.x+=5;
 				gc_control_used = true;
-			}
-			if (held & WPAD_BUTTON_UP) {
+			} else if (held & WPAD_BUTTON_UP) {
 				ir.x-=5;
 				gc_control_used = true;
 			}
@@ -548,13 +461,13 @@ int main(int argc, char **argv) {
 			// Dpad up / down
 			if (!setting_wiiside) {
 				if ((held & WPAD_BUTTON_DOWN || held_gc & PAD_BUTTON_DOWN) && ((strlen(homebrew_list[finish+1].name) > 1) || (select_repo && finish_updated+1 < repo_count))) ypos-= 4;
-				if ((held & WPAD_BUTTON_UP || held_gc & PAD_BUTTON_UP) && ((!select_repo && ypos <= 140) || (select_repo && ypos <= 180))) ypos+= 4;
+				else if ((held & WPAD_BUTTON_UP || held_gc & PAD_BUTTON_UP) && ((!select_repo && ypos <= 140) || (select_repo && ypos <= 180))) ypos+= 4;
 			}
 
 			// Wiimote sideways
 			if (held & WPAD_BUTTON_1) {
 				if (held & WPAD_BUTTON_LEFT && ((strlen(homebrew_list[finish+1].name) > 1) || (select_repo && finish_updated+1 < repo_count))) ypos-= 5;
-				if (held & WPAD_BUTTON_RIGHT && ((!select_repo && ypos <= 140) || (select_repo && ypos <= 180))) ypos+= 5;
+				else if (held & WPAD_BUTTON_RIGHT && ((!select_repo && ypos <= 140) || (select_repo && ypos <= 180))) ypos+= 5;
 			}
 
 			// GC scrolling
@@ -565,7 +478,7 @@ int main(int argc, char **argv) {
 				if (PAD_SubStickY(0) < -48) ypos-= 1;
 				if (PAD_SubStickY(0) < -60) ypos-= 5;
 			}
-			if ((select_repo == false && ypos <= 140) || (select_repo && ypos <= 180)) {
+			if ((!select_repo && ypos <= 140) || (select_repo && ypos <= 180)) {
 				if (PAD_SubStickY(0) > 18) ypos+= 2;
 				if (PAD_SubStickY(0) > 28) ypos+= 1;
 				if (PAD_SubStickY(0) > 38) ypos+= 1;
@@ -893,7 +806,6 @@ int main(int argc, char **argv) {
 		else if (pressed & WPAD_BUTTON_UP) yy += 1;
 		else if (pressed & WPAD_BUTTON_LEFT) xx -= 1;
 		else if (pressed & WPAD_BUTTON_RIGHT) xx += 1;
-
 
 		// Main menu icons
 		GRRLIB_DrawImg(UI_PAGE_X - 15, 16, logo_img, 0, 1, 1, 0xFFFFFFFF);

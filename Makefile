@@ -17,7 +17,7 @@ include $(DEVKITPPC)/wii_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	boot
 BUILD		:=	build
-SOURCES		:=	source source/activities source/gfx source/GRRLIB source/GRRLIB/fonts source/libpng source/unzip
+SOURCES		:=	source source/activities source/gfx source/GRRLIB source/GRRLIB/fonts source/res source/unzip
 DATA		:=	data
 INCLUDES	:=	$(CURDIR)/source/ $(PORTLIBS_PATH)/ppc/include/ $(PORTLIBS_PATH)/ppc/include/freetype2/
 

@@ -39,7 +39,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 
 #include "activities.h"
 #include "ui.h"
-#include "res.h"
+#include "res/res.h"
 
 char rootdir[10];
 

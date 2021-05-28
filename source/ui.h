@@ -5,7 +5,7 @@
 #include "GRRLIB/GRRLIB.h"
 
 #include "common.h"
-#include "res.h"
+#include "res/res.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT xfb_height
