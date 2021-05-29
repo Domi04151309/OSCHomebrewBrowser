@@ -113,11 +113,6 @@ int main(int argc, char **argv) {
 	GRRLIB_InitFont();
 	UI_bootScreen("Loading");
 
-	u32 temp_esid;
-	ES_GetDeviceID(&temp_esid);
-	sprintf(esid, "%d", temp_esid);
-	if (esid <= 0) { UI_bootScreen("ESID error - You won't be able to rate applications.\n"); }
-
 	if (setting_online) initialise_network();
 
 	initialise_fat();
@@ -125,7 +120,7 @@ int main(int argc, char **argv) {
 
 	if (setting_online && !setting_server) {
 		initialise_codemii();
-		printf("Attempting to connect to server... ");
+		printf("Attempting to connect to server");
 		int main_retries = 0;
 		while (!www_passed && main_retries < 3) {
 			initialise_www();
@@ -135,7 +130,7 @@ int main(int argc, char **argv) {
 				retries++;
 			}
 			if (!www_passed) {
-				UI_bootScreen("Failed, retrying... \n");
+				UI_bootScreen("Failed, retrying");
 			}
 			main_retries++;
 			suspend_www_thread();
@@ -145,7 +140,7 @@ int main(int argc, char **argv) {
 			codemii_backup = true;
 			UI_bootScreen("OSCWii appears to be having issues, using OSCWii Backup Server");
 			initialise_codemii_backup();
-			printf("Attempting to connect to server... ");
+			printf("Attempting to connect to server");
 
 			int main_retries = 0;
 			while (!www_passed && main_retries < 3) {
@@ -156,7 +151,7 @@ int main(int argc, char **argv) {
 					retries++;
 				}
 				if (!www_passed) {
-					UI_bootScreen("Failed, retrying... \n");
+					UI_bootScreen("Failed, retrying");
 				}
 				main_retries++;
 				suspend_www_thread();
@@ -166,13 +161,13 @@ int main(int argc, char **argv) {
 		suspend_www_thread();
 
 		if (!www_passed) {
-			die("\nReturning you back to HBC. Please check to see if " MAIN_DOMAIN " and " FALLBACK_DOMAIN " are working.");
+			die("Returning you back to HBC. Please check to see if " MAIN_DOMAIN " and " FALLBACK_DOMAIN " are working.");
 		}
 	}
 	else if (setting_server) { // Secondary server setting enabled
 		codemii_backup = true;
 		initialise_codemii_backup();
-		UI_bootScreen("Attempting to connect to OSCWii Secondary server... ");
+		UI_bootScreen("Attempting to connect to OSCWii Secondary server");
 
 		int main_retries = 0;
 		while (!www_passed && main_retries < 3) {
@@ -183,7 +178,7 @@ int main(int argc, char **argv) {
 				retries++;
 			}
 			if (!www_passed) {
-				UI_bootScreen("Failed, retrying... \n");
+				UI_bootScreen("Failed, retrying");
 			}
 			main_retries++;
 			suspend_www_thread();
@@ -192,10 +187,10 @@ int main(int argc, char **argv) {
 		suspend_www_thread();
 
 		if (!www_passed) {
-			die("\nReturning you back to HBC. Please check to see if " FALLBACK_DOMAIN " is working.\n");
+			die("Returning you back to HBC. Please check to see if " FALLBACK_DOMAIN " is working");
 		}
 	}
-	UI_bootScreen("Connection established\n");
+	UI_bootScreen("Connection established");
 	repo_check();
 
 	// Grab the homebrew list and parse list

@@ -17,7 +17,6 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 
 extern const char *CRLF;
 extern const u32 CRLF_LENGTH;
-extern char esid[50];
 extern int xfb_height;
 
 extern char rootdir[10];

@@ -59,7 +59,6 @@ u32 IP_ADDRESS = 0;
 
 const char *CRLF = "\r\n";
 const u32 CRLF_LENGTH = 2;
-char esid[50];
 
 static GXRModeObj *vmode;
 int xfb_height = 0;
