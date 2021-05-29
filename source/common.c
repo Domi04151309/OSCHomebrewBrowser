@@ -2187,7 +2187,7 @@ bool check_wifi() {
 }
 
 void initialise_codemii() {
-	UI_bootScreen("Requesting IP address of " MAIN_DOMAIN "... ");
+	UI_bootScreen("Requesting IP address of " MAIN_DOMAIN);
 	initializedns();
 	IP_ADDRESS = getipbynamecached(MAIN_DOMAIN);
 
@@ -2201,7 +2201,7 @@ void initialise_codemii() {
 }
 
 void initialise_codemii_backup() {
-	UI_bootScreen("Requesting IP address of " FALLBACK_DOMAIN "... ");
+	UI_bootScreen("Requesting IP address of " FALLBACK_DOMAIN);
 	hostname_ok = true;
 	if (setting_server == true) {
 		initializedns();
@@ -2468,110 +2468,63 @@ void download_queue_size() {
 
 
 void check_temp_files() {
+	char prefix[16] = "sd:/apps/";
+	char path[64] = "sd:/apps/homebrew_browser_lite/temp/";
+	char file[64] = "sd:/apps/homebrew_browser_lite/temp_files.zip";
+	if (!setting_use_sd) {
+		strcpy(prefix, "usb:/apps/");
+		strcpy(path, "usb:/apps/homebrew_browser_lite/temp/");
+		strcpy(file, "usb:/apps/homebrew_browser_lite/temp_files.zip");
+	}
 	int x = 0;
 
-	if (setting_use_sd == true) {
-		char path[100] = "sd:/apps/homebrew_browser_lite/temp/";
-		dir = opendir(path);
+	dir = opendir(path);
 
-		if (dir != NULL) {
-			char temp_path[MAXPATHLEN];
-			while ((dent=readdir(dir)) != NULL) {
-				strcpy(temp_path, path);
-				strcat(temp_path, "/");
-				strcat(temp_path, dent->d_name);
-				stat(temp_path, &st);
+	if (dir != NULL) {
+		char temp_path[MAXPATHLEN];
+		while ((dent=readdir(dir)) != NULL) {
+			strcpy(temp_path, path);
+			strcat(temp_path, "/");
+			strcat(temp_path, dent->d_name);
+			stat(temp_path, &st);
 
-				if(!(S_ISDIR(st.st_mode))) {
-					x++;
-					if (x > 200) {
-						break;
-					}
+			if(!(S_ISDIR(st.st_mode))) {
+				x++;
+				if (x > 200) {
+					break;
 				}
 			}
-		}
-		closedir(dir);
-
-		if (x < 200) {
-			UI_bootScreenTwo("Downloading latest previews", "Hold down B to skip");
-
-			hbb_updating = true;
-			remote_hb_size = 1874386;
-
-			if (create_and_request_file("sd:/apps/", "homebrew_browser_lite", "/temp_files.zip") != 1) {
-				UI_bootScreen("Failed downloading previews");
-			}
-			else {
-				UI_bootScreen("Extracting previews");
-				if (unzipArchive("sd:/apps/homebrew_browser_lite/temp_files.zip", "sd:/apps/homebrew_browser_lite/temp/") == true) {
-					if (cancel_extract == false) {
-						UI_bootScreen("Downloaded and extracted previews successfully");
-					}
-				}
-			}
-			remove_file("sd:/apps/homebrew_browser_lite/temp_files.zip");
-			hbb_updating = false;
-
-			if (cancel_download == true || cancel_extract == true) {
-				UI_bootScreen("Cancelled downloading and extracting of previews");
-				cancel_download = false;
-				cancel_extract = false;
-			}
-
-			sleep(2);
 		}
 	}
-	else {
-		char path[100] = "usb:/apps/homebrew_browser_lite/temp/";
-		dir = opendir(path);
+	closedir(dir);
 
-		if (dir != NULL) {
-			char temp_path[MAXPATHLEN];
-			while ((dent=readdir(dir)) != NULL) {
-				strcpy(temp_path, path);
-				strcat(temp_path, "/");
-				strcat(temp_path, dent->d_name);
-				stat(temp_path, &st);
+	if (x < 200) {
+		UI_bootScreenTwo("Downloading latest previews", "Hold down B to skip");
 
-				if(!(S_ISDIR(st.st_mode))) {
-					x++;
-					if (x > 200) {
-						break;
-					}
+		hbb_updating = true;
+		remote_hb_size = 1874386;
+
+		if (create_and_request_file(prefix, "homebrew_browser_lite", "/temp_files.zip") != 1) {
+			UI_bootScreen("Failed downloading previews");
+		}
+		else {
+			UI_bootScreen("Extracting previews");
+			if (unzipArchive(file, path) == true) {
+				if (cancel_extract == false) {
+					UI_bootScreen("Downloaded and extracted previews successfully");
 				}
 			}
 		}
-		closedir(dir);
+		remove_file(file);
+		hbb_updating = false;
 
-		if (x < 200) {
-			UI_bootScreenTwo("Downloading latest previews", "Hold down B to skip");
-
-			hbb_updating = true;
-			remote_hb_size = 1874386;
-
-			if (create_and_request_file("usb:/apps/", "homebrew_browser_lite", "/temp_files.zip") != 1) {
-				UI_bootScreen("Failed downloading previews");
-			}
-			else {
-				UI_bootScreen("Extracting previews");
-				if (unzipArchive("usb:/apps/homebrew_browser_lite/temp_files.zip", "usb:/apps/homebrew_browser_lite/temp/") == true) {
-					if (cancel_extract == false) {
-						UI_bootScreen("Downloaded and extracted previews successfully");
-					}
-				}
-				unzipArchive("", "");
-			}
-			remove_file("usb:/apps/homebrew_browser_lite/temp_files.zip");
-			hbb_updating = false;
-
-			if (cancel_download == true || cancel_extract == true) {
-				UI_bootScreen("Cancelled downloading and extracting of previews");
-				cancel_download = false;
-				cancel_extract = false;
-			}
-
-			sleep(2);
+		if (cancel_download == true || cancel_extract == true) {
+			UI_bootScreen("Cancelled downloading and extracting of previews");
+			cancel_download = false;
+			cancel_extract = false;
 		}
+
+		sleep(2);
 	}
 }
 
@@ -2611,9 +2564,9 @@ void add_to_stats() {
 void repo_check() {
 
 	// Setting in settings which will just be a number, 0 for HBB, 1 for another one, etc.
-	// Always grab the listing of other repos...
+	// Always grab the listing of other repos
 
-	UI_bootScreen("Requesting repositories list...");
+	UI_bootScreen("Requesting repositories list");
 
 	s32 main_server = server_connect(1);
 
@@ -2657,7 +2610,7 @@ void repo_check() {
 
 				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
 				if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
-					UI_bootScreen("The server appears to be having an issue (repo_check). Retrying...");
+					UI_bootScreen("The server appears to be having an issue (repo_check). Retrying");
 					net_close(main_server);
 					sleep(1);
 				}
@@ -2811,7 +2764,7 @@ s32 server_connect(int repo_bypass) {
 // Request the homebrew list
 s32 request_list() {
 
-	UI_bootScreen("Requesting Homebrew list...");
+	UI_bootScreen("Requesting Homebrew list");
 	initialise_request();
 	int retry = 0;
 	timeout_counter = 0;
@@ -2862,7 +2815,7 @@ s32 request_list() {
 
 		if (file_check == 0) {
 			if (setting_online == true) {
-				UI_bootScreenTwo("Homebrew list is empty, retrying...", "If this keeps happening, try reloading the Homebrew Browser");
+				UI_bootScreenTwo("Homebrew list is empty, retrying", "If this keeps happening, try reloading the Homebrew Browser");
 			}
 			else {
 				die("Homebrew list file is empty. As you are in offline mode, HBB will now exit.\n Please go online to retreive the list file.");
@@ -3391,7 +3344,7 @@ s32 request_file(s32 server, FILE *f) {
 
 		// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
 		if (strstr(temp_tok, "HTTP/1.1 4") || strstr(temp_tok, "HTTP/1.1 5")) {
-			UI_bootScreen("The server appears to be having an issue (request_file). Retrying...");
+			UI_bootScreen("The server appears to be having an issue (request_file). Retrying");
 			return -1;
 		}
 
