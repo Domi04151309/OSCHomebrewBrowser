@@ -24,35 +24,35 @@ void SETTINGS_render() {
       UTILS_rumble();
       UI_highlight(104, 146, 440, 44);
       if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-        if (setting_sd_card == true) setting_sd_card = false;
+        if (setting_sd_card) setting_sd_card = false;
         else setting_sd_card = true;
       }
     } else if (UI_isOnSquare(ir, 104, 196, 440, 44)) {
       UTILS_rumble();
       UI_highlight(104, 196, 440, 44);
       if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-        if (setting_hide_installed == true) setting_hide_installed = false;
+        if (setting_hide_installed) setting_hide_installed = false;
         else setting_hide_installed = true;
       }
     } else if (UI_isOnSquare(ir, 104, 246, 440, 44)) {
       UTILS_rumble();
       UI_highlight(104, 246, 440, 44);
       if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-        if (setting_rumble == true) setting_rumble = false;
+        if (setting_rumble) setting_rumble = false;
         else setting_rumble = true;
       }
     } else if (UI_isOnSquare(ir, 104, 296, 440, 44)) {
       UTILS_rumble();
       UI_highlight(104, 296, 440, 44);
       if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-        if (setting_update_icon == true) setting_update_icon = false;
+        if (setting_update_icon) setting_update_icon = false;
         else setting_update_icon = true;
       }
     } else if (UI_isOnSquare(ir, 104, 346, 440, 44)) {
       UTILS_rumble();
       UI_highlight(104, 346, 440, 44);
       if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-        if (setting_online == true) setting_online = false;
+        if (setting_online) setting_online = false;
         else setting_online = true;
       }
     }
@@ -81,14 +81,14 @@ void SETTINGS_render() {
         UTILS_rumble();
         UI_highlight(104, 146, 440, 44);
         if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-          if (setting_tool_tip == true) setting_tool_tip = false;
+          if (setting_tool_tip) setting_tool_tip = false;
           else setting_tool_tip = true;
         }
       } else if (UI_isOnSquare(ir, 104, 196, 440, 44)) {
         UTILS_rumble();
         UI_highlight(104, 196, 440, 44);
         if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-          if (setting_use_sd == true) setting_use_sd = false;
+          if (setting_use_sd) setting_use_sd = false;
           else setting_use_sd = true;
         }
       } else if (UI_isOnSquare(ir, 104, 246, 440, 44)) {
@@ -132,21 +132,21 @@ void SETTINGS_render() {
       UTILS_rumble();
       UI_highlight(104, 146, 440, 44);
       if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-        if (setting_disusb == true) setting_disusb = false;
+        if (setting_disusb) setting_disusb = false;
         else setting_disusb = true;
       }
     } else if (UI_isOnSquare(ir, 104, 196, 440, 44)) {
       UTILS_rumble();
       UI_highlight(104, 196, 440, 44);
       if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-        if (setting_wiiside == true) setting_wiiside = false;
+        if (setting_wiiside) setting_wiiside = false;
         else setting_wiiside = true;
       }
     } else if (UI_isOnSquare(ir, 104, 246, 440, 44)) {
       UTILS_rumble();
       UI_highlight(104, 246, 440, 44);
       if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
-        if (setting_server == true) setting_server = false;
+        if (setting_server) setting_server = false;
         else setting_server = true;
       }
     }
