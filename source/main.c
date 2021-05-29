@@ -39,8 +39,8 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 
 #include "res/drawables.h"
 #include "res/res.h"
+#include "res/strings.h"
 #include "activities.h"
-#include "strings.h"
 #include "ui.h"
 #include "utils.h"
 
@@ -1166,7 +1166,6 @@ int main(int argc, char **argv) {
 				if (homebrew_list[current_app].local_app_size > 0) {
 					if (homebrew_list[current_app].local_app_size != homebrew_list[current_app].app_size && download_arrow == 0 && !homebrew_list[current_app].no_manage) {
 						if (UI_button(ir, 340, 385, STR_UPDATE)) {
-							doRumble = true;
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
 								download_in_progress = true;
 								selected_app = current_app;
@@ -1185,7 +1184,6 @@ int main(int argc, char **argv) {
 
 					if (download_arrow == 0) {
 						if (UI_button(ir, 485, 385, STR_DELETE)) {
-							doRumble = true;
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
 								delete_in_progress = true;
 								selected_app = current_app;
@@ -1224,7 +1222,6 @@ int main(int argc, char **argv) {
 						UI_drawButton(340, 385, STR_DOWNLOAD, 2);
 					} else {
 						if (UI_button(ir, 340, 385, STR_DOWNLOAD)) {
-							doRumble = true;
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) && wait_a_press == 0 && download_in_progress == false && extract_in_progress == false && delete_in_progress == false) {
 								download_in_progress = true;
 								selected_app = current_app;

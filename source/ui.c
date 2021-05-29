@@ -6,7 +6,8 @@
 #include "common.h"
 #include "beer_png.h"
 #include "res/res.h"
-#include "strings.h"
+#include "res/strings.h"
+#include "utils.h"
 
 void UI_bootScreen(const char *string) {
   UI_bootScreenTwo(string, " ");
@@ -74,11 +75,13 @@ bool UI_isOnImg(ir_t ir, const f32 x, const f32 y, const GRRLIB_texImg *img) {
 bool UI_button(ir_t ir, const f32 x, const f32 y, const char * string) {
   bool hovered = UI_isOnSquare(ir, x, y, (2 * UI_PADDING + GRRLIB_TextWidth(string, FONTSIZE_SMALL)), UI_BLOCK_BTN_H);
   UI_drawButton(x, y, string, hovered);
+  if (hovered) UTILS_rumble();
   return hovered;
 }
 bool UI_blockButton(ir_t ir, const f32 x, const f32 y, const char * string) {
   bool hovered = UI_isOnSquare(ir, x, y, UI_BLOCK_BTN_W, UI_BLOCK_BTN_H);
   UI_drawBlockButton(x, y, string, hovered);
+  if (hovered) UTILS_rumble();
   return hovered;
 }
 

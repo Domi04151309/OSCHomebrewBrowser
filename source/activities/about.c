@@ -1,6 +1,7 @@
 #include "about.h"
 #include "../GRRLIB/GRRLIB.h"
 #include "../res/res.h"
+#include "../res/strings.h"
 #include "../ui.h"
 
 void ABOUT_render() {

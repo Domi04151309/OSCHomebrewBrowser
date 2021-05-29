@@ -1,6 +1,3 @@
-#ifndef _STRINGS_H_
-#define _STRINGS_H_
-
 #define STR_INSTALLED_APPS "Installed Apps"
 #define STR_DEMOS "Demos"
 #define STR_EMULATORS "Emulators"
@@ -86,5 +83,3 @@
 #define STR_ABOUT_6 "- Lowlines & DayDreamOz (old HBB designs)"
 #define STR_ABOUT_7 "- All the Wii homebrew developers and icon artists"
 #define STR_ABOUT_8 "- TeamTwiizers"
-
-#endif

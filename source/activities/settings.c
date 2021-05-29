@@ -6,8 +6,8 @@
 #include "../GRRLIB/GRRLIB.h"
 #include "../res/drawables.h"
 #include "../res/res.h"
+#include "../res/strings.h"
 #include "../common.h"
-#include "../strings.h"
 #include "../utils.h"
 #include "../ui.h"
 
