@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
 	u32 temp_esid;
 	ES_GetDeviceID(&temp_esid);
 	sprintf(esid, "%d", temp_esid);
-	if (esid <= 0) { printf("ESID error - You won't be able to rate applications.\n"); }
+	if (esid <= 0) { UI_bootScreen("ESID error - You won't be able to rate applications.\n"); }
 
 	if (setting_online) initialise_network();
 
@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
 				retries++;
 			}
 			if (!www_passed) {
-				printf("Failed, retrying... \n");
+				UI_bootScreen("Failed, retrying... \n");
 			}
 			main_retries++;
 			suspend_www_thread();
@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
 
 		if (!www_passed) {
 			codemii_backup = true;
-			printf("\nOSCWii appears to be having issues, using OSCWii Backup Server.\n\n");
+			UI_bootScreen("OSCWii appears to be having issues, using OSCWii Backup Server");
 			initialise_codemii_backup();
 			printf("Attempting to connect to server... ");
 
@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
 					retries++;
 				}
 				if (!www_passed) {
-					printf("Failed, retrying... \n");
+					UI_bootScreen("Failed, retrying... \n");
 				}
 				main_retries++;
 				suspend_www_thread();
@@ -172,7 +172,7 @@ int main(int argc, char **argv) {
 	else if (setting_server) { // Secondary server setting enabled
 		codemii_backup = true;
 		initialise_codemii_backup();
-		printf("Attempting to connect to OSCWii Secondary server... ");
+		UI_bootScreen("Attempting to connect to OSCWii Secondary server... ");
 
 		int main_retries = 0;
 		while (!www_passed && main_retries < 3) {
@@ -183,7 +183,7 @@ int main(int argc, char **argv) {
 				retries++;
 			}
 			if (!www_passed) {
-				printf("Failed, retrying... \n");
+				UI_bootScreen("Failed, retrying... \n");
 			}
 			main_retries++;
 			suspend_www_thread();
@@ -195,7 +195,7 @@ int main(int argc, char **argv) {
 			die("\nReturning you back to HBC. Please check to see if " FALLBACK_DOMAIN " is working.\n");
 		}
 	}
-	printf("Connection established\n");
+	UI_bootScreen("Connection established\n");
 	repo_check();
 
 	// Grab the homebrew list and parse list
@@ -254,7 +254,6 @@ int main(int argc, char **argv) {
 	if (setting_hide_installed) hide_apps_installed();
 
 	if (setting_online && setting_repo == 0) {
-		check_missing_files();
 		check_temp_files();
 		update_settings(); // Update last boot time
 	}
@@ -390,8 +389,8 @@ int main(int argc, char **argv) {
 				if (homebrew_list[c].file_found == 0 || homebrew_list[c].file_found == 2) {
 					if (homebrew_list[c].file_found == 0) {
 						// Check image file size
-						char img_path[100] = "sd:/apps/homebrew_browser/temp/";
-						if (setting_use_sd == false) strcpy(img_path,"usb:/apps/homebrew_browser/temp/");
+						char img_path[100] = "sd:/apps/homebrew_browser_lite/temp/";
+						if (setting_use_sd == false) strcpy(img_path,"usb:/apps/homebrew_browser_lite/temp/");
 						strcat(img_path, homebrew_list[c].name);
 						strcat(img_path, ".png");
 

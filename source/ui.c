@@ -13,7 +13,6 @@ void UI_bootScreen(const char *string) {
 }
 
 void UI_bootScreenTwo(const char *string1, const char *string2) {
-  GRRLIB_FillScreen(0x000000FF);
   GRRLIB_texImg *beer = GRRLIB_LoadTexture(beer_png);
   GRRLIB_DrawImg(512, 240 - (*beer).h / 2, beer, 0, 1, 1, 0xFFFFFFFF);
   GRRLIB_FreeTexture(beer);

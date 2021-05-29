@@ -31,7 +31,6 @@ u8 initialise_request();
 
 void exitApp(int code);
 
-void testing();
 void suspend_reset_thread();
 void suspend_www_thread();
 void die(char *msg);
@@ -150,7 +149,6 @@ int remove_dir(char* path);
 int delete_dir_files(char* path);
 int create_dir(char* path);
 bool unzipArchive(char * zipfilepath, char * unzipfolderpath);
-void check_missing_files();
 void check_temp_files();
 void save_xml_name();
 void copy_xml_name();

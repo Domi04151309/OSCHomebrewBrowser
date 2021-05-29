@@ -197,20 +197,6 @@ void exitApp(int code) {
 	exit(code);
 }
 
-void testing() {
-	printf("Going to test downloading a file\n");
-	hbb_updating = true;
-	if (create_and_request_file("sd:/apps/", "homebrew_browser", "/temp_files.zip") == 1) {
-		printf("Test complete\n");
-	}
-	else {
-		printf("Test failed\n");
-	}
-	remove_file("sd:/apps/homebrew_browser/temp_files.zip");
-	hbb_updating = false;
-	sleep(3);
-}
-
 char* get_error_msg(s32 error_code) {
 	switch (error_code) {
 		case -6:
@@ -294,7 +280,7 @@ static void *run_icons_thread(void *arg) {
 
 		char img_path[150];
 		strcpy(img_path, rootdir);
-		strcat(img_path, "apps/homebrew_browser/temp/");
+		strcat(img_path, "apps/homebrew_browser_lite/temp/");
 		strcat(img_path, total_list[x].name);
 		strcat(img_path, ".png");
 
@@ -378,7 +364,7 @@ static void *run_icons_thread(void *arg) {
 
 			char temp_path[200];
 			strcpy(temp_path, rootdir);
-			strcat(temp_path, "apps/homebrew_browser/temp/");
+			strcat(temp_path, "apps/homebrew_browser_lite/temp/");
 
 			create_result = create_and_request_file(temp_path, total_list[x].name, ".png");
 
@@ -1183,28 +1169,28 @@ static void *run_request_thread(void *arg) {
 	if (setting_online == true) {
 		if (setting_repo == 0) {
 			if (setting_use_sd == true) {
-				if (create_and_request_file("sd:/apps/", "homebrew_browser", "/listv036.txt") == 1) {
-					printf("Homebrew List received.\n");
+				if (create_and_request_file("sd:/apps/", "homebrew_browser_lite", "/listv036.txt") == 1) {
+					UI_bootScreen("Homebrew list received");
 					list_received = true;
 				}
 			}
 			else {
-				if (create_and_request_file("usb:/apps/", "homebrew_browser", "/listv036.txt") == 1) {
-					printf("Homebrew List received.\n");
+				if (create_and_request_file("usb:/apps/", "homebrew_browser_lite", "/listv036.txt") == 1) {
+					UI_bootScreen("Homebrew list received");
 					list_received = true;
 				}
 			}
 		}
 		else {
 			if (setting_use_sd == true) {
-				if (request_list_file("sd:/apps/homebrew_browser/external_repo_list.txt", repo_list[setting_repo].list_file) == 1) {
-					printf("Homebrew List received.\n");
+				if (request_list_file("sd:/apps/homebrew_browser_lite/external_repo_list.txt", repo_list[setting_repo].list_file) == 1) {
+					UI_bootScreen("Homebrew list received");
 					list_received = true;
 				}
 			}
 			else {
-				if (request_list_file("usb:/apps/homebrew_browser/external_repo_list.txt", repo_list[setting_repo].list_file) == 1) {
-					printf("Homebrew List received.\n");
+				if (request_list_file("usb:/apps/homebrew_browser_lite/external_repo_list.txt", repo_list[setting_repo].list_file) == 1) {
+					UI_bootScreen("Homebrew list received");
 					list_received = true;
 				}
 			}
@@ -1212,11 +1198,11 @@ static void *run_request_thread(void *arg) {
 
 	}
 	else if (setting_repo == 0) {
-		printf("Using Homebrew List on file.\n");
+		UI_bootScreen("Using local Homebrew list");
 		list_received = true;
 	}
 	else {
-		printf("Can't use Homebrew List on file.\n");
+		UI_bootScreen("Cannot use local Homebrew list");
 	}
 
 	return 0;
@@ -1257,7 +1243,7 @@ void save_no_manage_list() {
 	// Read all homebrew array for no managed
 	char no_manage_file[50];
 	strcpy(no_manage_file, rootdir);
-	strcat(no_manage_file, "/apps/homebrew_browser/unmanaged_apps.txt");
+	strcat(no_manage_file, "/apps/homebrew_browser_lite/unmanaged_apps.txt");
 
 	FILE *fu = fopen(no_manage_file, "wb");
 
@@ -1287,7 +1273,7 @@ void load_no_manage_list() {
 	char current_line[100];
 	char no_manage_file[50];
 	strcpy(no_manage_file, rootdir);
-	strcat(no_manage_file, "/apps/homebrew_browser/unmanaged_apps.txt");
+	strcat(no_manage_file, "/apps/homebrew_browser_lite/unmanaged_apps.txt");
 	FILE *fl = fopen(no_manage_file, "rb");
 
 	if (fl != NULL) {
@@ -1309,7 +1295,7 @@ void add_to_log(char* text, ...) {
 
 	char log_file[60];
 	strcpy(log_file, rootdir);
-	strcat(log_file, "/apps/homebrew_browser/log.txt");
+	strcat(log_file, "/apps/homebrew_browser_lite/log.txt");
 	FILE *flog = fopen(log_file, "a");
 	vfprintf (flog, text, args);
 	fputs ("\r\n", flog);
@@ -1367,8 +1353,8 @@ void update_settings() {
 	sprintf(set21, "%i", setting_server);
 	mxmlElementSetAttr(data, "setting_server", set21);
 
-	FILE *fp = fopen("sd:/apps/homebrew_browser/settings.xml", "wb");
-	FILE *fp1 = fopen("usb:/apps/homebrew_browser/settings.xml", "wb");
+	FILE *fp = fopen("sd:/apps/homebrew_browser_lite/settings.xml", "wb");
+	FILE *fp1 = fopen("usb:/apps/homebrew_browser_lite/settings.xml", "wb");
 
 	if (fp != NULL) {
 		mxmlSaveFile(xml, fp, MXML_NO_CALLBACK);
@@ -1388,7 +1374,7 @@ void load_mount_settings() {
 	mxml_node_t *tree;
 	mxml_node_t *data;
 
-	FILE *fp = fopen("sd:/apps/homebrew_browser/settings.xml", "rb");
+	FILE *fp = fopen("sd:/apps/homebrew_browser_lite/settings.xml", "rb");
 
 	if (fp != NULL) {
 		fseek (fp , 0, SEEK_END);
@@ -1421,15 +1407,15 @@ void load_settings() {
 	int loaded_from = true;
 
 	if (sd_mounted == true) {
-		fp = fopen("sd:/apps/homebrew_browser/settings.xml", "rb");
+		fp = fopen("sd:/apps/homebrew_browser_lite/settings.xml", "rb");
 		if (fp == NULL) {
 			fclose(fp);
-			fp = fopen("usb:/apps/homebrew_browser/settings.xml", "rb");
+			fp = fopen("usb:/apps/homebrew_browser_lite/settings.xml", "rb");
 			loaded_from = false;
 		}
 	}
 	else {
-		fp = fopen("usb:/apps/homebrew_browser/settings.xml", "rb");
+		fp = fopen("usb:/apps/homebrew_browser_lite/settings.xml", "rb");
 		loaded_from = false;
 	}
 
@@ -1500,29 +1486,28 @@ void load_settings() {
 			mxmlDelete(tree);
 
 			if (loaded_from == true) {
-				printf("Settings loaded from SD card.\n");
+				UI_bootScreen("Settings loaded from SD card");
 			}
 			else {
-				printf("Settings loaded from USB device.\n");
+				UI_bootScreen("Settings loaded from USB device");
 			}
 
 			// Double check that setting SD is correct
 			if (setting_use_sd == true && sd_mounted == false) {
 				setting_use_sd = false;
-				printf("Settings say to load from SD, no SD found. Using USB instead.\n");
+				UI_bootScreenTwo("Settings say to load from SD, no SD found", "Using USB instead");
 			}
 			else if (setting_use_sd == false && usb_mounted == false) {
 				setting_use_sd = true;
-				printf("Settings say to load from USB, no USB found. Using SD instead.\n");
+				UI_bootScreenTwo("Settings say to load from USB, no USB found", "Using SD instead");
 			}
-			printf("\n");
 		}
 		else {
 			if (loaded_from == true) {
-				remove_file("sd:/apps/homebrew_browser/settings.xml");
+				remove_file("sd:/apps/homebrew_browser_lite/settings.xml");
 			}
 			else {
-				remove_file("sd:/apps/homebrew_browser/settings.xml");
+				remove_file("sd:/apps/homebrew_browser_lite/settings.xml");
 			}
 		}
 	}
@@ -1993,13 +1978,13 @@ void initialise_fat() {
 	bool fat_init = false;
 
 	// At least one FAT initialisation has to be completed
-	printf("Attempting to mount SD card");
+	UI_bootScreen("Attempting to mount SD card");
 	if (initialise_device(METHOD_SD)) {
 		strcpy(rootdir, "sd:/");
 		if (test_fat() == true) {
 			fat_init = true;
 			sd_mounted = true;
-			printf("SD card mounted.\n");
+			UI_bootScreen("SD card mounted");
 			load_mount_settings();
 		}
 		else {
@@ -2008,13 +1993,13 @@ void initialise_fat() {
 		}
 	}
 	if (setting_disusb == false) {
-		printf("Attempting to mount USB device");
+		UI_bootScreen("Attempting to mount USB device");
 		if (initialise_device(METHOD_USB)) {
 			strcpy(rootdir, "usb:/");
 			if (test_fat() == true) {
 				fat_init = true;
 				usb_mounted = true;
-				printf("USB device mounted.\n");
+				UI_bootScreen("USB device mounted");
 			}
 			else {
 				fatUnmount("usb:");
@@ -2054,7 +2039,7 @@ bool initialise_device(int method) {
 		mounted = true;
 	}
 	else {
-		printf("Unable to be mounted.\n");
+		UI_bootScreen("Unable to mount device");
 	}
 
 	return mounted;
@@ -2082,9 +2067,9 @@ bool test_fat() {
 	strcpy(dir_apps, rootdir);
 	strcat(dir_apps, "apps");
 	strcpy(dir_hbb, rootdir);
-	strcat(dir_hbb, "apps/homebrew_browser");
+	strcat(dir_hbb, "apps/homebrew_browser_lite");
 	strcpy(dir_hbbtemp, rootdir);
-	strcat(dir_hbbtemp, "apps/homebrew_browser/temp");
+	strcat(dir_hbbtemp, "apps/homebrew_browser_lite/temp");
 
 	if (!opendir(dir_apps)) {
 		mkdir(dir_apps, 0777);
@@ -2166,9 +2151,9 @@ void initialise_network() {
 		struct in_addr hostip;
 		hostip.s_addr = net_gethostip();
 		if (hostip.s_addr) {
-			printf("Network initialised.\n");
+			UI_bootScreen("Network initialized");
 		} else {
-			UI_bootScreen("Could not connect to your network");
+			UI_bootScreen("Could not connect to network");
 			sleep(5);
 			exitApp(0);
 		}
@@ -2193,7 +2178,7 @@ bool check_wifi() {
 			if (!ip) printf("Unable to initialise network, retrying...\n");
 			times++;
 		} while (!ip && times < 3);
-		if (ip) printf("Network initialised.\n");
+		if (ip) printf("Network initialised");
 	}
 	if (times >= 3) {
 		return 0;
@@ -2202,21 +2187,21 @@ bool check_wifi() {
 }
 
 void initialise_codemii() {
-	printf("Requesting IP address of " MAIN_DOMAIN "... ");
+	UI_bootScreen("Requesting IP address of " MAIN_DOMAIN "... ");
 	initializedns();
 	IP_ADDRESS = getipbynamecached(MAIN_DOMAIN);
 
 	if (IP_ADDRESS == 0) {
-		printf("Failed, using stored IP address\n");
+		UI_bootScreen("Failed, using stored IP address");
 		hostname_ok = false;
 	}
 	else {
-		printf("IP address successfully retrieved\n");
+		UI_bootScreen("IP address successfully retrieved");
 	}
 }
 
 void initialise_codemii_backup() {
-	printf("Requesting IP address of " FALLBACK_DOMAIN "... ");
+	UI_bootScreen("Requesting IP address of " FALLBACK_DOMAIN "... ");
 	hostname_ok = true;
 	if (setting_server == true) {
 		initializedns();
@@ -2224,11 +2209,11 @@ void initialise_codemii_backup() {
 	IP_ADDRESS = getipbynamecached(FALLBACK_DOMAIN);
 
 	if (IP_ADDRESS == 0) {
-		printf("Failed, using stored IP address\n");
+		UI_bootScreen("Failed, using stored IP address");
 		hostname_ok = false;
 	}
 	else {
-		printf("IP address successfully retrieved\n");
+		UI_bootScreen("IP address successfully retrieved");
 	}
 }
 
@@ -2396,7 +2381,6 @@ int remove_file(char* path) {
 
 // Removes a directory
 int remove_dir(char* path) {
-
 	if (opendir(path)) {
 		unlink(path);
 		if (opendir(path)) {
@@ -2432,9 +2416,6 @@ int delete_dir_files(char* path) {
 
 // Creates a directory
 int create_dir(char* path) {
-
-	printf("%s\n",path);
-
 	if (!opendir(path)) {
 		mkdir(path, 0777);
 		if (!opendir(path)) {
@@ -2486,61 +2467,11 @@ void download_queue_size() {
 }
 
 
-// Check if icon.png or meta.xml is missing and if so download them
-void check_missing_files() {
-
-	if (setting_use_sd == true) {
-		// Open the file
-		FILE *f = fopen("sd:/apps/homebrew_browser/icon.png", "rb");
-
-		if (f == NULL) {
-			create_and_request_file("sd:/apps/", "homebrew_browser", "/icon.png");
-		}
-
-		// Open the file
-		FILE *f1 = fopen("sd:/apps/homebrew_browser/meta.xml", "rb");
-
-		if (f1 == NULL) {
-			create_and_request_file("sd:/apps/", "homebrew_browser", "/meta.xml");
-		}
-
-		// Open the file
-		FILE *f2 = fopen("sd:/apps/homebrew_browser/loop.mod", "rb");
-
-		if (f2 == NULL) {
-			create_and_request_file("sd:/apps/", "homebrew_browser", "/loop.mod");
-		}
-	}
-	else {
-		// Open the file
-		FILE *f = fopen("usb:/apps/homebrew_browser/icon.png", "rb");
-
-		if (f == NULL) {
-			create_and_request_file("usb:/apps/", "homebrew_browser", "/icon.png");
-		}
-
-		// Open the file
-		FILE *f1 = fopen("usb:/apps/homebrew_browser/meta.xml", "rb");
-
-		if (f1 == NULL) {
-			create_and_request_file("usb:/apps/", "homebrew_browser", "/meta.xml");
-		}
-
-		// Open the file
-		FILE *f2 = fopen("usb:/apps/homebrew_browser/loop.mod", "rb");
-
-		if (f2 == NULL) {
-			create_and_request_file("usb:/apps/", "homebrew_browser", "/loop.mod");
-		}
-	}
-}
-
-
 void check_temp_files() {
 	int x = 0;
 
 	if (setting_use_sd == true) {
-		char path[100] = "sd:/apps/homebrew_browser/temp/";
+		char path[100] = "sd:/apps/homebrew_browser_lite/temp/";
 		dir = opendir(path);
 
 		if (dir != NULL) {
@@ -2562,30 +2493,27 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			UI_bootScreenTwo("Downloading current image files", "You can skip this by holding down the B button.");
+			UI_bootScreenTwo("Downloading latest previews", "Hold down B to skip");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
 
-			if (create_and_request_file("sd:/apps/", "homebrew_browser", "/temp_files.zip") != 1) {
-				printf("\n\nFailed to download zip file.\n");
+			if (create_and_request_file("sd:/apps/", "homebrew_browser_lite", "/temp_files.zip") != 1) {
+				UI_bootScreen("Failed downloading previews");
 			}
 			else {
-				UI_bootScreen("Extracting image files");
-				if (unzipArchive("sd:/apps/homebrew_browser/temp_files.zip", "sd:/apps/homebrew_browser/temp/") == true) {
+				UI_bootScreen("Extracting previews");
+				if (unzipArchive("sd:/apps/homebrew_browser_lite/temp_files.zip", "sd:/apps/homebrew_browser_lite/temp/") == true) {
 					if (cancel_extract == false) {
-						printf("\nDownloaded and Extracted images successfully.\n\n");
-					}
-					else {
-						printf("\n");
+						UI_bootScreen("Downloaded and extracted previews successfully");
 					}
 				}
 			}
-			remove_file("sd:/apps/homebrew_browser/temp_files.zip");
+			remove_file("sd:/apps/homebrew_browser_lite/temp_files.zip");
 			hbb_updating = false;
 
 			if (cancel_download == true || cancel_extract == true) {
-				UI_bootScreen("Cancelled download and extracting of image files.");
+				UI_bootScreen("Cancelled downloading and extracting of previews");
 				cancel_download = false;
 				cancel_extract = false;
 			}
@@ -2594,7 +2522,7 @@ void check_temp_files() {
 		}
 	}
 	else {
-		char path[100] = "usb:/apps/homebrew_browser/temp/";
+		char path[100] = "usb:/apps/homebrew_browser_lite/temp/";
 		dir = opendir(path);
 
 		if (dir != NULL) {
@@ -2616,31 +2544,28 @@ void check_temp_files() {
 		closedir(dir);
 
 		if (x < 200) {
-			UI_bootScreenTwo("Downloading current image files", "You can skip this by holding down the B button.");
+			UI_bootScreenTwo("Downloading latest previews", "Hold down B to skip");
 
 			hbb_updating = true;
 			remote_hb_size = 1874386;
 
-			if (create_and_request_file("usb:/apps/", "homebrew_browser", "/temp_files.zip") != 1) {
-				printf("\n\nFailed to download zip file.\n");
+			if (create_and_request_file("usb:/apps/", "homebrew_browser_lite", "/temp_files.zip") != 1) {
+				UI_bootScreen("Failed downloading previews");
 			}
 			else {
-				printf("\n\nExtracting image files...\n");
-				if (unzipArchive("usb:/apps/homebrew_browser/temp_files.zip", "usb:/apps/homebrew_browser/temp/") == true) {
+				UI_bootScreen("Extracting previews");
+				if (unzipArchive("usb:/apps/homebrew_browser_lite/temp_files.zip", "usb:/apps/homebrew_browser_lite/temp/") == true) {
 					if (cancel_extract == false) {
-						printf("\nDownloaded and Extracted images successfully.\n\n");
-					}
-					else {
-						printf("\n");
+						UI_bootScreen("Downloaded and extracted previews successfully");
 					}
 				}
 				unzipArchive("", "");
 			}
-			remove_file("usb:/apps/homebrew_browser/temp_files.zip");
+			remove_file("usb:/apps/homebrew_browser_lite/temp_files.zip");
 			hbb_updating = false;
 
 			if (cancel_download == true || cancel_extract == true) {
-				UI_bootScreen("Cancelled download and extracting of image files.");
+				UI_bootScreen("Cancelled downloading and extracting of previews");
 				cancel_download = false;
 				cancel_extract = false;
 			}
@@ -2688,7 +2613,7 @@ void repo_check() {
 	// Setting in settings which will just be a number, 0 for HBB, 1 for another one, etc.
 	// Always grab the listing of other repos...
 
-	printf("Requesting repositories list... ");
+	UI_bootScreen("Requesting repositories list...");
 
 	s32 main_server = server_connect(1);
 
@@ -2732,7 +2657,7 @@ void repo_check() {
 
 				// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
 				if (strstr(cmd_line, "HTTP/1.1 4") || strstr(cmd_line, "HTTP/1.1 5")) {
-					printf("The server appears to be having an issue (repo_check). Retrying...\n");
+					UI_bootScreen("The server appears to be having an issue (repo_check). Retrying...");
 					net_close(main_server);
 					sleep(1);
 				}
@@ -2778,16 +2703,16 @@ void repo_check() {
 	net_close(main_server);
 
 	if (count >= 1) {
-		printf("Repositories list received.\n");
+		UI_bootScreen("Repository list received");
 
 		// Now check which server to use
 		if (setting_repo != 0) {
 			printf("Using repository: %s\n", repo_list[setting_repo].name);
-			printf("Press Wiimote '2' or Gamecube 'X' button to revert to the CodeMii Repo\n\n");
+			UI_bootScreen("Press Wiimote '2' or Gamecube 'X' button to revert to the CodeMii Repo");
 		}
 	}
 	else if (count == 0) {
-		printf("Failed to receive Repositories list.\n");
+		UI_bootScreen("Failed to receive repository list");
 	}
 }
 
@@ -2886,7 +2811,7 @@ s32 server_connect(int repo_bypass) {
 // Request the homebrew list
 s32 request_list() {
 
-	printf("Requesting Homebrew List... ");
+	UI_bootScreen("Requesting Homebrew list...");
 	initialise_request();
 	int retry = 0;
 	timeout_counter = 0;
@@ -2894,39 +2819,38 @@ s32 request_list() {
 		timeout_counter++;
 		usleep(500000);
 		if (timeout_counter > 240) {
-			printf("Failed to receive the Homebrew List.\n");
-			printf("Requesting Homebrew List...");
+			UI_bootScreen("Failed to receive the Homebrew list. Retrying");
 			retry++;
 			timeout_counter = 0;
 			LWP_SuspendThread(request_thread);
 			initialise_request();
 		}
 		if (retry >= 4) {
-			die("Couldn't receive Homebrew List... returning you to HBC\n\n");
+			die("Could not receive Homebrew list... returning you to HBC");
 		}
 	}
 
 	FILE *f = NULL;
 	if (setting_repo == 0) {
 		if (setting_use_sd == true) {
-			f = fopen ("sd:/apps/homebrew_browser/listv036.txt", "rb");
+			f = fopen ("sd:/apps/homebrew_browser_lite/listv036.txt", "rb");
 		}
 		else {
-			f = fopen ("usb:/apps/homebrew_browser/listv036.txt", "rb");
+			f = fopen ("usb:/apps/homebrew_browser_lite/listv036.txt", "rb");
 		}
 	}
 	else {
 		if (setting_use_sd == true) {
-			f = fopen ("sd:/apps/homebrew_browser/external_repo_list.txt", "rb");
+			f = fopen ("sd:/apps/homebrew_browser_lite/external_repo_list.txt", "rb");
 		}
 		else {
-			f = fopen ("usb:/apps/homebrew_browser/external_repo_list.txt", "rb");
+			f = fopen ("usb:/apps/homebrew_browser_lite/external_repo_list.txt", "rb");
 		}
 	}
 
 	// If file doesn't exist or can't open it then we can grab the latest file
 	if (f == NULL) {
-		printf("Homebrew List file can't be found.\n");
+		UI_bootScreen("Homebrew list cannot be found");
 		sleep(3);
 		return -1;
 	}
@@ -2938,11 +2862,10 @@ s32 request_list() {
 
 		if (file_check == 0) {
 			if (setting_online == true) {
-				printf("Homebrew List file is 0 bytes, retrying...\n");
-				printf("If this keeps occuring, you might have to try reloading the Homebrew Browser.\n");
+				UI_bootScreenTwo("Homebrew list is empty, retrying...", "If this keeps happening, try reloading the Homebrew Browser");
 			}
 			else {
-				die("Homebrew List file is 0 bytes. As you are in offline mode, HBB will now exit.\n Please go online to retreive the list file.");
+				die("Homebrew list file is empty. As you are in offline mode, HBB will now exit.\n Please go online to retreive the list file.");
 			}
 			sleep(3);
 			return -1;
@@ -2988,7 +2911,7 @@ s32 request_list() {
 			}
 		}
 
-		printf("Parsing Homebrew List");
+		UI_bootScreen("Parsing Homebrew list");
 
 		while (fgets (cmd_line, 2000, f)) {
 
@@ -3468,7 +3391,7 @@ s32 request_file(s32 server, FILE *f) {
 
 		// If HTTP status code is 4xx or 5xx then close connection and try again 3 times
 		if (strstr(temp_tok, "HTTP/1.1 4") || strstr(temp_tok, "HTTP/1.1 5")) {
-			printf("The server appears to be having an issue (request_file). Retrying...\n");
+			UI_bootScreen("The server appears to be having an issue (request_file). Retrying...");
 			return -1;
 		}
 
@@ -3608,12 +3531,15 @@ s32 request_list_file(char *file_path, char *path) {
 }
 
 // Create the path to the folder if needed, create the file and request the file from the server
-s32 create_and_request_file(char* path1, char* appname, char *filename) {
+s32 create_and_request_file(char* path1, char* name, char *filename) {
+	char appname[100];
+	if (!strcmp(name, "homebrew_browser_lite")) strcpy(appname, "homebrew_browser");
+	else strcpy(appname, name);
 
 	// Path
 	char path[300];
 	strcpy(path, path1);
-	strcat(path, appname);
+	strcat(path, name);
 
 	// Create the folder if it's a request on a directory
 	if (strcmp(filename, ".png") != 0) {
