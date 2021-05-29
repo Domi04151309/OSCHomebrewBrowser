@@ -180,10 +180,6 @@ struct homebrew_struct {
 	int app_total_size;
 	char app_controllers[20];
 
-	// Dynamic text stored
-	//void *str_name;
-	//void *str_short_description;
-
 	// Icon image
 	int file_found;
 	unsigned char *content;
