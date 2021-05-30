@@ -7,7 +7,6 @@
 ir_t ir;
 bool doRumble = false;
 int pressed = 0;
-int pressed_gc = 0;
 int wait_a_press = 0;
 
 void UTILS_rumble() {

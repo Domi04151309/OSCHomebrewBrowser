@@ -17,25 +17,25 @@ void MENU_render() {
   GRRLIB_DrawImg(82, 146, home_bg_img, 0, 1, 1, 0xFFFFFFFF);
 
   if (UI_blockButton(ir, 283, UI_MENU_BTN_1_Y, STR_ABOUT)) {
-    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
+    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
       ACTIVITIES_open(ACTIVITY_ABOUT);
     }
   }
 
   if (UI_blockButton(ir, 283, UI_MENU_BTN_2_Y, STR_CONTROLLER)) {
-    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
+    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
       ACTIVITIES_open(ACTIVITY_HELP_CONTROLLER);
     }
   }
 
   if (UI_blockButton(ir, 283, UI_MENU_BTN_3_Y, STR_SETTINGS)) {
-    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
+    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
       ACTIVITIES_open(ACTIVITY_SETTINGS);
     }
   }
 
   if (UI_blockButton(ir, 283, UI_MENU_BTN_4_Y, STR_RETURN_TO_WII_MENU)) {
-    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
+    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
       WPAD_Rumble(WPAD_CHAN_0, 0);
       WPAD_Rumble(WPAD_CHAN_0, 0);
       if (download_icon > 0) {
@@ -53,7 +53,7 @@ void MENU_render() {
   }
 
   if (UI_blockButton(ir, 283, UI_MENU_BTN_5_Y, STR_RETURN_TO_LOADER)) {
-    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2 || pressed_gc & PAD_BUTTON_A) {
+    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
       WPAD_Rumble(WPAD_CHAN_0, 0);
       WPAD_Rumble(WPAD_CHAN_0, 0);
       usleep(300000);

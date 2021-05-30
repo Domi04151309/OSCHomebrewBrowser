@@ -102,8 +102,6 @@ void update_settings();
 void load_settings();
 void load_mount_settings();
 
-void update_lists();
-void store_update_lists();
 void hide_apps_installed();
 bool hide_apps_updated();
 void sort_by_date(bool min_to_max);
@@ -184,6 +182,8 @@ struct homebrew_struct {
 	int file_found;
 	unsigned char *content;
 
+	// Management
+	int original_pos;
 };
 
 struct sort_homebrew_struct {

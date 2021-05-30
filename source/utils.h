@@ -8,7 +8,6 @@
 extern ir_t ir;
 extern bool doRumble;
 extern int pressed;
-extern int pressed_gc;
 extern int wait_a_press;
 
 void UTILS_rumble();

@@ -875,8 +875,6 @@ static void *run_download_thread(void *arg) {
 		extract_in_progress = false;
 		sd_card_update = true;
 
-		store_update_lists();
-
 		if (updating >= 0 && updating < array_length (homebrew_list)) {
 			new_updating++;
 		}
@@ -894,9 +892,6 @@ static void *run_download_thread(void *arg) {
 		cancel_download = false;
 		cancel_extract = false;
 	}
-
-	// Update the homebrew list
-	store_update_lists();
 
 	return 0;
 }
@@ -1152,9 +1147,6 @@ static void *run_delete_thread(void *arg) {
 			new_updating++;
 		}
 	}
-
-	// Update the homebrew list
-	store_update_lists();
 
 	return 0;
 }
@@ -1736,128 +1728,6 @@ void sort_by_date (bool min_to_max) {
 	}
 }
 
-void update_lists() {
-	int y;
-
-	if (category_old_selection == 0) {
-		for (y = 0; y < array_length (demos_list); y++) {
-			int x;
-			for (x = 0; x < array_length (homebrew_list); x++) {
-				if (strcmp (homebrew_list[x].name, demos_list[y].name) == 0) {
-					demos_list[y] = homebrew_list[x];
-					break;
-				}
-			}
-		}
-	}
-
-	if (category_old_selection == 1) {
-		for (y = 0; y < array_length (emulators_list); y++) {
-			int x;
-			for (x = 0; x < array_length (homebrew_list); x++) {
-				if (strcmp (homebrew_list[x].name, emulators_list[y].name) == 0) {
-					emulators_list[y] = homebrew_list[x];
-					break;
-				}
-			}
-		}
-	}
-
-	if (category_old_selection == 2) {
-
-		for (y = 0; y < array_length (games_list); y++) {
-			int x;
-			for (x = 0; x < array_length (homebrew_list); x++) {
-				if (strcmp (homebrew_list[x].name, games_list[y].name) == 0) {
-					games_list[y] = homebrew_list[x];
-					break;
-				}
-			}
-		}
-	}
-
-	if (category_old_selection == 3) {
-		for (y = 0; y < array_length (media_list); y++) {
-			int x;
-				for (x = 0; x < array_length (homebrew_list); x++) {
-				if (strcmp (homebrew_list[x].name, media_list[y].name) == 0) {
-					media_list[y] = homebrew_list[x];
-					break;
-				}
-			}
-		}
-	}
-
-	if (category_old_selection == 4) {
-		for (y = 0; y < array_length (utilities_list); y++) {
-			int x;
-				for (x = 0; x < array_length (homebrew_list); x++) {
-				if (strcmp (homebrew_list[x].name, utilities_list[y].name) == 0) {
-					utilities_list[y] = homebrew_list[x];
-					break;
-				}
-			}
-		}
-	}
-
-	int x = 0;
-	for (x = 0; x < array_length (homebrew_list); x++) {
-		int y;
-		for (y = 0; y < array_length (total_list); y++) {
-			if (strcmp (homebrew_list[x].name, total_list[y].name) == 0) {
-				total_list[y] = homebrew_list[x];
-			}
-		}
-	}
-
-}
-
-void store_update_lists() {
-	int y = 0;
-	for (y = 0; y < array_length (demos_list); y++) {
-		if (strcmp (store_homebrew_list[0].name, demos_list[y].name) == 0) {
-			demos_list[y] = store_homebrew_list[0];
-		}
-	}
-
-	for (y = 0; y < array_length (emulators_list); y++) {
-		if (strcmp (store_homebrew_list[0].name, emulators_list[y].name) == 0) {
-			emulators_list[y] = store_homebrew_list[0];
-		}
-	}
-
-	for (y = 0; y < array_length (games_list); y++) {
-		if (strcmp (store_homebrew_list[0].name, games_list[y].name) == 0) {
-			games_list[y] = store_homebrew_list[0];
-		}
-	}
-
-	for (y = 0; y < array_length (media_list); y++) {
-		if (strcmp (store_homebrew_list[0].name, media_list[y].name) == 0) {
-			media_list[y] = store_homebrew_list[0];
-		}
-	}
-
-	for (y = 0; y < array_length (utilities_list); y++) {
-		if (strcmp (store_homebrew_list[0].name, utilities_list[y].name) == 0) {
-			utilities_list[y] = store_homebrew_list[0];
-		}
-	}
-
-	for (y = 0; y < array_length (total_list); y++) {
-		if (strcmp (store_homebrew_list[0].name, total_list[y].name) == 0) {
-			total_list[y] = store_homebrew_list[0];
-		}
-	}
-
-	for (y = 0; y < array_length (total_list); y++) {
-		if (strcmp (store_homebrew_list[0].name, homebrew_list[y].name) == 0) {
-			homebrew_list[y] = store_homebrew_list[0];
-		}
-	}
-}
-
-
 void hide_apps_installed() {
 
 	clear_temp_list();
@@ -1908,8 +1778,6 @@ bool hide_apps_updated() {
 		}
 		j++;
 	}
-
-	update_lists();
 
 	clear_list();
 
@@ -2929,6 +2797,7 @@ s32 request_list() {
 				if (strstr(cmd_line, "=Games=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
+						homebrew_list[i].original_pos = total_list_count;
 						games_list[i] = homebrew_list[i];
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
@@ -2939,6 +2808,7 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Emulators=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
+						homebrew_list[i].original_pos = total_list_count;
 						emulators_list[i] = homebrew_list[i];
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
@@ -2949,6 +2819,7 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Media=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
+						homebrew_list[i].original_pos = total_list_count;
 						media_list[i] = homebrew_list[i];
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
@@ -2959,6 +2830,7 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Utilities=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
+						homebrew_list[i].original_pos = total_list_count;
 						utilities_list[i] = homebrew_list[i];
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
@@ -2969,6 +2841,7 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Demos=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
+						homebrew_list[i].original_pos = total_list_count;
 						demos_list[i] = homebrew_list[i];
 						total_list[total_list_count] = homebrew_list[i];
 						total_list_count++;
