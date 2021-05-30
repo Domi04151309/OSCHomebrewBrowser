@@ -1,8 +1,8 @@
 /*
 
-Homebrew Browser -- a simple way to view and install Homebrew releases via the Wii
+Homebrew Browser - a simple way to view and install Homebrew releases via the Wii
 
-Author: teknecal
+Author: teknecal & Domi04151309
 
 Using some source from ftpii v0.0.5
 ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>

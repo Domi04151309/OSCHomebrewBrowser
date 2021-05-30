@@ -1,4 +1,3 @@
-
 #ifndef GRRLIB_COMP
 #define GRRLIB_COMP
 
