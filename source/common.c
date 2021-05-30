@@ -66,7 +66,7 @@ int xfb_height = 0;
 struct repo_struct repo_list[200];
 
 // List to show
-struct homebrew_struct homebrew_list[1600];
+struct homebrew_struct current_items[1600];
 
 struct homebrew_struct emulators_list[300];
 struct homebrew_struct games_list[600];
@@ -313,10 +313,10 @@ static void *run_icons_thread(void *arg) {
 				}
 
 				int y;
-				for (y = 0; y < array_length (homebrew_list); y++) {
-					if (strcmp (total_list[x].name, homebrew_list[y].name) == 0) {
-						homebrew_list[y].file_found = total_list[x].file_found;
-						homebrew_list[y].content = total_list[x].content;
+				for (y = 0; y < array_length (current_items); y++) {
+					if (strcmp (total_list[x].name, current_items[y].name) == 0) {
+						current_items[y].file_found = total_list[x].file_found;
+						current_items[y].content = total_list[x].content;
 					}
 				}
 
@@ -394,10 +394,10 @@ static void *run_icons_thread(void *arg) {
 					}
 
 					int y;
-					for (y = 0; y < array_length (homebrew_list); y++) {
-						if (strcmp (total_list[x].name, homebrew_list[y].name) == 0) {
-							homebrew_list[y].file_found = total_list[x].file_found;
-							homebrew_list[y].content = total_list[x].content;
+					for (y = 0; y < array_length (current_items); y++) {
+						if (strcmp (total_list[x].name, current_items[y].name) == 0) {
+							current_items[y].file_found = total_list[x].file_found;
+							current_items[y].content = total_list[x].content;
 						}
 					}
 					while (changing_cat) {
@@ -473,7 +473,7 @@ u8 load_icons() {
 static void *run_download_thread(void *arg) {
 
 	clear_store_list();
-	job_store_list[0] = homebrew_list[selected_app];
+	job_store_list[0] = current_items[selected_app];
 
 	if (download_icon > 0) {
 		while (download_icon_sleeping != true) {
@@ -877,7 +877,7 @@ static void *run_download_thread(void *arg) {
 
 		total_list[job_store_list[0].original_pos] = job_store_list[0];
 
-		if (updating >= 0 && updating < array_length (homebrew_list)) {
+		if (updating >= 0 && updating < array_length (current_items)) {
 			new_updating++;
 		}
 		if (update_xml == 1) {
@@ -909,7 +909,7 @@ static void *run_delete_thread(void *arg) {
 
 	if (error_number == 0) {
 		clear_store_list();
-		job_store_list[0] = homebrew_list[selected_app];
+		job_store_list[0] = current_items[selected_app];
 	}
 
 	bool delete_status = true;
@@ -1147,7 +1147,7 @@ static void *run_delete_thread(void *arg) {
 		sd_card_update = true;
 		cancel_delete = false;
 
-		if (updating >= 0 && updating < array_length (homebrew_list)) {
+		if (updating >= 0 && updating < array_length (current_items)) {
 			new_updating++;
 		}
 	}
@@ -1531,11 +1531,11 @@ void save_xml_name() {
 	if (!setting_use_sd) {
 		strcpy(savexml,"usb:/apps/");
 	}
-	if (strcmp(homebrew_list[selected_app].name,"ftpii") == 0) {
-		strcat(savexml, homebrew_list[selected_app].user_dirname);
+	if (strcmp(current_items[selected_app].name,"ftpii") == 0) {
+		strcat(savexml, current_items[selected_app].user_dirname);
 	}
 	else {
-		strcat(savexml, homebrew_list[selected_app].name);
+		strcat(savexml, current_items[selected_app].name);
 	}
 	strcat(savexml, "/meta.xml");
 
@@ -1563,11 +1563,11 @@ void copy_xml_name() {
 		if (!setting_use_sd) {
 			strcpy(savexml,"usb:/apps/");
 		}
-		if (strcmp(homebrew_list[selected_app].name,"ftpii") == 0) {
-			strcat(savexml, homebrew_list[selected_app].user_dirname);
+		if (strcmp(current_items[selected_app].name,"ftpii") == 0) {
+			strcat(savexml, current_items[selected_app].user_dirname);
 		}
 		else {
-			strcat(savexml, homebrew_list[selected_app].name);
+			strcat(savexml, current_items[selected_app].name);
 		}
 		strcat(savexml, "/meta.xml");
 
@@ -1596,9 +1596,9 @@ void sort_by_name (bool min_to_max) {
 	clear_temp_list();
 
 	int i;
-	for (i = 0; i < array_length (homebrew_list); i++) {
-		strcpy(temp_list[i].name, homebrew_list[i].name);
-		strcpy(temp_list[i].app_name, homebrew_list[i].app_name);
+	for (i = 0; i < array_length (current_items); i++) {
+		strcpy(temp_list[i].name, current_items[i].name);
+		strcpy(temp_list[i].app_name, current_items[i].app_name);
 
 		int leng=strlen(temp_list[i].app_name);
 		int z;
@@ -1641,11 +1641,11 @@ void sort_by_name (bool min_to_max) {
 		}
 	}
 
-	for (x = 0; x < array_length (homebrew_list); x++) {
+	for (x = 0; x < array_length (current_items); x++) {
 		int y;
-		for (y = 0; y < array_length (homebrew_list); y++) {
-			if (strcmp (homebrew_list[x].name, temp_list[y].name) == 0) {
-				temp_list2[y] = homebrew_list[x];
+		for (y = 0; y < array_length (current_items); y++) {
+			if (strcmp (current_items[x].name, temp_list[y].name) == 0) {
+				temp_list2[y] = current_items[x];
 			}
 		}
 	}
@@ -1653,13 +1653,13 @@ void sort_by_name (bool min_to_max) {
 	clear_list();
 
 	for (i = 0; i < 4; i++) {
-		strcpy(homebrew_list[i].name,"000");
+		current_items[i].original_pos = -1;
 	}
 
 	x = 0;
 	for (i = 0; i < array_length (temp_list2); i++) {
-		if (strcmp(temp_list2[i].name,"000") != 0) {
-			homebrew_list[x] = temp_list2[i];
+		if (temp_list2[i].original_pos != -1) {
+			current_items[x] = temp_list2[i];
 			x++;
 		}
 	}
@@ -1670,9 +1670,9 @@ void sort_by_date (bool min_to_max) {
 	clear_temp_list();
 
 	int i;
-	for (i = 0; i < array_length (homebrew_list); i++) {
-		strcpy(temp_list[i].name, homebrew_list[i].name);
-		temp_list[i].app_time = homebrew_list[i].app_time;
+	for (i = 0; i < array_length (current_items); i++) {
+		strcpy(temp_list[i].name, current_items[i].name);
+		temp_list[i].app_time = current_items[i].app_time;
 	}
 
 	int now;
@@ -1710,11 +1710,11 @@ void sort_by_date (bool min_to_max) {
 		}
 	}
 
-	for (x = 0; x < array_length (homebrew_list); x++) {
+	for (x = 0; x < array_length (current_items); x++) {
 		int y;
-		for (y = 0; y < array_length (homebrew_list); y++) {
-			if (strcmp (homebrew_list[x].name, temp_list[y].name) == 0) {
-				temp_list2[y] = homebrew_list[x];
+		for (y = 0; y < array_length (current_items); y++) {
+			if (strcmp (current_items[x].name, temp_list[y].name) == 0) {
+				temp_list2[y] = current_items[x];
 			}
 		}
 	}
@@ -1722,13 +1722,13 @@ void sort_by_date (bool min_to_max) {
 	clear_list();
 
 	for (i = 0; i < 4; i++) {
-		strcpy(homebrew_list[i].name,"000");
+		current_items[i].original_pos = -1;
 	}
 
 	x = 0;
 	for (i = 0; i < array_length (temp_list2); i++) {
-		if (strcmp(temp_list2[i].name,"000") != 0) {
-			homebrew_list[x] = temp_list2[i];
+		if (temp_list2[i].original_pos != -1) {
+			current_items[x] = temp_list2[i];
 			x++;
 		}
 	}
@@ -1739,8 +1739,8 @@ void hide_apps_installed() {
 	clear_temp_list();
 
 	int x;
-	for (x = 0; x < array_length (homebrew_list); x++) {
-		temp_list2[x] = homebrew_list[x];
+	for (x = 0; x < array_length (current_items); x++) {
+		temp_list2[x] = current_items[x];
 	}
 
 	clear_list();
@@ -1749,12 +1749,12 @@ void hide_apps_installed() {
 	int j = 0;
 	for (i = 0; i < array_length (temp_list2); i++) {
 		if (temp_list2[i].local_app_size == 0) {
-			homebrew_list[j] = temp_list2[i];
+			current_items[j] = temp_list2[i];
 			j++;
 		}
 	}
 	if (j == 0) {
-		strcpy(homebrew_list[0].name,"000");
+		current_items[i].original_pos = -1;
 	}
 }
 
@@ -1763,8 +1763,8 @@ bool hide_apps_updated() {
 	clear_temp_list();
 
 	int x;
-	for (x = 0; x < array_length (homebrew_list); x++) {
-		temp_list2[x] = homebrew_list[x];
+	for (x = 0; x < array_length (current_items); x++) {
+		temp_list2[x] = current_items[x];
 	}
 
 	clear_list();
@@ -1773,14 +1773,14 @@ bool hide_apps_updated() {
 	int j = 0;
 	for (i = 0; i < array_length (temp_list2); i++) {
 		if (temp_list2[i].local_app_size == temp_list2[i].app_size && temp_list2[i].in_download_queue >= 1) {
-			homebrew_list[j] = temp_list2[i];
+			current_items[j] = temp_list2[i];
 		}
 		else if (temp_list2[i].local_app_size != temp_list2[i].app_size && temp_list2[i].in_download_queue) {
-			homebrew_list[j] = temp_list2[i];
+			current_items[j] = temp_list2[i];
 		}
 		else {
-			homebrew_list[j] = temp_list2[i];
-			homebrew_list[j].in_download_queue = false;
+			current_items[j] = temp_list2[i];
+			current_items[j].in_download_queue = false;
 		}
 		j++;
 	}
@@ -1790,11 +1790,11 @@ bool hide_apps_updated() {
 	j = 0;
 	for (i = 0; i < array_length (temp_list2); i++) {
 		if (temp_list2[i].local_app_size == temp_list2[i].app_size && temp_list2[i].in_download_queue >= 1) {
-			homebrew_list[j] = temp_list2[i];
+			current_items[j] = temp_list2[i];
 			j++;
 		}
 		else if (temp_list2[i].local_app_size != temp_list2[i].app_size && temp_list2[i].in_download_queue) {
-			homebrew_list[j] = temp_list2[i];
+			current_items[j] = temp_list2[i];
 			j++;
 		}
 	}
@@ -2135,31 +2135,33 @@ int load_file_to_memory(const char *filename, unsigned char **result) {
 // Clear list
 void clear_list() {
 	int c;
-	for (c = 0; c < 400; c++) {
-		homebrew_list[c].name[0] = 0;
-		homebrew_list[c].app_size = 0;
-		homebrew_list[c].app_time = 0;
-		homebrew_list[c].img_size = 0;
-		homebrew_list[c].local_app_size = 0;
-		homebrew_list[c].total_app_size = 0;
-		homebrew_list[c].in_download_queue = 0;
-		homebrew_list[c].user_dirname[0] = 0;
-		homebrew_list[c].folders[0] = 0;
-		homebrew_list[c].boot_ext[0] = 0;
-		homebrew_list[c].boot_bak = 0;
-		homebrew_list[c].no_manage = 0;
+	for (c = 0; c < 1600; c++) {
+		current_items[c].name[0] = 0;
+		current_items[c].app_size = 0;
+		current_items[c].app_time = 0;
+		current_items[c].img_size = 0;
+		current_items[c].local_app_size = 0;
+		current_items[c].total_app_size = 0;
+		current_items[c].in_download_queue = 0;
+		current_items[c].user_dirname[0] = 0;
+		current_items[c].folders[0] = 0;
+		current_items[c].boot_ext[0] = 0;
+		current_items[c].boot_bak = 0;
+		current_items[c].no_manage = 0;
 
-		homebrew_list[c].about_loaded = 0;
-		homebrew_list[c].app_name[0] = 0;
-		homebrew_list[c].app_short_description[0] = 0;
-		homebrew_list[c].app_description[0] = 0;
-		homebrew_list[c].app_author[0] = 0;
-		homebrew_list[c].app_version[0] = 0;
-		homebrew_list[c].app_total_size = 0;
-		homebrew_list[c].app_controllers[0] = 0;
+		current_items[c].about_loaded = 0;
+		current_items[c].app_name[0] = 0;
+		current_items[c].app_short_description[0] = 0;
+		current_items[c].app_description[0] = 0;
+		current_items[c].app_author[0] = 0;
+		current_items[c].app_version[0] = 0;
+		current_items[c].app_total_size = 0;
+		current_items[c].app_controllers[0] = 0;
 
-		homebrew_list[c].file_found = 0;
-		homebrew_list[c].content = NULL;
+		current_items[c].file_found = 0;
+		current_items[c].content = NULL;
+
+		current_items[c].original_pos = -1;
 	}
 }
 
@@ -2329,9 +2331,9 @@ void download_queue_size() {
 	updating_total_size = 0;
 
 	int x;
-	for (x = 0; x < array_length (homebrew_list); x++) {
-		if (strlen(homebrew_list[x].name) >= 3 && strcmp(homebrew_list[x].name,"000") != 0 && homebrew_list[x].in_download_queue != 2) {
-			updating_total_size += homebrew_list[x].total_app_size;
+	for (x = 0; x < array_length (current_items); x++) {
+		if (strlen(current_items[x].name) >= 3 && current_items[x].original_pos != -1 && current_items[x].in_download_queue != 2) {
+			updating_total_size += current_items[x].total_app_size;
 			printf("%i\n",updating_total_size);
 		}
 	}
@@ -2407,13 +2409,13 @@ void add_to_stats() {
 
 	if (setting_repo == 0) {
 		strcpy(http_request, "GET /hbb_download.php?name=");
-		strcat(http_request,homebrew_list[selected_app].name);
+		strcat(http_request,current_items[selected_app].name);
 	}
 	else {
 		strcpy(http_request, "GET ");
 		strcat(http_request, repo_list[setting_repo].apps_dir);
 		strcat(http_request, "hbb_download.php?name=");
-		strcat(http_request, homebrew_list[selected_app].name);
+		strcat(http_request, current_items[selected_app].name);
 	}
 
 	strcat(http_request, " HTTP/1.0\r\nHost: ");
@@ -2775,27 +2777,27 @@ s32 request_list() {
 				if (!add_to_list) {
 					int c;
 					for (c = 0; c < 400; c++) {
-						homebrew_list[c].name[0] = 0;
-						homebrew_list[c].app_size = 0;
-						homebrew_list[c].app_time = 0;
-						homebrew_list[c].img_size = 0;
-						homebrew_list[c].local_app_size = 0;
-						homebrew_list[c].total_app_size = 0;
-						homebrew_list[c].in_download_queue = 0;
-						homebrew_list[c].user_dirname[0] = 0;
-						homebrew_list[c].folders[0] = 0;
-						homebrew_list[c].boot_ext[0] = 0;
-						homebrew_list[c].boot_bak = 0;
-						homebrew_list[c].no_manage = 0;
+						current_items[c].name[0] = 0;
+						current_items[c].app_size = 0;
+						current_items[c].app_time = 0;
+						current_items[c].img_size = 0;
+						current_items[c].local_app_size = 0;
+						current_items[c].total_app_size = 0;
+						current_items[c].in_download_queue = 0;
+						current_items[c].user_dirname[0] = 0;
+						current_items[c].folders[0] = 0;
+						current_items[c].boot_ext[0] = 0;
+						current_items[c].boot_bak = 0;
+						current_items[c].no_manage = 0;
 
-						homebrew_list[c].about_loaded = 0;
-						homebrew_list[c].app_name[0] = 0;
-						homebrew_list[c].app_short_description[0] = 0;
-						homebrew_list[c].app_description[0] = 0;
-						homebrew_list[c].app_author[0] = 0;
-						homebrew_list[c].app_version[0] = 0;
-						homebrew_list[c].app_total_size = 0;
-						homebrew_list[c].app_controllers[0] = 0;
+						current_items[c].about_loaded = 0;
+						current_items[c].app_name[0] = 0;
+						current_items[c].app_short_description[0] = 0;
+						current_items[c].app_description[0] = 0;
+						current_items[c].app_author[0] = 0;
+						current_items[c].app_version[0] = 0;
+						current_items[c].app_total_size = 0;
+						current_items[c].app_controllers[0] = 0;
 					}
 					add_to_list = true;
 				}
@@ -2803,9 +2805,9 @@ s32 request_list() {
 				if (strstr(cmd_line, "=Games=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						homebrew_list[i].original_pos = total_list_count;
-						games_list[i] = homebrew_list[i];
-						total_list[total_list_count] = homebrew_list[i];
+						current_items[i].original_pos = total_list_count;
+						games_list[i] = current_items[i];
+						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
 					array_count = 0;
@@ -2814,9 +2816,9 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Emulators=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						homebrew_list[i].original_pos = total_list_count;
-						emulators_list[i] = homebrew_list[i];
-						total_list[total_list_count] = homebrew_list[i];
+						current_items[i].original_pos = total_list_count;
+						emulators_list[i] = current_items[i];
+						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
 					array_count = 0;
@@ -2825,9 +2827,9 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Media=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						homebrew_list[i].original_pos = total_list_count;
-						media_list[i] = homebrew_list[i];
-						total_list[total_list_count] = homebrew_list[i];
+						current_items[i].original_pos = total_list_count;
+						media_list[i] = current_items[i];
+						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
 					array_count = 0;
@@ -2836,9 +2838,9 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Utilities=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						homebrew_list[i].original_pos = total_list_count;
-						utilities_list[i] = homebrew_list[i];
-						total_list[total_list_count] = homebrew_list[i];
+						current_items[i].original_pos = total_list_count;
+						utilities_list[i] = current_items[i];
+						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
 					array_count = 0;
@@ -2847,9 +2849,9 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Demos=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						homebrew_list[i].original_pos = total_list_count;
-						demos_list[i] = homebrew_list[i];
-						total_list[total_list_count] = homebrew_list[i];
+						current_items[i].original_pos = total_list_count;
+						demos_list[i] = current_items[i];
+						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
 					array_count = 0;
@@ -2876,9 +2878,9 @@ s32 request_list() {
 						split_tok = strtok (cmd_line, " ");
 
 						// ftpii_ thing
-						homebrew_list[array_count].user_dirname[0] = 0;
+						current_items[array_count].user_dirname[0] = 0;
 						if (strcmp(split_tok,"ftpii") == 0) {
-							strcpy(homebrew_list[array_count].user_dirname,"ftpii");
+							strcpy(current_items[array_count].user_dirname,"ftpii");
 
 							char apps_dir[80];
 							strcpy(apps_dir, rootdir);
@@ -2901,9 +2903,9 @@ s32 request_list() {
 										if (pch != NULL) {
 											int x;
 											for (x = 0; x < strlen(filename); x++) {
-												homebrew_list[array_count].user_dirname[x] = filename[x];
+												current_items[array_count].user_dirname[x] = filename[x];
 											}
-											homebrew_list[array_count].user_dirname[strlen(filename)] = '\0';
+											current_items[array_count].user_dirname[strlen(filename)] = '\0';
 
 											break;
 										}
@@ -2914,36 +2916,36 @@ s32 request_list() {
 							closedir(dir);
 						}
 
-						strcpy(homebrew_list[array_count].name,split_tok);
+						strcpy(current_items[array_count].name,split_tok);
 
 						// App Time
 						split_tok = strtok (NULL, " ");
-						homebrew_list[array_count].app_time = atoi(split_tok);
+						current_items[array_count].app_time = atoi(split_tok);
 
 						// Img size
 						split_tok = strtok (NULL, " ");
-						homebrew_list[array_count].img_size = atoi(split_tok);
+						current_items[array_count].img_size = atoi(split_tok);
 
 						// Remote boot.dol/elf file size
 						split_tok = strtok (NULL, " ");
-						homebrew_list[array_count].app_size = atoi(split_tok);
+						current_items[array_count].app_size = atoi(split_tok);
 
 						// File extension, either .dol or .elf
 						split_tok = strtok (NULL, " ");
-						strcpy(homebrew_list[array_count].boot_ext,split_tok);
+						strcpy(current_items[array_count].boot_ext,split_tok);
 
 						// Try to open the local boot.elf file if it exists
-						homebrew_list[array_count].local_app_size = 0;
+						current_items[array_count].local_app_size = 0;
 
 						char boot_path[100] = "sd:/apps/";
 						if (!setting_use_sd) {
 							strcpy(boot_path,"usb:/apps/");
 						}
-						if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
-							strcat(boot_path, homebrew_list[array_count].user_dirname);
+						if (strcmp(current_items[array_count].name,"ftpii") == 0) {
+							strcat(boot_path, current_items[array_count].user_dirname);
 						}
 						else {
-							strcat(boot_path, homebrew_list[array_count].name);
+							strcat(boot_path, current_items[array_count].name);
 						}
 
 						// New directory finding
@@ -2951,7 +2953,7 @@ s32 request_list() {
 
 						int g;
 						for (g = 0; g < app_directories; g++) {
-							strcpy(uppername, homebrew_list[array_count].name);
+							strcpy(uppername, current_items[array_count].name);
 
 							int leng=strlen(uppername);
 								int z;
@@ -2966,7 +2968,7 @@ s32 request_list() {
 						}
 
 						strcat(boot_path, "/boot.");
-						strcat(boot_path, homebrew_list[array_count].boot_ext);
+						strcat(boot_path, current_items[array_count].boot_ext);
 
 						if (dir_exists) {
 							FILE *f = fopen(boot_path, "rb");
@@ -2980,11 +2982,11 @@ s32 request_list() {
 									strcpy(boot_path2,"usb:/apps/");
 								}
 
-								if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
-									strcat(boot_path2, homebrew_list[array_count].user_dirname);
+								if (strcmp(current_items[array_count].name,"ftpii") == 0) {
+									strcat(boot_path2, current_items[array_count].user_dirname);
 								}
 								else {
-									strcat(boot_path2, homebrew_list[array_count].name);
+									strcat(boot_path2, current_items[array_count].name);
 								}
 
 								strcat(boot_path2, "/boot.elf");
@@ -2998,11 +3000,11 @@ s32 request_list() {
 										strcpy(boot_path2,"usb:/apps/");
 									}
 
-									if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
-										strcat(boot_path2, homebrew_list[array_count].user_dirname);
+									if (strcmp(current_items[array_count].name,"ftpii") == 0) {
+										strcat(boot_path2, current_items[array_count].user_dirname);
 									}
 									else {
-										strcat(boot_path2, homebrew_list[array_count].name);
+										strcat(boot_path2, current_items[array_count].name);
 									}
 
 									strcat(boot_path2, "/boot.dol.bak");
@@ -3016,11 +3018,11 @@ s32 request_list() {
 											strcpy(boot_path2,"usb:/apps/");
 										}
 
-										if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
-											strcat(boot_path2, homebrew_list[array_count].user_dirname);
+										if (strcmp(current_items[array_count].name,"ftpii") == 0) {
+											strcat(boot_path2, current_items[array_count].user_dirname);
 										}
 										else {
-											strcat(boot_path2, homebrew_list[array_count].name);
+											strcat(boot_path2, current_items[array_count].name);
 										}
 
 										strcat(boot_path2, "/boot.elf.bak");
@@ -3034,11 +3036,11 @@ s32 request_list() {
 												strcpy(boot_path3,"usb:/apps/");
 											}
 
-											if (strcmp(homebrew_list[array_count].name,"ftpii") == 0) {
-												strcat(boot_path3, homebrew_list[array_count].user_dirname);
+											if (strcmp(current_items[array_count].name,"ftpii") == 0) {
+												strcat(boot_path3, current_items[array_count].user_dirname);
 											}
 											else {
-												strcat(boot_path3, homebrew_list[array_count].name);
+												strcat(boot_path3, current_items[array_count].name);
 											}
 
 											strcat(boot_path3, "/theme.zip");
@@ -3050,7 +3052,7 @@ s32 request_list() {
 											else {
 											// Open file and get the file size
 											fseek (f4 , 0, SEEK_END);
-											homebrew_list[array_count].local_app_size = ftell (f4);
+											current_items[array_count].local_app_size = ftell (f4);
 											rewind (f4);
 											fclose(f4);
 											}
@@ -3058,25 +3060,25 @@ s32 request_list() {
 										else {
 											// Open file and get the file size
 											fseek (f3 , 0, SEEK_END);
-											homebrew_list[array_count].local_app_size = ftell (f3);
+											current_items[array_count].local_app_size = ftell (f3);
 											rewind (f3);
 											fclose(f3);
-											homebrew_list[array_count].boot_bak = true;
+											current_items[array_count].boot_bak = true;
 										}
 									}
 									else {
 										// Open file and get the file size
 										fseek (f2 , 0, SEEK_END);
-										homebrew_list[array_count].local_app_size = ftell (f2);
+										current_items[array_count].local_app_size = ftell (f2);
 										rewind (f2);
 										fclose(f2);
-										homebrew_list[array_count].boot_bak = true;
+										current_items[array_count].boot_bak = true;
 									}
 								}
 								else {
 									// Open file and get the file size
 									fseek (f1, 0, SEEK_END);
-									homebrew_list[array_count].local_app_size = ftell (f1);
+									current_items[array_count].local_app_size = ftell (f1);
 									rewind (f1);
 									fclose(f);
 								}
@@ -3084,7 +3086,7 @@ s32 request_list() {
 							else {
 								// Open file and get the file size
 								fseek (f , 0, SEEK_END);
-								homebrew_list[array_count].local_app_size = ftell (f);
+								current_items[array_count].local_app_size = ftell (f);
 								rewind (f);
 								fclose(f);
 							}
@@ -3092,7 +3094,7 @@ s32 request_list() {
 
 						// Total app size
 						split_tok = strtok (NULL, " ");
-						homebrew_list[array_count].total_app_size = atoi(split_tok);
+						current_items[array_count].total_app_size = atoi(split_tok);
 
 						// Downloads
 						split_tok = strtok (NULL, " ");
@@ -3102,25 +3104,25 @@ s32 request_list() {
 
 						// Controllers
 						split_tok = strtok (NULL, " ");
-						strcpy(homebrew_list[array_count].app_controllers, split_tok);
+						strcpy(current_items[array_count].app_controllers, split_tok);
 
 						// Folders to create (if any), a dot means no folders needed
 						split_tok = strtok (NULL, " ");
 						if (split_tok != NULL) {
-							strcpy(homebrew_list[array_count].folders, split_tok);
+							strcpy(current_items[array_count].folders, split_tok);
 						}
 
 						// Folders to not delete files from
 						split_tok = strtok (NULL, " ");
 						if (split_tok != NULL) {
-							strcpy(homebrew_list[array_count].folders_no_del, split_tok);
+							strcpy(current_items[array_count].folders_no_del, split_tok);
 						}
 
 						// Files to not extract
 						split_tok = strtok (NULL, " ");
 						if (split_tok != NULL) {
-							strncpy(homebrew_list[array_count].files_no_extract, split_tok, strlen(split_tok) - hbb_string_len);
-							homebrew_list[array_count].files_no_extract[strlen(split_tok) - hbb_string_len] = '\0';
+							strncpy(current_items[array_count].files_no_extract, split_tok, strlen(split_tok) - hbb_string_len);
+							current_items[array_count].files_no_extract[strlen(split_tok) - hbb_string_len] = '\0';
 						}
 
 						line_number++;
@@ -3140,52 +3142,52 @@ s32 request_list() {
 
 						}
 
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(homebrew_list[array_count].app_name) ? sizeof(homebrew_list[array_count].app_name) : strlen(cmd_line) - hbb_string_len + 1;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_name) ? sizeof(current_items[array_count].app_name) : strlen(cmd_line) - hbb_string_len + 1;
 
-						strncpy(homebrew_list[array_count].app_name, cmd_line, hbb_null_len);
-						homebrew_list[array_count].app_name[hbb_null_len - 1] = '\0';
+						strncpy(current_items[array_count].app_name, cmd_line, hbb_null_len);
+						current_items[array_count].app_name[hbb_null_len - 1] = '\0';
 						line_number++;
 					}
 
 					// Author
 					else if (line_number == 2) {
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(homebrew_list[array_count].app_author) ? sizeof(homebrew_list[array_count].app_author) : strlen(cmd_line) - hbb_string_len + 1;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_author) ? sizeof(current_items[array_count].app_author) : strlen(cmd_line) - hbb_string_len + 1;
 
-						strncpy(homebrew_list[array_count].app_author, cmd_line, hbb_null_len);
-						homebrew_list[array_count].app_author[hbb_null_len - 1] = '\0';
+						strncpy(current_items[array_count].app_author, cmd_line, hbb_null_len);
+						current_items[array_count].app_author[hbb_null_len - 1] = '\0';
 						line_number++;
 					}
 
 					// Version
 					else if (line_number == 3) {
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(homebrew_list[array_count].app_version) ? sizeof(homebrew_list[array_count].app_version) : strlen(cmd_line) - hbb_string_len + 1;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_version) ? sizeof(current_items[array_count].app_version) : strlen(cmd_line) - hbb_string_len + 1;
 
-						strncpy(homebrew_list[array_count].app_version, cmd_line, hbb_null_len);
-						homebrew_list[array_count].app_version[hbb_null_len - 1] = '\0';
+						strncpy(current_items[array_count].app_version, cmd_line, hbb_null_len);
+						current_items[array_count].app_version[hbb_null_len - 1] = '\0';
 						line_number++;
 					}
 
 					// Size
 					else if (line_number == 4) {
-						homebrew_list[array_count].app_total_size = atoi(cmd_line);
+						current_items[array_count].app_total_size = atoi(cmd_line);
 						line_number++;
 					}
 
 					// Short Description
 					else if (line_number == 5) {
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(homebrew_list[array_count].app_short_description) ? sizeof(homebrew_list[array_count].app_short_description) : strlen(cmd_line) - hbb_string_len + 1;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_short_description) ? sizeof(current_items[array_count].app_short_description) : strlen(cmd_line) - hbb_string_len + 1;
 
-						strncpy(homebrew_list[array_count].app_short_description, cmd_line, hbb_null_len);
-						homebrew_list[array_count].app_short_description[hbb_null_len - 1] = '\0';
+						strncpy(current_items[array_count].app_short_description, cmd_line, hbb_null_len);
+						current_items[array_count].app_short_description[hbb_null_len - 1] = '\0';
 						line_number++;
 					}
 
 					// Description
 					else if (line_number == 6) {
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(homebrew_list[array_count].app_description) ? sizeof(homebrew_list[array_count].app_description) : strlen(cmd_line) - hbb_string_len;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_description) ? sizeof(current_items[array_count].app_description) : strlen(cmd_line) - hbb_string_len;
 
-						strncpy(homebrew_list[array_count].app_description, cmd_line, hbb_null_len);
-						homebrew_list[array_count].app_description[hbb_null_len - 1] = '\0';
+						strncpy(current_items[array_count].app_description, cmd_line, hbb_null_len);
+						current_items[array_count].app_description[hbb_null_len - 1] = '\0';
 						line_number = 0;
 						array_count++;
 

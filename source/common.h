@@ -202,7 +202,7 @@ struct repo_struct {
 extern struct repo_struct repo_list[200];
 
 // List to show
-extern struct homebrew_struct homebrew_list[1600];
+extern struct homebrew_struct current_items[1600];
 
 extern struct homebrew_struct emulators_list[300];
 extern struct homebrew_struct games_list[600];
