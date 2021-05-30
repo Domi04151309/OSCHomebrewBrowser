@@ -211,7 +211,7 @@ extern struct homebrew_struct utilities_list[300];
 extern struct homebrew_struct demos_list[300];
 
 // Total list
-extern struct homebrew_struct total_list[600];
+extern struct homebrew_struct total_list[1600];
 
 // Temp list
 extern struct sort_homebrew_struct temp_list[600];
@@ -219,7 +219,7 @@ extern struct homebrew_struct temp_list2[600];
 extern struct sort_homebrew_struct temp1_list[2];
 
 // Temp list to use to download/extract/delete
-extern struct homebrew_struct store_homebrew_list[2];
+extern struct homebrew_struct job_store_list[2];
 
 // Folders exist list
 extern struct sort_homebrew_struct folders_list[500];

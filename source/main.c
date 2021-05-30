@@ -519,7 +519,7 @@ int main(int argc, char **argv) {
 						}
 					}
 
-					if ((homebrew_list[(start + b)].app_time + 432000) > current_time && (strcmp (store_homebrew_list[0].name, homebrew_list[(start + b)].name) != 0)) {
+					if ((homebrew_list[(start + b)].app_time + 432000) > current_time && (strcmp (job_store_list[0].name, homebrew_list[(start + b)].name) != 0)) {
 						GRRLIB_DrawImg(468, ypos + (76 * (start + b)) - 6, app_new_img, 0, 1, 1, 0xFFFFFFFF);
 					}
 
@@ -529,7 +529,7 @@ int main(int argc, char **argv) {
 						GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_RED);
 					}
 
-					if (strcmp (store_homebrew_list[0].name, homebrew_list[(start + b)].name) == 0 && (download_in_progress || extract_in_progress)) {
+					if (strcmp (job_store_list[0].name, homebrew_list[(start + b)].name) == 0 && (download_in_progress || extract_in_progress)) {
 						GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, download_img, 0, 1, 1, RES_COLOR_BLUE);
 					}
 				}
@@ -707,6 +707,7 @@ int main(int argc, char **argv) {
 
 		// Updating
 		if (updating >= 0 && strcmp(homebrew_list[0].name,"000") != 0) {
+			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, RES_COLOR_RED);
 			if (free_update) {
 				sprintf (str_title_status, "Processing %i/%i applications", new_updating + 1, array_length(homebrew_list));
 				strcpy(str_res_title, homebrew_list[new_updating].app_name);
@@ -1047,7 +1048,7 @@ int main(int argc, char **argv) {
 			if (strstr(homebrew_list[current_app].app_controllers, "s")) GRRLIB_DrawText(553, 290, STR_YES, FONTSIZE_SMALLER, RES_COLOR_GREEN);
 			else GRRLIB_DrawText(553, 290, STR_NO, FONTSIZE_SMALLER, RES_COLOR_RED);
 
-			if ((!download_in_progress && !extract_in_progress && !delete_in_progress) || (strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0)) {
+			if ((!download_in_progress && !extract_in_progress && !delete_in_progress) || (strcmp (job_store_list[0].name, homebrew_list[current_app].name) != 0)) {
 				// Download or updated enabled?
 				if (homebrew_list[current_app].local_app_size > 0) {
 					if (homebrew_list[current_app].local_app_size != homebrew_list[current_app].app_size && download_arrow == 0 && !homebrew_list[current_app].no_manage) {
@@ -1104,7 +1105,7 @@ int main(int argc, char **argv) {
 					}
 				}
 				else {
-					if (download_in_progress && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
+					if (download_in_progress && strcmp (job_store_list[0].name, homebrew_list[current_app].name) != 0) {
 						UI_drawButton(340, 385, STR_DOWNLOAD, 2);
 					} else {
 						if (UI_button(ir, 340, 385, STR_DOWNLOAD)) {
@@ -1124,7 +1125,7 @@ int main(int argc, char **argv) {
 			}
 
 			// Downloading in progress, display progress
-			if (download_in_progress && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) == 0) {
+			if (download_in_progress && strcmp (job_store_list[0].name, homebrew_list[current_app].name) == 0) {
 
 				int download_progress_count = (int) download_progress_counter / download_part_size;
 				if (download_progress_count > 99) download_progress_count = 100;
@@ -1139,13 +1140,13 @@ int main(int argc, char **argv) {
 
 				// Download info
 				double temp_download_progress_counter = download_progress_counter;
-				double temp_total_app_size = store_homebrew_list[0].total_app_size;
+				double temp_total_app_size = job_store_list[0].total_app_size;
 				sprintf(str_download_info, "%3.2fMB / %3.2fMB", (temp_download_progress_counter/1000/1000), (temp_total_app_size/1000/1000));
 				GRRLIB_DrawText(360, 398, str_download_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 			}
 
 			// Extracting in progress, display progress
-			if (extract_in_progress && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) == 0) {
+			if (extract_in_progress && strcmp (job_store_list[0].name, homebrew_list[current_app].name) == 0) {
 
 				int extract_progress_count = (int) (zip_progress / extract_part_size);
 				if (extract_progress_count > 100) extract_progress_count = 100;
@@ -1209,7 +1210,7 @@ int main(int argc, char **argv) {
 			}
 
 			// Delete in progress
-			if (delete_in_progress && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) == 0) {
+			if (delete_in_progress && strcmp (job_store_list[0].name, homebrew_list[current_app].name) == 0) {
 				GRRLIB_DrawText(270, 396, STR_DELETING, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 			}
 
@@ -1227,7 +1228,7 @@ int main(int argc, char **argv) {
 			}
 
 			// Display error message for some time
-			if (display_message_counter > 0 && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) == 0) {
+			if (display_message_counter > 0 && strcmp (job_store_list[0].name, homebrew_list[current_app].name) == 0) {
 				display_message_counter--;
 
 				// Display what error occured
@@ -1492,10 +1493,10 @@ int main(int argc, char **argv) {
 			sprintf(str_icon_info, "Checking icon %i / %i", download_icon, array_length(total_list));
 			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, str_icon_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
-		if (download_in_progress && updating == -1 && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
+		if (download_in_progress && updating == -1 && strcmp (job_store_list[0].name, homebrew_list[current_app].name) != 0) {
 			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, STR_DOWNLOADING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
-		if (extract_in_progress && updating == -1 && strcmp (store_homebrew_list[0].name, homebrew_list[current_app].name) != 0) {
+		if (extract_in_progress && updating == -1 && strcmp (job_store_list[0].name, homebrew_list[current_app].name) != 0) {
 			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, STR_EXTRACTING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
 

@@ -75,7 +75,7 @@ struct homebrew_struct utilities_list[300];
 struct homebrew_struct demos_list[300];
 
 // Total list
-struct homebrew_struct total_list[600];
+struct homebrew_struct total_list[1600];
 
 // Temp list
 struct sort_homebrew_struct temp_list[600];
@@ -83,7 +83,7 @@ struct homebrew_struct temp_list2[600];
 struct sort_homebrew_struct temp1_list[2];
 
 // Temp list to use to download/extract/delete
-struct homebrew_struct store_homebrew_list[2];
+struct homebrew_struct job_store_list[2];
 
 // Folders exist list
 struct sort_homebrew_struct folders_list[500];
@@ -473,7 +473,7 @@ u8 load_icons() {
 static void *run_download_thread(void *arg) {
 
 	clear_store_list();
-	store_homebrew_list[0] = homebrew_list[selected_app];
+	job_store_list[0] = homebrew_list[selected_app];
 
 	if (download_icon > 0) {
 		while (download_icon_sleeping != true) {
@@ -485,7 +485,7 @@ static void *run_download_thread(void *arg) {
 	download_progress_counter = 0;
 
 	// Check if there is enough space on SD card
-	int check_size = ((store_homebrew_list[0].total_app_size / 1024) / 1024) + ((store_homebrew_list[0].app_total_size / 1024) / 1024);
+	int check_size = ((job_store_list[0].total_app_size / 1024) / 1024) + ((job_store_list[0].app_total_size / 1024) / 1024);
 	if (sd_card_free <= check_size) {
 		download_status = false;
 		error_number = 9;
@@ -498,28 +498,28 @@ static void *run_download_thread(void *arg) {
 	}
 
 	if (download_status) {
-		download_part_size = (int) (store_homebrew_list[0].total_app_size / 100);
+		download_part_size = (int) (job_store_list[0].total_app_size / 100);
 
 		// Download zip file
 		char zipfile[512];
 		strcpy(zipfile, "/");
-		strcat(zipfile, store_homebrew_list[0].name);
+		strcat(zipfile, job_store_list[0].name);
 		strcat(zipfile, ".zip");
 
 		char temp_path[200];
 		strcpy(temp_path, rootdir);
 		strcat(temp_path, "apps/");
 
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
+		if (strcmp(job_store_list[0].name,"ftpii") == 0) {
 
-			if (create_and_request_file(temp_path, store_homebrew_list[0].user_dirname, zipfile) != 1) {
+			if (create_and_request_file(temp_path, job_store_list[0].user_dirname, zipfile) != 1) {
 				download_status = false;
 				error_number = 1;
 			}
 
 		}
 		else {
-			if (create_and_request_file(temp_path, store_homebrew_list[0].name, zipfile) != 1) {
+			if (create_and_request_file(temp_path, job_store_list[0].name, zipfile) != 1) {
 				download_status = false;
 				error_number = 1;
 			}
@@ -527,9 +527,9 @@ static void *run_download_thread(void *arg) {
 	}
 
 	// Directories to create
-	if (store_homebrew_list[0].folders != NULL && download_status) {
+	if (job_store_list[0].folders != NULL && download_status) {
 		char folders[1000];
-		strcpy(folders, store_homebrew_list[0].folders);
+		strcpy(folders, job_store_list[0].folders);
 
 		char *split_tok;
 		split_tok = strtok (folders,";");
@@ -557,11 +557,11 @@ static void *run_download_thread(void *arg) {
 		}
 
 		// Only download the icon file if user hasn't got this app installed or doesn't have the icon.png
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-			strcat(icon_path, store_homebrew_list[0].user_dirname);
+		if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+			strcat(icon_path, job_store_list[0].user_dirname);
 		}
 		else {
-			strcat(icon_path, store_homebrew_list[0].name);
+			strcat(icon_path, job_store_list[0].name);
 		}
 		strcat(icon_path, "/icon.png");
 
@@ -570,15 +570,15 @@ static void *run_download_thread(void *arg) {
 		// Problems opening the file? Then download the icon.png
 		if (f == NULL) {
 
-			if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
+			if (strcmp(job_store_list[0].name,"ftpii") == 0) {
 				if (setting_use_sd) {
-					if (create_and_request_file("sd:/apps/", store_homebrew_list[0].user_dirname, "/icon.png") != 1) {
+					if (create_and_request_file("sd:/apps/", job_store_list[0].user_dirname, "/icon.png") != 1) {
 						download_status = false;
 						error_number = 3;
 					}
 				}
 				else {
-					if (create_and_request_file("usb:/apps/", store_homebrew_list[0].user_dirname, "/icon.png") != 1) {
+					if (create_and_request_file("usb:/apps/", job_store_list[0].user_dirname, "/icon.png") != 1) {
 						download_status = false;
 						error_number = 3;
 					}
@@ -586,13 +586,13 @@ static void *run_download_thread(void *arg) {
 			}
 			else {
 				if (setting_use_sd) {
-					if (create_and_request_file("sd:/apps/", store_homebrew_list[0].name, "/icon.png") != 1) {
+					if (create_and_request_file("sd:/apps/", job_store_list[0].name, "/icon.png") != 1) {
 						download_status = false;
 						error_number = 3;
 					}
 				}
 				else {
-					if (create_and_request_file("usb:/apps/", store_homebrew_list[0].name, "/icon.png") != 1) {
+					if (create_and_request_file("usb:/apps/", job_store_list[0].name, "/icon.png") != 1) {
 						download_status = false;
 						error_number = 3;
 					}
@@ -606,15 +606,15 @@ static void *run_download_thread(void *arg) {
 			fclose(f);
 
 			if (setting_update_icon) {
-				if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
+				if (strcmp(job_store_list[0].name,"ftpii") == 0) {
 					if (setting_use_sd) {
-						if (create_and_request_file("sd:/apps/", store_homebrew_list[0].user_dirname, "/icon.png") != 1) {
+						if (create_and_request_file("sd:/apps/", job_store_list[0].user_dirname, "/icon.png") != 1) {
 							download_status = false;
 							error_number = 3;
 						}
 					}
 					else {
-						if (create_and_request_file("usb:/apps/", store_homebrew_list[0].user_dirname, "/icon.png") != 1) {
+						if (create_and_request_file("usb:/apps/", job_store_list[0].user_dirname, "/icon.png") != 1) {
 							download_status = false;
 							error_number = 3;
 						}
@@ -622,13 +622,13 @@ static void *run_download_thread(void *arg) {
 				}
 				else {
 					if (setting_use_sd) {
-						if (create_and_request_file("sd:/apps/", store_homebrew_list[0].name, "/icon.png") != 1) {
+						if (create_and_request_file("sd:/apps/", job_store_list[0].name, "/icon.png") != 1) {
 							download_status = false;
 							error_number = 3;
 						}
 					}
 					else {
-						if (create_and_request_file("usb:/apps/", store_homebrew_list[0].name, "/icon.png") != 1) {
+						if (create_and_request_file("usb:/apps/", job_store_list[0].name, "/icon.png") != 1) {
 							download_status = false;
 							error_number = 3;
 						}
@@ -651,15 +651,15 @@ static void *run_download_thread(void *arg) {
 		if (!setting_use_sd) {
 			strcpy(extractzipfile, "usb:/apps/");
 		}
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-			strcat(extractzipfile, store_homebrew_list[0].user_dirname);
+		if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+			strcat(extractzipfile, job_store_list[0].user_dirname);
 		}
 		else {
-			strcat(extractzipfile, store_homebrew_list[0].name);
+			strcat(extractzipfile, job_store_list[0].name);
 		}
 
 		strcat(extractzipfile, "/");
-		strcat(extractzipfile, store_homebrew_list[0].name);
+		strcat(extractzipfile, job_store_list[0].name);
 		strcat(extractzipfile, ".zip");
 
 		remove_file(extractzipfile);
@@ -687,7 +687,7 @@ static void *run_download_thread(void *arg) {
 	if (!setting_use_sd) {
 		strcpy(del_file,"usb:/apps/");
 	}
-	strcat(del_file, store_homebrew_list[0].name);
+	strcat(del_file, job_store_list[0].name);
 	strcat(del_file, "/boot.elf");
 	remove_file(del_file);
 
@@ -697,12 +697,12 @@ static void *run_download_thread(void *arg) {
 	if (!setting_use_sd) {
 		strcpy(del_file1,"usb:/apps/");
 	}
-	//strcat(del_file1, store_homebrew_list[0].name);
-	if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-		strcat(del_file1, store_homebrew_list[0].user_dirname);
+	//strcat(del_file1, job_store_list[0].name);
+	if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+		strcat(del_file1, job_store_list[0].user_dirname);
 	}
 	else {
-		strcat(del_file1, store_homebrew_list[0].name);
+		strcat(del_file1, job_store_list[0].name);
 	}
 	strcpy(del_file2, del_file1);
 	strcat(del_file1, "/boot.dol");
@@ -715,7 +715,7 @@ static void *run_download_thread(void *arg) {
 	no_unzip_count = 0;
 
 	char folders[300];
-	strcpy(folders, store_homebrew_list[0].files_no_extract);
+	strcpy(folders, job_store_list[0].files_no_extract);
 	char *split_tok;
 	split_tok = strtok (folders,";");
 
@@ -731,29 +731,29 @@ static void *run_download_thread(void *arg) {
 	if (!setting_use_sd) {
 		strcpy(extractzipfile, "usb:/apps/");
 	}
-	//strcat(extractzipfile, store_homebrew_list[0].name);
-	if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-		strcat(extractzipfile, store_homebrew_list[0].user_dirname);
+	//strcat(extractzipfile, job_store_list[0].name);
+	if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+		strcat(extractzipfile, job_store_list[0].user_dirname);
 	}
 	else {
-		strcat(extractzipfile, store_homebrew_list[0].name);
+		strcat(extractzipfile, job_store_list[0].name);
 	}
 
 	strcat(extractzipfile, "/");
-	strcat(extractzipfile, store_homebrew_list[0].name);
+	strcat(extractzipfile, job_store_list[0].name);
 	strcat(extractzipfile, ".zip");
 
 	while (extract_attempt < 3) {
 		if (setting_use_sd) {
 			if (unzipArchive(extractzipfile, "sd:/")) {
 
-				if (strcmp(store_homebrew_list[0].name,"ftpii") == 0 && strcmp(store_homebrew_list[0].user_dirname,"ftpii") != 0) {
+				if (strcmp(job_store_list[0].name,"ftpii") == 0 && strcmp(job_store_list[0].user_dirname,"ftpii") != 0) {
 					char renamed[100] = "sd:/apps/";
-					strcat(renamed,store_homebrew_list[0].user_dirname);
+					strcat(renamed,job_store_list[0].user_dirname);
 					strcat(renamed,"/boot.dol");
 
 					char renamed2[100] = "sd:/apps/";
-					strcat(renamed2,store_homebrew_list[0].user_dirname);
+					strcat(renamed2,job_store_list[0].user_dirname);
 					strcat(renamed2,"/meta.xml");
 
 					remove_file(renamed);
@@ -772,13 +772,13 @@ static void *run_download_thread(void *arg) {
 		else {
 			if (unzipArchive(extractzipfile, "usb:/")) {
 
-				if (strcmp(store_homebrew_list[0].name,"ftpii") == 0 && strcmp(store_homebrew_list[0].user_dirname,"ftpii") != 0) {
+				if (strcmp(job_store_list[0].name,"ftpii") == 0 && strcmp(job_store_list[0].user_dirname,"ftpii") != 0) {
 					char renamed[100] = "usb:/apps/";
-					strcat(renamed,store_homebrew_list[0].user_dirname);
+					strcat(renamed,job_store_list[0].user_dirname);
 					strcat(renamed,"/boot.dol");
 
 					char renamed2[100] = "usb:/apps/";
-					strcat(renamed2,store_homebrew_list[0].user_dirname);
+					strcat(renamed2,job_store_list[0].user_dirname);
 					strcat(renamed2,"/meta.xml");
 
 					remove_file(renamed);
@@ -817,16 +817,16 @@ static void *run_download_thread(void *arg) {
 	if (!setting_use_sd) {
 		strcpy(boot_path,"usb:/apps/");
 	}
-	if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-		strcat(boot_path, store_homebrew_list[0].user_dirname);
+	if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+		strcat(boot_path, job_store_list[0].user_dirname);
 	}
 	else {
-		strcat(boot_path, store_homebrew_list[0].name);
+		strcat(boot_path, job_store_list[0].name);
 	}
 	strcpy(theme_path, boot_path);
 	strcat(theme_path, "/theme.zip");
 	strcat(boot_path, "/boot.");
-	strcat(boot_path, store_homebrew_list[0].boot_ext);
+	strcat(boot_path, job_store_list[0].boot_ext);
 
 	FILE *f = fopen(boot_path, "rb");
 
@@ -844,7 +844,7 @@ static void *run_download_thread(void *arg) {
 		else {
 			// Open file and get the file size
 			fseek (ftheme , 0, SEEK_END);
-			store_homebrew_list[0].local_app_size = ftell (ftheme);
+			job_store_list[0].local_app_size = ftell (ftheme);
 			rewind (ftheme);
 			fclose(ftheme);
 		}
@@ -852,12 +852,12 @@ static void *run_download_thread(void *arg) {
 	else {
 		// Open file and get the file size
 		fseek (f , 0, SEEK_END);
-		store_homebrew_list[0].local_app_size = ftell (f);
+		job_store_list[0].local_app_size = ftell (f);
 		rewind (f);
 		fclose(f);
 
 		// Rename it to what they had before (hb sorter)
-		if (store_homebrew_list[0].boot_bak) {
+		if (job_store_list[0].boot_bak) {
 			char boot_path_bak[100];
 			strcpy(boot_path_bak, boot_path);
 			strcat(boot_path_bak, ".bak");
@@ -871,9 +871,11 @@ static void *run_download_thread(void *arg) {
 		extract_in_progress = -1;
 	}
 	else {
-		store_homebrew_list[0].in_download_queue = false;
+		job_store_list[0].in_download_queue = false;
 		extract_in_progress = false;
 		sd_card_update = true;
+
+		total_list[job_store_list[0].original_pos] = job_store_list[0];
 
 		if (updating >= 0 && updating < array_length (homebrew_list)) {
 			new_updating++;
@@ -893,6 +895,8 @@ static void *run_download_thread(void *arg) {
 		cancel_extract = false;
 	}
 
+	total_list[job_store_list[0].original_pos] = job_store_list[0];
+
 	return 0;
 }
 
@@ -905,7 +909,7 @@ static void *run_delete_thread(void *arg) {
 
 	if (error_number == 0) {
 		clear_store_list();
-		store_homebrew_list[0] = homebrew_list[selected_app];
+		job_store_list[0] = homebrew_list[selected_app];
 	}
 
 	bool delete_status = true;
@@ -914,9 +918,9 @@ static void *run_delete_thread(void *arg) {
 	int no_del_count = 0;
 
 	// Directories to delete all files from
-	if (store_homebrew_list[0].folders != NULL && delete_status && !cancel_delete) {
+	if (job_store_list[0].folders != NULL && delete_status && !cancel_delete) {
 		char folders[1000];
-		strcpy(folders, store_homebrew_list[0].folders_no_del);
+		strcpy(folders, job_store_list[0].folders_no_del);
 		char *split_tok;
 		split_tok = strtok (folders,";");
 
@@ -927,7 +931,7 @@ static void *run_delete_thread(void *arg) {
 		}
 
 		char folders1[1000];
-		strcpy(folders1, store_homebrew_list[0].folders);
+		strcpy(folders1, job_store_list[0].folders);
 
 		char *split_tok1;
 		split_tok1 = strtok (folders1,";");
@@ -964,11 +968,11 @@ static void *run_delete_thread(void *arg) {
 			strcpy(del_file,"usb:/apps/");
 		}
 
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-			strcat(del_file, store_homebrew_list[0].user_dirname);
+		if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+			strcat(del_file, job_store_list[0].user_dirname);
 		}
 		else {
-			strcat(del_file, store_homebrew_list[0].name);
+			strcat(del_file, job_store_list[0].name);
 		}
 
 		strcat(del_file, "/icon.png");
@@ -984,11 +988,11 @@ static void *run_delete_thread(void *arg) {
 			strcpy(del_file,"usb:/apps/");
 		}
 
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-			strcat(del_file, store_homebrew_list[0].user_dirname);
+		if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+			strcat(del_file, job_store_list[0].user_dirname);
 		}
 		else {
-			strcat(del_file, store_homebrew_list[0].name);
+			strcat(del_file, job_store_list[0].name);
 		}
 
 		strcat(del_file, "/meta.xml");
@@ -1003,18 +1007,18 @@ static void *run_delete_thread(void *arg) {
 		if (!setting_use_sd) {
 			strcpy(del_file,"usb:/apps/");
 		}
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-			strcat(del_file, store_homebrew_list[0].user_dirname);
+		if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+			strcat(del_file, job_store_list[0].user_dirname);
 		}
 		else {
-			strcat(del_file, store_homebrew_list[0].name);
+			strcat(del_file, job_store_list[0].name);
 		}
 
 		strcat(del_file, "/boot.");
-		strcat(del_file, store_homebrew_list[0].boot_ext);
+		strcat(del_file, job_store_list[0].boot_ext);
 
 		// hb sorter
-		if (store_homebrew_list[0].boot_bak) {
+		if (job_store_list[0].boot_bak) {
 			strcat(del_file, ".bak");
 		}
 
@@ -1028,11 +1032,11 @@ static void *run_delete_thread(void *arg) {
 		if (!setting_use_sd) {
 			strcpy(del_file1,"usb:/apps/");
 		}
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-			strcat(del_file1, store_homebrew_list[0].user_dirname);
+		if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+			strcat(del_file1, job_store_list[0].user_dirname);
 		}
 		else {
-			strcat(del_file1, store_homebrew_list[0].name);
+			strcat(del_file1, job_store_list[0].name);
 		}
 
 		strcat(del_file1, "/theme.zip");
@@ -1049,9 +1053,9 @@ static void *run_delete_thread(void *arg) {
 	char directory[150][300];
 	int remove_count = 0;
 
-	if (store_homebrew_list[0].folders != NULL && delete_status && !cancel_delete) {
+	if (job_store_list[0].folders != NULL && delete_status && !cancel_delete) {
 		char folders[1000];
-		strcpy(folders, store_homebrew_list[0].folders);
+		strcpy(folders, job_store_list[0].folders);
 
 		char *split_tok;
 		split_tok = strtok (folders,";");
@@ -1090,7 +1094,7 @@ static void *run_delete_thread(void *arg) {
 	// Delete all files from main folder
 	if (delete_status) {
 		char main_folder[300] = "/apps/";
-		strcat(main_folder, store_homebrew_list[0].name);
+		strcat(main_folder, job_store_list[0].name);
 
 		ok_to_del = true;
 
@@ -1106,11 +1110,11 @@ static void *run_delete_thread(void *arg) {
 			if (!setting_use_sd) {
 				strcpy(app_dir,"usb:/apps/");
 			}
-			if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-				strcat(app_dir, store_homebrew_list[0].user_dirname);
+			if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+				strcat(app_dir, job_store_list[0].user_dirname);
 			}
 			else {
-				strcat(app_dir, store_homebrew_list[0].name);
+				strcat(app_dir, job_store_list[0].name);
 			}
 
 			delete_dir_files(app_dir);
@@ -1123,11 +1127,11 @@ static void *run_delete_thread(void *arg) {
 		if (!setting_use_sd) {
 			strcpy(app_dir,"usb:/apps/");
 		}
-		if (strcmp(store_homebrew_list[0].name,"ftpii") == 0) {
-			strcat(app_dir, store_homebrew_list[0].user_dirname);
+		if (strcmp(job_store_list[0].name,"ftpii") == 0) {
+			strcat(app_dir, job_store_list[0].user_dirname);
 		}
 		else {
-			strcat(app_dir, store_homebrew_list[0].name);
+			strcat(app_dir, job_store_list[0].name);
 		}
 	}
 
@@ -1137,8 +1141,8 @@ static void *run_delete_thread(void *arg) {
 		cancel_delete = false;
 	}
 	else {
-		store_homebrew_list[0].local_app_size = 0;
-		store_homebrew_list[0].in_download_queue = false;
+		job_store_list[0].local_app_size = 0;
+		job_store_list[0].in_download_queue = false;
 		delete_in_progress = false;
 		sd_card_update = true;
 		cancel_delete = false;
@@ -1147,6 +1151,8 @@ static void *run_delete_thread(void *arg) {
 			new_updating++;
 		}
 	}
+
+	total_list[job_store_list[0].original_pos] = job_store_list[0];
 
 	return 0;
 }
@@ -2194,30 +2200,30 @@ void clear_temp_list() {
 void clear_store_list() {
 	int c;
 	for (c = 0; c < 1; c++) {
-		store_homebrew_list[c].name[0] = 0;
-		store_homebrew_list[c].app_size = 0;
-		store_homebrew_list[c].app_time = 0;
-		store_homebrew_list[c].img_size = 0;
-		store_homebrew_list[c].local_app_size = 0;
-		store_homebrew_list[c].total_app_size = 0;
-		store_homebrew_list[c].in_download_queue = 0;
-		store_homebrew_list[c].user_dirname[0] = 0;
-		store_homebrew_list[c].folders[0] = 0;
-		store_homebrew_list[c].boot_ext[0] = 0;
-		store_homebrew_list[c].boot_bak = 0;
-		store_homebrew_list[c].no_manage = 0;
+		job_store_list[c].name[0] = 0;
+		job_store_list[c].app_size = 0;
+		job_store_list[c].app_time = 0;
+		job_store_list[c].img_size = 0;
+		job_store_list[c].local_app_size = 0;
+		job_store_list[c].total_app_size = 0;
+		job_store_list[c].in_download_queue = 0;
+		job_store_list[c].user_dirname[0] = 0;
+		job_store_list[c].folders[0] = 0;
+		job_store_list[c].boot_ext[0] = 0;
+		job_store_list[c].boot_bak = 0;
+		job_store_list[c].no_manage = 0;
 
-		store_homebrew_list[c].about_loaded = 0;
-		store_homebrew_list[c].app_name[0] = 0;
-		store_homebrew_list[c].app_short_description[0] = 0;
-		store_homebrew_list[c].app_description[0] = 0;
-		store_homebrew_list[c].app_author[0] = 0;
-		store_homebrew_list[c].app_version[0] = 0;
-		store_homebrew_list[c].app_total_size = 0;
-		store_homebrew_list[c].app_controllers[0] = 0;
+		job_store_list[c].about_loaded = 0;
+		job_store_list[c].app_name[0] = 0;
+		job_store_list[c].app_short_description[0] = 0;
+		job_store_list[c].app_description[0] = 0;
+		job_store_list[c].app_author[0] = 0;
+		job_store_list[c].app_version[0] = 0;
+		job_store_list[c].app_total_size = 0;
+		job_store_list[c].app_controllers[0] = 0;
 
-		store_homebrew_list[c].file_found = 0;
-		store_homebrew_list[c].content = NULL;
+		job_store_list[c].file_found = 0;
+		job_store_list[c].content = NULL;
 	}
 }
 
