@@ -66,30 +66,30 @@ int xfb_height = 0;
 struct repo_struct repo_list[200];
 
 // List to show
-struct homebrew_struct current_items[1600];
+struct homebrew_struct current_items[HOMEBREW_STRUCT_SIZE];
 
-struct homebrew_struct emulators_list[300];
-struct homebrew_struct games_list[600];
-struct homebrew_struct media_list[300];
-struct homebrew_struct utilities_list[300];
-struct homebrew_struct demos_list[300];
+struct homebrew_struct emulators_list[HOMEBREW_STRUCT_SIZE];
+struct homebrew_struct games_list[HOMEBREW_STRUCT_SIZE];
+struct homebrew_struct media_list[HOMEBREW_STRUCT_SIZE];
+struct homebrew_struct utilities_list[HOMEBREW_STRUCT_SIZE];
+struct homebrew_struct demos_list[HOMEBREW_STRUCT_SIZE];
 
 // Total list
-struct homebrew_struct total_list[1600];
+struct homebrew_struct total_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list
-struct sort_homebrew_struct temp_list[600];
-struct homebrew_struct temp_list2[600];
+struct sort_homebrew_struct temp_list[HOMEBREW_STRUCT_SIZE];
+struct homebrew_struct temp_list2[HOMEBREW_STRUCT_SIZE];
 struct sort_homebrew_struct temp1_list[2];
 
 // Temp list to use to download/extract/delete
 struct homebrew_struct job_store_list[2];
 
 // Folders exist list
-struct sort_homebrew_struct folders_list[500];
+struct sort_homebrew_struct folders_list[HOMEBREW_STRUCT_SIZE];
 
 // Apps to not manage
-struct sort_homebrew_struct no_manage_list[500];
+struct sort_homebrew_struct no_manage_list[HOMEBREW_STRUCT_SIZE];
 
 static volatile u8 reset = 0;
 static lwp_t reset_thread;
@@ -313,42 +313,42 @@ static void *run_icons_thread(void *arg) {
 				}
 
 				int y;
-				for (y = 0; y < array_length (current_items); y++) {
+				for (y = 0; y < array_length(current_items); y++) {
 					if (strcmp (total_list[x].name, current_items[y].name) == 0) {
 						current_items[y].file_found = total_list[x].file_found;
 						current_items[y].content = total_list[x].content;
 					}
 				}
 
-				for (y = 0; y < array_length (emulators_list); y++) {
+				for (y = 0; y < array_length(emulators_list); y++) {
 					if (strcmp (total_list[x].name, emulators_list[y].name) == 0) {
 						emulators_list[y].file_found = total_list[x].file_found;
 						emulators_list[y].content = total_list[x].content;
 					}
 				}
 
-				for (y = 0; y < array_length (games_list); y++) {
+				for (y = 0; y < array_length(games_list); y++) {
 					if (strcmp (total_list[x].name, games_list[y].name) == 0) {
 						games_list[y].file_found = total_list[x].file_found;
 						games_list[y].content = total_list[x].content;
 					}
 				}
 
-				for (y = 0; y < array_length (media_list); y++) {
+				for (y = 0; y < array_length(media_list); y++) {
 					if (strcmp (total_list[x].name, media_list[y].name) == 0) {
 						media_list[y].file_found = total_list[x].file_found;
 						media_list[y].content = total_list[x].content;
 					}
 				}
 
-				for (y = 0; y < array_length (utilities_list); y++) {
+				for (y = 0; y < array_length(utilities_list); y++) {
 					if (strcmp (total_list[x].name, utilities_list[y].name) == 0) {
 						utilities_list[y].file_found = total_list[x].file_found;
 						utilities_list[y].content = total_list[x].content;
 					}
 				}
 
-				for (y = 0; y < array_length (demos_list); y++) {
+				for (y = 0; y < array_length(demos_list); y++) {
 					if (strcmp (total_list[x].name, demos_list[y].name) == 0) {
 						demos_list[y].file_found = total_list[x].file_found;
 						demos_list[y].content = total_list[x].content;
@@ -394,7 +394,7 @@ static void *run_icons_thread(void *arg) {
 					}
 
 					int y;
-					for (y = 0; y < array_length (current_items); y++) {
+					for (y = 0; y < array_length(current_items); y++) {
 						if (strcmp (total_list[x].name, current_items[y].name) == 0) {
 							current_items[y].file_found = total_list[x].file_found;
 							current_items[y].content = total_list[x].content;
@@ -404,7 +404,7 @@ static void *run_icons_thread(void *arg) {
 						download_icon_sleeping = true;
 						sleep(3);
 					}
-					for (y = 0; y < array_length (emulators_list); y++) {
+					for (y = 0; y < array_length(emulators_list); y++) {
 						if (strcmp (total_list[x].name, emulators_list[y].name) == 0) {
 							emulators_list[y].file_found = total_list[x].file_found;
 							emulators_list[y].content = total_list[x].content;
@@ -414,7 +414,7 @@ static void *run_icons_thread(void *arg) {
 						download_icon_sleeping = true;
 						sleep(3);
 					}
-					for (y = 0; y < array_length (games_list); y++) {
+					for (y = 0; y < array_length(games_list); y++) {
 						if (strcmp (total_list[x].name, games_list[y].name) == 0) {
 							games_list[y].file_found = total_list[x].file_found;
 							games_list[y].content = total_list[x].content;
@@ -424,7 +424,7 @@ static void *run_icons_thread(void *arg) {
 						download_icon_sleeping = true;
 						sleep(3);
 					}
-					for (y = 0; y < array_length (media_list); y++) {
+					for (y = 0; y < array_length(media_list); y++) {
 						if (strcmp (total_list[x].name, media_list[y].name) == 0) {
 							media_list[y].file_found = total_list[x].file_found;
 							media_list[y].content = total_list[x].content;
@@ -434,7 +434,7 @@ static void *run_icons_thread(void *arg) {
 						download_icon_sleeping = true;
 						sleep(3);
 					}
-					for (y = 0; y < array_length (utilities_list); y++) {
+					for (y = 0; y < array_length(utilities_list); y++) {
 						if (strcmp (total_list[x].name, utilities_list[y].name) == 0) {
 							utilities_list[y].file_found = total_list[x].file_found;
 							utilities_list[y].content = total_list[x].content;
@@ -444,7 +444,7 @@ static void *run_icons_thread(void *arg) {
 						download_icon_sleeping = true;
 						sleep(3);
 					}
-					for (y = 0; y < array_length (demos_list); y++) {
+					for (y = 0; y < array_length(demos_list); y++) {
 						if (strcmp (total_list[x].name, demos_list[y].name) == 0) {
 							demos_list[y].file_found = total_list[x].file_found;
 							demos_list[y].content = total_list[x].content;
@@ -877,7 +877,7 @@ static void *run_download_thread(void *arg) {
 
 		total_list[job_store_list[0].original_pos] = job_store_list[0];
 
-		if (updating >= 0 && updating < array_length (current_items)) {
+		if (updating >= 0 && updating < array_length(current_items)) {
 			new_updating++;
 		}
 		if (update_xml == 1) {
@@ -1147,7 +1147,7 @@ static void *run_delete_thread(void *arg) {
 		sd_card_update = true;
 		cancel_delete = false;
 
-		if (updating >= 0 && updating < array_length (current_items)) {
+		if (updating >= 0 && updating < array_length(current_items)) {
 			new_updating++;
 		}
 	}
@@ -1218,7 +1218,11 @@ void suspend_reset_thread() {
 
 
 // Return the array length by counting the characters in the name
-int array_length (struct homebrew_struct array[400]) {
+int array_length(struct homebrew_struct array[]) {
+	if (array[0].original_pos == -1) {
+		UI_bootScreenTwo("First item's index is -1", "return length 0; crash");
+		return 0;
+	}
 	int x = 0;
 	while (strlen(array[x].name) >= 2) {
 		x++;
@@ -1226,7 +1230,7 @@ int array_length (struct homebrew_struct array[400]) {
 	return x;
 }
 
-int sort_array_length (struct sort_homebrew_struct array[400]) {
+int sort_array_length(struct sort_homebrew_struct array[]) {
 	int x = 0;
 	while (strlen(array[x].name) >= 2) {
 		x++;
@@ -1596,7 +1600,7 @@ void sort_by_name (bool min_to_max) {
 	clear_temp_list();
 
 	int i;
-	for (i = 0; i < array_length (current_items); i++) {
+	for (i = 0; i < array_length(current_items); i++) {
 		strcpy(temp_list[i].name, current_items[i].name);
 		strcpy(temp_list[i].app_name, current_items[i].app_name);
 
@@ -1641,9 +1645,9 @@ void sort_by_name (bool min_to_max) {
 		}
 	}
 
-	for (x = 0; x < array_length (current_items); x++) {
+	for (x = 0; x < array_length(current_items); x++) {
 		int y;
-		for (y = 0; y < array_length (current_items); y++) {
+		for (y = 0; y < array_length(current_items); y++) {
 			if (strcmp (current_items[x].name, temp_list[y].name) == 0) {
 				temp_list2[y] = current_items[x];
 			}
@@ -1657,7 +1661,7 @@ void sort_by_name (bool min_to_max) {
 	}
 
 	x = 0;
-	for (i = 0; i < array_length (temp_list2); i++) {
+	for (i = 0; i < array_length(temp_list2); i++) {
 		if (temp_list2[i].original_pos != -1) {
 			current_items[x] = temp_list2[i];
 			x++;
@@ -1670,7 +1674,7 @@ void sort_by_date (bool min_to_max) {
 	clear_temp_list();
 
 	int i;
-	for (i = 0; i < array_length (current_items); i++) {
+	for (i = 0; i < array_length(current_items); i++) {
 		strcpy(temp_list[i].name, current_items[i].name);
 		temp_list[i].app_time = current_items[i].app_time;
 	}
@@ -1710,9 +1714,9 @@ void sort_by_date (bool min_to_max) {
 		}
 	}
 
-	for (x = 0; x < array_length (current_items); x++) {
+	for (x = 0; x < array_length(current_items); x++) {
 		int y;
-		for (y = 0; y < array_length (current_items); y++) {
+		for (y = 0; y < array_length(current_items); y++) {
 			if (strcmp (current_items[x].name, temp_list[y].name) == 0) {
 				temp_list2[y] = current_items[x];
 			}
@@ -1726,7 +1730,7 @@ void sort_by_date (bool min_to_max) {
 	}
 
 	x = 0;
-	for (i = 0; i < array_length (temp_list2); i++) {
+	for (i = 0; i < array_length(temp_list2); i++) {
 		if (temp_list2[i].original_pos != -1) {
 			current_items[x] = temp_list2[i];
 			x++;
@@ -1739,7 +1743,7 @@ void hide_apps_installed() {
 	clear_temp_list();
 
 	int x;
-	for (x = 0; x < array_length (current_items); x++) {
+	for (x = 0; x < array_length(current_items); x++) {
 		temp_list2[x] = current_items[x];
 	}
 
@@ -1747,7 +1751,7 @@ void hide_apps_installed() {
 
 	int i;
 	int j = 0;
-	for (i = 0; i < array_length (temp_list2); i++) {
+	for (i = 0; i < array_length(temp_list2); i++) {
 		if (temp_list2[i].local_app_size == 0) {
 			current_items[j] = temp_list2[i];
 			j++;
@@ -1763,7 +1767,7 @@ bool hide_apps_updated() {
 	clear_temp_list();
 
 	int x;
-	for (x = 0; x < array_length (current_items); x++) {
+	for (x = 0; x < array_length(current_items); x++) {
 		temp_list2[x] = current_items[x];
 	}
 
@@ -1771,7 +1775,7 @@ bool hide_apps_updated() {
 
 	int i;
 	int j = 0;
-	for (i = 0; i < array_length (temp_list2); i++) {
+	for (i = 0; i < array_length(temp_list2); i++) {
 		if (temp_list2[i].local_app_size == temp_list2[i].app_size && temp_list2[i].in_download_queue >= 1) {
 			current_items[j] = temp_list2[i];
 		}
@@ -1788,7 +1792,7 @@ bool hide_apps_updated() {
 	clear_list();
 
 	j = 0;
-	for (i = 0; i < array_length (temp_list2); i++) {
+	for (i = 0; i < array_length(temp_list2); i++) {
 		if (temp_list2[i].local_app_size == temp_list2[i].app_size && temp_list2[i].in_download_queue >= 1) {
 			current_items[j] = temp_list2[i];
 			j++;
@@ -2135,7 +2139,7 @@ int load_file_to_memory(const char *filename, unsigned char **result) {
 // Clear list
 void clear_list() {
 	int c;
-	for (c = 0; c < 1600; c++) {
+	for (c = 0; c < HOMEBREW_STRUCT_SIZE; c++) {
 		current_items[c].name[0] = 0;
 		current_items[c].app_size = 0;
 		current_items[c].app_time = 0;
@@ -2168,7 +2172,7 @@ void clear_list() {
 // Clear list
 void clear_temp_list() {
 	int c;
-	for (c = 0; c < 400; c++) {
+	for (c = 0; c < HOMEBREW_STRUCT_SIZE; c++) {
 		temp_list2[c].name[0] = 0;
 		temp_list2[c].app_size = 0;
 		temp_list2[c].app_time = 0;
@@ -2331,7 +2335,7 @@ void download_queue_size() {
 	updating_total_size = 0;
 
 	int x;
-	for (x = 0; x < array_length (current_items); x++) {
+	for (x = 0; x < array_length(current_items); x++) {
 		if (strlen(current_items[x].name) >= 3 && current_items[x].original_pos != -1 && current_items[x].in_download_queue != 2) {
 			updating_total_size += current_items[x].total_app_size;
 			printf("%i\n",updating_total_size);

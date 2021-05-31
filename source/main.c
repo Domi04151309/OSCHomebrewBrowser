@@ -318,28 +318,28 @@ int main(int argc, char **argv) {
 
 			// Update category
 			if (category_selection == 0) {
-				for (int i = 0; i < array_length (demos_list); i++) {
+				for (int i = 0; i < array_length(demos_list); i++) {
 					current_items[i] = demos_list[i];
 				}
 			} else if (category_selection == 1) {
-				for (int i = 0; i < array_length (emulators_list); i++) {
+				for (int i = 0; i < array_length(emulators_list); i++) {
 					current_items[i] = emulators_list[i];
 				}
 			} else if (category_selection == 2) {
-				for (int i = 0; i < array_length (games_list); i++) {
+				for (int i = 0; i < array_length(games_list); i++) {
 					current_items[i] = games_list[i];
 				}
 			} else if (category_selection == 3) {
-				for (int i = 0; i < array_length (media_list); i++) {
+				for (int i = 0; i < array_length(media_list); i++) {
 					current_items[i] = media_list[i];
 				}
 			} else if (category_selection == 4) {
-				for (int i = 0; i < array_length (utilities_list); i++) {
+				for (int i = 0; i < array_length(utilities_list); i++) {
 					current_items[i] = utilities_list[i];
 				}
 			} else if (category_selection == 5) {
 				int j = 0;
-				for (int i = 0; i < array_length (total_list); i++) {
+				for (int i = 0; i < array_length(total_list); i++) {
 					if (total_list[i].local_app_size > 0) {
 						current_items[j] = total_list[i];
 						j++;
@@ -348,7 +348,7 @@ int main(int argc, char **argv) {
 				wait_a_press = 7;
 			} else if (category_selection == 6) {
 				int j = 0;
-				for (int i = 0; i < array_length (total_list); i++) {
+				for (int i = 0; i < array_length(total_list); i++) {
 					if (total_list[i].in_download_queue >= 1) {
 						current_items[j] = total_list[i];
 						j++;
@@ -878,7 +878,7 @@ int main(int argc, char **argv) {
 					}
 
 					int j = 0;
-					for (int i = 0; i < array_length (temp_list2); i++) {
+					for (int i = 0; i < array_length(temp_list2); i++) {
 						total_list[current_items[j].original_pos] = temp_list2[i];
 						j++;
 					}

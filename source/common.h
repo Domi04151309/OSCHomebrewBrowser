@@ -15,6 +15,8 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include <stdio.h>
 #include "GRRLIB/GRRLIB.h"
 
+#define HOMEBREW_STRUCT_SIZE 512
+
 extern const char *CRLF;
 extern const u32 CRLF_LENGTH;
 extern int xfb_height;
@@ -202,31 +204,31 @@ struct repo_struct {
 extern struct repo_struct repo_list[200];
 
 // List to show
-extern struct homebrew_struct current_items[1600];
+extern struct homebrew_struct current_items[HOMEBREW_STRUCT_SIZE];
 
-extern struct homebrew_struct emulators_list[300];
-extern struct homebrew_struct games_list[600];
-extern struct homebrew_struct media_list[300];
-extern struct homebrew_struct utilities_list[300];
-extern struct homebrew_struct demos_list[300];
+extern struct homebrew_struct emulators_list[HOMEBREW_STRUCT_SIZE];
+extern struct homebrew_struct games_list[HOMEBREW_STRUCT_SIZE];
+extern struct homebrew_struct media_list[HOMEBREW_STRUCT_SIZE];
+extern struct homebrew_struct utilities_list[HOMEBREW_STRUCT_SIZE];
+extern struct homebrew_struct demos_list[HOMEBREW_STRUCT_SIZE];
 
 // Total list
-extern struct homebrew_struct total_list[1600];
+extern struct homebrew_struct total_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list
-extern struct sort_homebrew_struct temp_list[600];
-extern struct homebrew_struct temp_list2[600];
+extern struct sort_homebrew_struct temp_list[HOMEBREW_STRUCT_SIZE];
+extern struct homebrew_struct temp_list2[HOMEBREW_STRUCT_SIZE];
 extern struct sort_homebrew_struct temp1_list[2];
 
 // Temp list to use to download/extract/delete
 extern struct homebrew_struct job_store_list[2];
 
 // Folders exist list
-extern struct sort_homebrew_struct folders_list[500];
+extern struct sort_homebrew_struct folders_list[HOMEBREW_STRUCT_SIZE];
 
 // Apps to not manage
-extern struct sort_homebrew_struct no_manage_list[500];
+extern struct sort_homebrew_struct no_manage_list[HOMEBREW_STRUCT_SIZE];
 
-int array_length (struct homebrew_struct array[400]);
+int array_length(struct homebrew_struct array[]);
 
 #endif /* _COMMON_H_ */
