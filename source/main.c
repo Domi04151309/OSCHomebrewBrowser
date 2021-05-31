@@ -303,162 +303,162 @@ int main(int argc, char **argv) {
 			updated_cat = false;
 		}
 
-		// Update list
-		if (listUpdate) {
-			// Tell downloading icon thread to sleep until we've loaded the new category
-			if (download_icon > 0 && !download_in_progress) {
-				changing_cat = true;
-				while (!download_icon_sleeping) usleep(10000);
-			}
-
-			if (category_selection != 9) {
-				// Clear homebrew list
-				clear_list();
-			}
-
-			// Update category
-			if (category_selection == 0) {
-				for (int i = 0; i < array_length(demos_list); i++) {
-					current_items[i] = demos_list[i];
-				}
-			} else if (category_selection == 1) {
-				for (int i = 0; i < array_length(emulators_list); i++) {
-					current_items[i] = emulators_list[i];
-				}
-			} else if (category_selection == 2) {
-				for (int i = 0; i < array_length(games_list); i++) {
-					current_items[i] = games_list[i];
-				}
-			} else if (category_selection == 3) {
-				for (int i = 0; i < array_length(media_list); i++) {
-					current_items[i] = media_list[i];
-				}
-			} else if (category_selection == 4) {
-				for (int i = 0; i < array_length(utilities_list); i++) {
-					current_items[i] = utilities_list[i];
-				}
-			} else if (category_selection == 5) {
-				int j = 0;
-				for (int i = 0; i < array_length(total_list); i++) {
-					if (total_list[i].local_app_size > 0) {
-						current_items[j] = total_list[i];
-						j++;
-					}
-				}
-				wait_a_press = 7;
-			} else if (category_selection == 6) {
-				int j = 0;
-				for (int i = 0; i < array_length(total_list); i++) {
-					if (total_list[i].in_download_queue >= 1) {
-						current_items[j] = total_list[i];
-						j++;
-					}
-				}
-				wait_a_press = 7;
-			}
-
-			if (setting_hide_installed && category_selection != 5 && category_selection != 6) {
-				hide_apps_installed();
-			}
-
-			if (sort_up_down == 0) sort_by_date(0);
-			else if (sort_up_down == 1) sort_by_date(1);
-			else if (sort_up_down == 6) sort_by_name(0);
-			else if (sort_up_down == 7) sort_by_name(1);
-
-			listUpdate = false;
-			refresh_list = -1;
-			changing_cat = false;
-		}
-
-		int start = -1;
-		int finish = 0;
-		for (int x = 0; x < array_length(current_items); x++) {
-			if (ypos + (76 * x) >= 94 && ypos + (76 * x) + 30 < 400) {
-				if (start == -1) start = x;
-				finish = x;
-			}
-		}
-
-		// Refresh list
-		if (refresh_list != start) {
-			if (icon1_img) GRRLIB_FreeTexture(icon1_img);
-			if (icon2_img) GRRLIB_FreeTexture(icon2_img);
-			if (icon3_img) GRRLIB_FreeTexture(icon3_img);
-			if (icon4_img) GRRLIB_FreeTexture(icon4_img);
-			if (icon5_img) GRRLIB_FreeTexture(icon5_img);
-
-			// Load images as needed, store them into memory as well as text
-			for (int c = start; c <= (start+4); c++) {
-				icons_loaded++;
-
-				if (total_list[current_items[c].original_pos].file_found == 0 || total_list[current_items[c].original_pos].file_found == 2) {
-					if (total_list[current_items[c].original_pos].file_found == 0) {
-						// Check image file size
-						char img_path[100] = "sd:/apps/homebrew_browser_lite/temp/";
-						if (!setting_use_sd) strcpy(img_path,"usb:/apps/homebrew_browser_lite/temp/");
-						strcat(img_path, total_list[current_items[c].original_pos].name);
-						strcat(img_path, ".png");
-
-						FILE *f = fopen(img_path, "rb");
-
-						if (f == NULL) {
-							total_list[current_items[c].original_pos].file_found = -1;
-						}
-						// Open file and check file length for changes
-						else {
-							fseek (f , 0, SEEK_END);
-							int local_img_size = ftell (f);
-							rewind(f);
-							fclose(f);
-
-							// Load image into memory if image size matches
-							if (local_img_size == total_list[current_items[c].original_pos].img_size) {
-								total_list[current_items[c].original_pos].file_found = load_file_to_memory(img_path, &total_list[current_items[c].original_pos].content);
-							} else {
-								total_list[current_items[c].original_pos].file_found = -1;
-							}
-						}
-					}
-				}
-				if (total_list[current_items[c].original_pos].content != NULL) total_list[current_items[c].original_pos].file_found = 1;
-
-				// Once we've gone through the first 8 images of the category (even if they weren't loaded), we wake the download icon thread and are done
-				if (icons_loaded > 8) {
-					changing_cat = false;
-					icons_loaded = 0;
-				}
-			}
-
-			// Display images
-			if (total_list[current_items[start].original_pos].file_found == 1 && current_items[start].original_pos != -1) icon1_img=GRRLIB_LoadTexture(total_list[current_items[start].original_pos].content);
-			else if (strlen(total_list[current_items[start].original_pos].name) >= 3 && current_items[start].original_pos != -1) icon1_img=GRRLIB_LoadTexture(no_image_png);
-			else icon1_img=GRRLIB_LoadTexture(blank_png);
-
-			if (total_list[current_items[(start+1)].original_pos].file_found == 1 && current_items[(start+1)].original_pos != -1) icon2_img=GRRLIB_LoadTexture(total_list[current_items[(start+1)].original_pos].content);
-			else if (strlen(total_list[current_items[(start+1)].original_pos].name) >= 3 && current_items[(start+1)].original_pos != -1) icon2_img=GRRLIB_LoadTexture(no_image_png);
-			else icon2_img=GRRLIB_LoadTexture(blank_png);
-
-			if (total_list[current_items[(start+2)].original_pos].file_found == 1 && current_items[(start+2)].original_pos != -1) icon3_img=GRRLIB_LoadTexture(total_list[current_items[(start+2)].original_pos].content);
-			else if (strlen(total_list[current_items[(start+2)].original_pos].name) >= 3 && current_items[(start+2)].original_pos != -1) icon3_img=GRRLIB_LoadTexture(no_image_png);
-			else icon3_img=GRRLIB_LoadTexture(blank_png);
-
-			if (total_list[current_items[(start+3)].original_pos].file_found == 1 && current_items[(start+3)].original_pos != -1) icon4_img=GRRLIB_LoadTexture(total_list[current_items[(start+3)].original_pos].content);
-			else if (strlen(total_list[current_items[(start+3)].original_pos].name) >= 3 && current_items[(start+3)].original_pos != -1) icon4_img=GRRLIB_LoadTexture(no_image_png);
-			else icon4_img=GRRLIB_LoadTexture(blank_png);
-
-			if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && total_list[current_items[(start+4)].original_pos].file_found == 1 && current_items[(start+4)].original_pos != -1) icon5_img=GRRLIB_LoadTexture(total_list[current_items[(start+4)].original_pos].content);
-			else if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && current_items[(start+4)].original_pos != -1) icon5_img=GRRLIB_LoadTexture(no_image_png);
-			else icon5_img=GRRLIB_LoadTexture(blank_png);
-
-			refresh_list = start;
-		}
-
-
 		// Update ypos from ypos updated
 		if (select_repo) ypos = ypos_updated;
 
 		if (ACTIVITIES_current() == ACTIVITY_MAIN) {
+			// Update list
+			if (listUpdate) {
+				// Tell downloading icon thread to sleep until we've loaded the new category
+				if (download_icon > 0 && !download_in_progress) {
+					changing_cat = true;
+					while (!download_icon_sleeping) usleep(10000);
+				}
+
+				if (category_selection != 9) {
+					// Clear homebrew list
+					clear_list();
+				}
+
+				// Update category
+				if (category_selection == 0) {
+					for (int i = 0; i < array_length(demos_list); i++) {
+						current_items[i] = demos_list[i];
+					}
+				} else if (category_selection == 1) {
+					for (int i = 0; i < array_length(emulators_list); i++) {
+						current_items[i] = emulators_list[i];
+					}
+				} else if (category_selection == 2) {
+					for (int i = 0; i < array_length(games_list); i++) {
+						current_items[i] = games_list[i];
+					}
+				} else if (category_selection == 3) {
+					for (int i = 0; i < array_length(media_list); i++) {
+						current_items[i] = media_list[i];
+					}
+				} else if (category_selection == 4) {
+					for (int i = 0; i < array_length(utilities_list); i++) {
+						current_items[i] = utilities_list[i];
+					}
+				} else if (category_selection == 5) {
+					int j = 0;
+					for (int i = 0; i < array_length(total_list); i++) {
+						if (total_list[i].local_app_size > 0) {
+							current_items[j] = total_list[i];
+							j++;
+						}
+					}
+					wait_a_press = 7;
+				} else if (category_selection == 6) {
+					int j = 0;
+					for (int i = 0; i < array_length(total_list); i++) {
+						if (total_list[i].in_download_queue >= 1) {
+							current_items[j] = total_list[i];
+							j++;
+						}
+					}
+					wait_a_press = 7;
+				}
+
+				if (setting_hide_installed && category_selection != 5 && category_selection != 6) {
+					hide_apps_installed();
+				}
+
+				if (sort_up_down == 0) sort_by_date(0);
+				else if (sort_up_down == 1) sort_by_date(1);
+				else if (sort_up_down == 6) sort_by_name(0);
+				else if (sort_up_down == 7) sort_by_name(1);
+
+				listUpdate = false;
+				refresh_list = -1;
+				changing_cat = false;
+			}
+
+			int start = -1;
+			int finish = 0;
+			for (int x = 0; x < array_length(current_items); x++) {
+				if (ypos + (76 * x) >= 94 && ypos + (76 * x) + 30 < 400) {
+					if (start == -1) start = x;
+					finish = x;
+				}
+			}
+
+			// Refresh list
+			if (refresh_list != start) {
+				if (icon1_img) GRRLIB_FreeTexture(icon1_img);
+				if (icon2_img) GRRLIB_FreeTexture(icon2_img);
+				if (icon3_img) GRRLIB_FreeTexture(icon3_img);
+				if (icon4_img) GRRLIB_FreeTexture(icon4_img);
+				if (icon5_img) GRRLIB_FreeTexture(icon5_img);
+
+				// Load images as needed, store them into memory as well as text
+				for (int c = start; c <= (start+4); c++) {
+					icons_loaded++;
+
+					if (total_list[current_items[c].original_pos].file_found == 0 || total_list[current_items[c].original_pos].file_found == 2) {
+						if (total_list[current_items[c].original_pos].file_found == 0) {
+							// Check image file size
+							char img_path[100] = "sd:/apps/homebrew_browser_lite/temp/";
+							if (!setting_use_sd) strcpy(img_path,"usb:/apps/homebrew_browser_lite/temp/");
+							strcat(img_path, total_list[current_items[c].original_pos].name);
+							strcat(img_path, ".png");
+
+							FILE *f = fopen(img_path, "rb");
+
+							if (f == NULL) {
+								total_list[current_items[c].original_pos].file_found = -1;
+							}
+							// Open file and check file length for changes
+							else {
+								fseek (f , 0, SEEK_END);
+								int local_img_size = ftell (f);
+								rewind(f);
+								fclose(f);
+
+								// Load image into memory if image size matches
+								if (local_img_size == total_list[current_items[c].original_pos].img_size) {
+									total_list[current_items[c].original_pos].file_found = load_file_to_memory(img_path, &total_list[current_items[c].original_pos].content);
+								} else {
+									total_list[current_items[c].original_pos].file_found = -1;
+								}
+							}
+						}
+					}
+					if (total_list[current_items[c].original_pos].content != NULL) total_list[current_items[c].original_pos].file_found = 1;
+
+					// Once we've gone through the first 8 images of the category (even if they weren't loaded), we wake the download icon thread and are done
+					if (icons_loaded > 8) {
+						changing_cat = false;
+						icons_loaded = 0;
+					}
+				}
+
+				// Display images
+				if (total_list[current_items[start].original_pos].file_found == 1 && current_items[start].original_pos != -1) icon1_img=GRRLIB_LoadTexture(total_list[current_items[start].original_pos].content);
+				else if (strlen(total_list[current_items[start].original_pos].name) >= 3 && current_items[start].original_pos != -1) icon1_img=GRRLIB_LoadTexture(no_image_png);
+				else icon1_img=GRRLIB_LoadTexture(blank_png);
+
+				if (total_list[current_items[(start+1)].original_pos].file_found == 1 && current_items[(start+1)].original_pos != -1) icon2_img=GRRLIB_LoadTexture(total_list[current_items[(start+1)].original_pos].content);
+				else if (strlen(total_list[current_items[(start+1)].original_pos].name) >= 3 && current_items[(start+1)].original_pos != -1) icon2_img=GRRLIB_LoadTexture(no_image_png);
+				else icon2_img=GRRLIB_LoadTexture(blank_png);
+
+				if (total_list[current_items[(start+2)].original_pos].file_found == 1 && current_items[(start+2)].original_pos != -1) icon3_img=GRRLIB_LoadTexture(total_list[current_items[(start+2)].original_pos].content);
+				else if (strlen(total_list[current_items[(start+2)].original_pos].name) >= 3 && current_items[(start+2)].original_pos != -1) icon3_img=GRRLIB_LoadTexture(no_image_png);
+				else icon3_img=GRRLIB_LoadTexture(blank_png);
+
+				if (total_list[current_items[(start+3)].original_pos].file_found == 1 && current_items[(start+3)].original_pos != -1) icon4_img=GRRLIB_LoadTexture(total_list[current_items[(start+3)].original_pos].content);
+				else if (strlen(total_list[current_items[(start+3)].original_pos].name) >= 3 && current_items[(start+3)].original_pos != -1) icon4_img=GRRLIB_LoadTexture(no_image_png);
+				else icon4_img=GRRLIB_LoadTexture(blank_png);
+
+				if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && total_list[current_items[(start+4)].original_pos].file_found == 1 && current_items[(start+4)].original_pos != -1) icon5_img=GRRLIB_LoadTexture(total_list[current_items[(start+4)].original_pos].content);
+				else if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && current_items[(start+4)].original_pos != -1) icon5_img=GRRLIB_LoadTexture(no_image_png);
+				else icon5_img=GRRLIB_LoadTexture(blank_png);
+
+				refresh_list = start;
+			}
+
+
 			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, RES_COLOR_LIGHT_GRAY);
 			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_SMALL, UI_PAGE_H, RES_COLOR_WHITE);
 
