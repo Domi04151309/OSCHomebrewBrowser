@@ -39,11 +39,6 @@ extern GRRLIB_texImg *button_no_img;
 extern GRRLIB_texImg *button_no_highlight_img;
 extern GRRLIB_texImg *button_yes_img;
 extern GRRLIB_texImg *button_yes_highlight_img;
-extern GRRLIB_texImg *updated_close_img;
-extern GRRLIB_texImg *updated_close_highlight_img;
-extern GRRLIB_texImg *apps_repo_img;
-extern GRRLIB_texImg *apps_start_cat_img;
-extern GRRLIB_texImg *apps_start_sort_img;
 extern GRRLIB_texImg *next_img;
 extern GRRLIB_texImg *prev_img;
 

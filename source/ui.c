@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include "beer_png.h"
+#include "res/drawables.h"
 #include "res/res.h"
 #include "res/strings.h"
 #include "utils.h"
@@ -83,6 +84,27 @@ bool UI_blockButton(ir_t ir, const f32 x, const f32 y, const char * string) {
   UI_drawBlockButton(x, y, string, hovered);
   if (hovered) UTILS_rumble();
   return hovered;
+}
+
+// Dialogs
+void UI_dialog(ir_t ir, const char *title, bool *closer) {
+  int closePosX = UI_PAGE_X + UI_PAGE_W - UI_PADDING_2 - UI_PADDING - (*app_cross_img).w;
+  int closePosY = UI_PAGE_Y + UI_PADDING_2 + UI_PADDING;
+  int posY = UI_PAGE_Y + 2 * UI_PADDING_2;
+
+  GRRLIB_FillScreen(BACKGROUND_DIM);
+  UI_roundedRect(UI_PAGE_X + UI_PADDING_2, UI_PAGE_Y + UI_PADDING_2, UI_PAGE_W - 2 * UI_PADDING_2, UI_PAGE_H - 2 * UI_PADDING_2, RES_COLOR_WHITE);
+  GRRLIB_DrawCenteredText(UI_PAGE_X, posY, UI_PAGE_W, title, FONTSIZE_NORMAL, TEXT_COLOR_PRIMARY);
+
+  if (UI_isOnImg(ir, closePosX, closePosY, app_cross_img)) {
+    UTILS_rumble();
+    GRRLIB_DrawImg(closePosX, closePosY, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
+    if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
+      *closer = false;
+    }
+  } else {
+    GRRLIB_DrawImg(closePosX, closePosY, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
+  }
 }
 
 // Category bar

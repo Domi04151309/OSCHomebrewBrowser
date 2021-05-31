@@ -194,4 +194,68 @@ void SETTINGS_render() {
       GRRLIB_DrawImg(452, 400, next_img, 0, 1, 1, BTN_COLOR);
     }
   }
+
+  // Select Repo
+  if (select_repo) {
+    UI_dialog(ir, STR_CHANGE_REPOSITORY, &select_repo);
+
+    for (uint8_t i = 0; i < repo_count; i++) {
+      if (UI_isOnSquare(ir, UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + 30 * i, UI_DIALOG_LIST_W, 30)) {
+        UTILS_rumble();
+        UI_highlight(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + 30 * i, UI_DIALOG_LIST_W, 30);
+        if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
+          setting_repo = i;
+        }
+      }
+      GRRLIB_DrawText(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + i * 30, repo_list[i].name, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+      if (setting_repo == i) {
+        GRRLIB_DrawImg(UI_DIALOG_TICK_X, UI_DIALOG_LIST_Y + 30 * i, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
+      }
+    }
+  }
+
+  // Select category
+  else if (select_category) {
+    UI_dialog(ir, STR_START_UP_CATEGORY, &select_category);
+
+    for (uint8_t i = 0; i < 5; i++) {
+      if (UI_isOnSquare(ir, UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + i * 30, UI_DIALOG_LIST_W, 30)) {
+        UTILS_rumble();
+        UI_highlight(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + i * 30, UI_DIALOG_LIST_W, 30);
+        if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
+          setting_category = i;
+        }
+      }
+      if (setting_category == i) {
+        GRRLIB_DrawImg(UI_DIALOG_TICK_X, UI_DIALOG_LIST_Y + 30 * i, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
+      }
+    }
+
+    GRRLIB_DrawText(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y, STR_DEMOS, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+    GRRLIB_DrawText(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + 30, STR_EMULATORS, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+    GRRLIB_DrawText(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + 2 * 30, STR_GAMES, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+    GRRLIB_DrawText(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + 3 * 30, STR_MEDIA, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+    GRRLIB_DrawText(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + 4 * 30, STR_UTILITIES, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+  }
+
+  // Select sort
+  else if (select_sort) {
+    UI_dialog(ir, STR_START_UP_SORTING, &select_sort);
+
+    for (uint8_t i = 0; i < 2; i++) {
+      if (UI_isOnSquare(ir, UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + i * 30, UI_DIALOG_LIST_W, 30)) {
+        UTILS_rumble();
+        UI_highlight(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + i * 30, UI_DIALOG_LIST_W, 30);
+        if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
+          setting_sort = i;
+        }
+      }
+      if (setting_sort == i) {
+        GRRLIB_DrawImg(UI_DIALOG_TICK_X, UI_DIALOG_LIST_Y + 30 * i, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
+      }
+    }
+
+    GRRLIB_DrawText(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y, STR_SORT_BY_NAME, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+    GRRLIB_DrawText(UI_DIALOG_LEFT, UI_DIALOG_LIST_Y + 30, STR_SORT_BY_DATE, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+  }
 }

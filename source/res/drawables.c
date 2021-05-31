@@ -33,12 +33,7 @@
 #include "button_no_highlight_png.h"
 #include "button_yes_png.h"
 #include "button_yes_highlight_png.h"
-#include "updated_close_png.h"
-#include "updated_close_highlight_png.h"
 #include "name_png.h"
-#include "apps_repo_png.h"
-#include "apps_start_cat_png.h"
-#include "apps_start_sort_png.h"
 #include "next_png.h"
 #include "prev_png.h"
 
@@ -78,11 +73,6 @@ GRRLIB_texImg *button_no_img;
 GRRLIB_texImg *button_no_highlight_img;
 GRRLIB_texImg *button_yes_img;
 GRRLIB_texImg *button_yes_highlight_img;
-GRRLIB_texImg *updated_close_img;
-GRRLIB_texImg *updated_close_highlight_img;
-GRRLIB_texImg *apps_repo_img;
-GRRLIB_texImg *apps_start_cat_img;
-GRRLIB_texImg *apps_start_sort_img;
 GRRLIB_texImg *next_img;
 GRRLIB_texImg *prev_img;
 
@@ -123,11 +113,6 @@ void DRAWABLES_load() {
 	button_no_highlight_img = GRRLIB_LoadTexture(button_no_highlight_png);
 	button_yes_img = GRRLIB_LoadTexture(button_yes_png);
 	button_yes_highlight_img = GRRLIB_LoadTexture(button_yes_highlight_png);
-	updated_close_img = GRRLIB_LoadTexture(updated_close_png);
-	updated_close_highlight_img = GRRLIB_LoadTexture(updated_close_highlight_png);
-	apps_repo_img = GRRLIB_LoadTexture(apps_repo_png);
-	apps_start_cat_img = GRRLIB_LoadTexture(apps_start_cat_png);
-	apps_start_sort_img = GRRLIB_LoadTexture(apps_start_sort_png);
 	next_img = GRRLIB_LoadTexture(next_png);
 	prev_img = GRRLIB_LoadTexture(prev_png);
 }

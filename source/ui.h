@@ -11,6 +11,7 @@
 #define SCREEN_HEIGHT xfb_height
 
 #define UI_PADDING 12
+#define UI_PADDING_2 24
 #define UI_CORNER_RADIUS 4
 
 #define UI_BLOCK_BTN_W (2 * UI_PADDING + 224)
@@ -49,6 +50,12 @@
 #define UI_LINE_8_Y (UI_LINE_7_Y + FONTSIZE_SMALL + UI_PADDING)
 #define UI_LINE_9_Y (UI_LINE_8_Y + FONTSIZE_SMALL + UI_PADDING)
 
+#define UI_DIALOG_LEFT 180
+#define UI_DIALOG_RIGHT (SCREEN_WIDTH - UI_DIALOG_LEFT)
+#define UI_DIALOG_LIST_W (UI_DIALOG_RIGHT - UI_DIALOG_LEFT)
+#define UI_DIALOG_LIST_Y (UI_PAGE_Y + 3 * UI_PADDING_2 + FONTSIZE_NORMAL)
+#define UI_DIALOG_TICK_X (UI_DIALOG_RIGHT - 20)
+
 #define UI_BOTTOM_TEXT_Y (UI_PAGE_Y + UI_PAGE_H + 8)
 
 void UI_bootScreen(const char *string);
@@ -64,6 +71,9 @@ bool UI_isOnImg(ir_t ir, const f32 x, const f32 y, const GRRLIB_texImg *img);
 // Easy buttons
 bool UI_button(ir_t ir, const f32 x, const f32 y, const char * string);
 bool UI_blockButton(ir_t ir, const f32 x, const f32 y, const char * string);
+
+// Dialogs
+void UI_dialog(ir_t ir, const char *title, bool *closer);
 
 // Category bar
 int UI_CAT_catTextOffset(const int index, const char *string);

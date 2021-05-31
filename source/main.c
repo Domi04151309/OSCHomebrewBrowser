@@ -87,8 +87,12 @@ void WiimotePowerPressed(s32 chan) {
 	if (chan == 0) HWButton = SYS_POWEROFF_STANDBY;
 }
 
+bool isInDialog() {
+	return select_repo || select_category || select_sort;
+}
+
 bool close_windows() {
-	bool state = select_repo || select_category || select_sort;
+	bool state = isInDialog();
 	select_repo = false;
 	select_category = false;
 	select_sort = false;
@@ -249,9 +253,6 @@ int main(int argc, char **argv) {
 
 	int ypos = 142;
 	int rumble_count = 0;
-	int start_updated = -1;
-	int finish_updated = 0;
-	int ypos_updated = 184;
 
 	// Main Thread
 	ACTIVITIES_open(ACTIVITY_MAIN);
@@ -302,9 +303,6 @@ int main(int argc, char **argv) {
 			updateList();
 			updated_cat = false;
 		}
-
-		// Update ypos from ypos updated
-		if (select_repo) ypos = ypos_updated;
 
 		if (ACTIVITIES_current() == ACTIVITY_MAIN) {
 			// Update list
@@ -464,20 +462,14 @@ int main(int argc, char **argv) {
 
 			// Dpad up / down
 			if (!setting_wiiside) {
-				if (held & WPAD_BUTTON_DOWN && ((strlen(total_list[current_items[finish+1].original_pos].name) > 1) || (select_repo && finish_updated+1 < repo_count))) ypos-= 4;
-				else if (held & WPAD_BUTTON_UP && ((!select_repo && ypos <= 140) || (select_repo && ypos <= 180))) ypos+= 4;
+				if (held & WPAD_BUTTON_DOWN && strlen(total_list[current_items[finish+1].original_pos].name) > 1) ypos-= 4;
+				else if (held & WPAD_BUTTON_UP && ypos <= 140) ypos+= 4;
 			}
 
 			// Wiimote sideways
 			if (held & WPAD_BUTTON_1) {
-				if (held & WPAD_BUTTON_LEFT && ((strlen(total_list[current_items[finish+1].original_pos].name) > 1) || (select_repo && finish_updated+1 < repo_count))) ypos-= 5;
-				else if (held & WPAD_BUTTON_RIGHT && ((!select_repo && ypos <= 140) || (select_repo && ypos <= 180))) ypos+= 5;
-			}
-
-			// Update ypos updated from ypos
-			if (select_repo) {
-				ypos_updated = ypos;
-				ypos = 142;
+				if (held & WPAD_BUTTON_LEFT && strlen(total_list[current_items[finish+1].original_pos].name) > 1) ypos-= 5;
+				else if (held & WPAD_BUTTON_RIGHT && ypos <= 140) ypos+= 5;
 			}
 
 			// Highlighting and display tick, question mark or plus
@@ -641,35 +633,37 @@ int main(int argc, char **argv) {
 		if (ACTIVITIES_current() == ACTIVITY_MAIN) {
 			UI_CAT_highlight(category_selection, BTN_COLOR_SELECTED);
 		}
-		if (UI_CAT_isOnCategory(ir, 0)) {
-			doRumble = true;
-			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(demos_list) >= 1) {
-				category_selection = 0;
-				updated_cat = true;
-			}
-		} else if (UI_CAT_isOnCategory(ir, 1)) {
-			doRumble = true;
-			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(emulators_list) >= 1) {
-				category_selection = 1;
-				updated_cat = true;
-			}
-		} else if (UI_CAT_isOnCategory(ir, 2)) {
-			doRumble = true;
-			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(games_list) >= 1) {
-				category_selection = 2;
-				updated_cat = true;
-			}
-		} else if (UI_CAT_isOnCategory(ir, 3)) {
-			doRumble = true;
-			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(media_list) >= 1) {
-				category_selection = 3;
-				updated_cat = true;
-			}
-		} else if (UI_CAT_isOnCategory(ir, 4)) {
-			doRumble = true;
-			if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(utilities_list) >= 1) {
-				category_selection = 4;
-				updated_cat = true;
+		if (!isInDialog()) {
+			if (UI_CAT_isOnCategory(ir, 0)) {
+				doRumble = true;
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(demos_list) >= 1) {
+					category_selection = 0;
+					updated_cat = true;
+				}
+			} else if (UI_CAT_isOnCategory(ir, 1)) {
+				doRumble = true;
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(emulators_list) >= 1) {
+					category_selection = 1;
+					updated_cat = true;
+				}
+			} else if (UI_CAT_isOnCategory(ir, 2)) {
+				doRumble = true;
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(games_list) >= 1) {
+					category_selection = 2;
+					updated_cat = true;
+				}
+			} else if (UI_CAT_isOnCategory(ir, 3)) {
+				doRumble = true;
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(media_list) >= 1) {
+					category_selection = 3;
+					updated_cat = true;
+				}
+			} else if (UI_CAT_isOnCategory(ir, 4)) {
+				doRumble = true;
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(utilities_list) >= 1) {
+					category_selection = 4;
+					updated_cat = true;
+				}
 			}
 		}
 
@@ -1289,159 +1283,6 @@ int main(int argc, char **argv) {
 			update_xml = 0;
 			copy_xml_name();
 		}
-
-
-//TODO: Move to settings
-		// Select Repo
-		if (select_repo) {
-			GRRLIB_DrawImg(123, 148, apps_repo_img, 0, 1, 1, 0xFFFFFFFF);
-
-			start_updated = -1;
-			for (int x = 0; x < repo_count; x++) {
-				if (ypos_updated + (25 * x) >= 175 && ypos_updated + (25 * x) + 30 < 425) {
-					if (start_updated == -1) {
-						start_updated = x;
-					}
-					if (start_updated >= 0) {
-
-						if (UI_isOnSquare(ir, 150, ypos_updated + (25 * x) - 1, 328, 24)) {
-							doRumble = true;
-							UI_highlight(150, ypos_updated + (25 * x) - 1, 328, 24);
-							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-								setting_repo = x;
-							}
-						}
-
-						GRRLIB_DrawText(150, (x * 25) + ypos_updated, repo_list[x].name, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
-
-						if (setting_repo == x) {
-							GRRLIB_DrawImg(150 + strlen(repo_list[x].name) * 10, ypos_updated + (25 * x), app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
-						}
-
-					}
-					finish_updated = x;
-				}
-			}
-
-			GRRLIB_DrawImg(426, 156, updated_close_img, 0, 1, 1, 0xFFFFFFFF);
-
-			if (ir.x > 412 && ir.x < 460 && ir.y > 155 && ir.y < 173) {
-				doRumble = true;
-				GRRLIB_DrawImg(426, 156, updated_close_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
-					select_repo = false;
-					wait_a_press = 10;
-				}
-			}
-		}
-
-		// Select category
-		if (select_category) {
-			GRRLIB_DrawImg(123, 148, apps_start_cat_img, 0, 1, 1, 0xFFFFFFFF);
-
-			GRRLIB_DrawText(180, 195, STR_DEMOS, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-			GRRLIB_DrawText(180, 225, STR_EMULATORS, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-			GRRLIB_DrawText(180, 255, STR_GAMES, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-			GRRLIB_DrawText(180, 285, STR_MEDIA, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-			GRRLIB_DrawText(180, 315, STR_UTILITIES, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-
-			if (UI_isOnSquare(ir, 165, 197, 224, 24)) {
-				doRumble = true;
-				UI_highlight(165, 197, 224, 24);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-					setting_category = 0;
-				}
-			}
-
-			if (UI_isOnSquare(ir, 165, 227, 224, 24)) {
-				doRumble = true;
-				UI_highlight(165, 227, 224, 24);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-					setting_category = 1;
-				}
-			}
-
-			if (UI_isOnSquare(ir, 165, 257, 224, 24)) {
-				doRumble = true;
-				UI_highlight(165, 257, 224, 24);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-					setting_category = 2;
-				}
-			}
-
-			if (UI_isOnSquare(ir, 165, 287, 224, 24)) {
-				doRumble = true;
-				UI_highlight(165, 287, 224, 24);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-					setting_category = 3;
-				}
-			}
-
-			if (UI_isOnSquare(ir, 165, 317, 224, 24)) {
-				doRumble = true;
-				UI_highlight(165, 317, 224, 24);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-					setting_category = 4;
-				}
-			}
-
-			if (setting_category == 0) GRRLIB_DrawImg(380, 198, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
-			else if (setting_category == 1) GRRLIB_DrawImg(380, 228, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
-			else if (setting_category == 2) GRRLIB_DrawImg(380, 258, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
-			else if (setting_category == 3) GRRLIB_DrawImg(380, 288, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
-			else if (setting_category == 4) GRRLIB_DrawImg(380, 318, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
-
-			GRRLIB_DrawImg(386, 156, updated_close_img, 0, 1, 1, 0xFFFFFFFF);
-
-			if (ir.x > 372 && ir.x < 420 && ir.y > 155 && ir.y < 173) {
-				doRumble = true;
-				GRRLIB_DrawImg(386, 156, updated_close_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
-					select_category = false;
-					wait_a_press = 10;
-				}
-			}
-		}
-
-		// Select sort
-		if (select_sort) {
-			GRRLIB_DrawImg(123, 148, apps_start_sort_img, 0, 1, 1, 0xFFFFFFFF);
-
-			GRRLIB_DrawText(180, 195, STR_SORT_BY_NAME, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-			GRRLIB_DrawText(180, 225, STR_SORT_BY_DATE, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-
-			if (UI_isOnSquare(ir, 165, 197, 224, 24)) {
-				doRumble = true;
-				UI_highlight(165, 197, 224, 24);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-					setting_sort = 0;
-				}
-			}
-
-			if (UI_isOnSquare(ir, 165, 227, 224, 24)) {
-				doRumble = true;
-				UI_highlight(165, 227, 224, 24);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-					setting_sort = 1;
-				}
-			}
-
-			if (setting_sort == 0) GRRLIB_DrawImg(380, 198, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
-			else if (setting_sort == 1) GRRLIB_DrawImg(380, 228, app_tick_small_img, 0, 1, 1, 0xFFFFFFFF);
-
-			GRRLIB_DrawImg(386, 156, updated_close_img, 0, 1, 1, 0xFFFFFFFF);
-
-			if (ir.x > 372 && ir.x < 420 && ir.y > 155 && ir.y < 173) {
-				doRumble = true;
-				GRRLIB_DrawImg(386, 156, updated_close_highlight_img, 0, 1, 1, 0xFFFFFFFF);
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0) {
-					select_sort = false;
-					wait_a_press = 10;
-				}
-			}
-		}
-// END SETTINGS
-
 
 		// SD card usage
 		if (setting_sd_card && sd_card_update) {
