@@ -218,7 +218,7 @@ extern struct homebrew_struct total_list[HOMEBREW_STRUCT_SIZE];
 extern struct homebrew_struct temp_list2[HOMEBREW_STRUCT_SIZE];
 
 // Temp list to use to download/extract/delete
-extern struct homebrew_struct job_store_list[2];
+extern struct homebrew_struct job_store;
 
 // Folders exist list
 extern struct sort_homebrew_struct folders_list[HOMEBREW_STRUCT_SIZE];
