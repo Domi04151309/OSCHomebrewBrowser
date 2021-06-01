@@ -84,7 +84,7 @@ struct homebrew_struct temp_list2[HOMEBREW_STRUCT_SIZE];
 struct homebrew_struct job_store;
 
 // Folders exist list
-struct sort_homebrew_struct folders_list[HOMEBREW_STRUCT_SIZE];
+static char folder_list[HOMEBREW_STRUCT_SIZE][100];
 
 static volatile u8 reset = 0;
 static lwp_t reset_thread;
@@ -1139,14 +1139,6 @@ int array_length(struct homebrew_struct array[]) {
 int int_array_length(int array[]) {
 	int x = 0;
 	while (array[x] != HOMEBREW_STRUCT_END) {
-		x++;
-	}
-	return x;
-}
-
-int sort_array_length(struct sort_homebrew_struct array[]) {
-	int x = 0;
-	while (strlen(array[x].name) >= 2) {
 		x++;
 	}
 	return x;
@@ -2499,7 +2491,7 @@ s32 request_list() {
 						if (97<=foldername[z] && foldername[z]<=122)//a-z
 							foldername[z]-=32;
 
-					strcpy(folders_list[app_directories].name, foldername);
+					strcpy(folder_list[app_directories], foldername);
 					app_directories++;
 				}
 			}
@@ -2710,7 +2702,7 @@ s32 request_list() {
 									if (97<=uppername[z] && uppername[z]<=122)//a-z
 										uppername[z]-=32;
 
-							if (strcmp(folders_list[g].name, uppername) == 0) {
+							if (strcmp(folder_list[g], uppername) == 0) {
 								dir_exists = true;
 								break;
 							}

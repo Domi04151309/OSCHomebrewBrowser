@@ -187,12 +187,6 @@ struct homebrew_struct {
 	int original_pos;
 };
 
-struct sort_homebrew_struct {
-	char name[100];
-	char app_name[100];
-	int app_time;
-};
-
 struct repo_struct {
 	char name[200];
 	char domain[100];
@@ -219,9 +213,6 @@ extern struct homebrew_struct temp_list2[HOMEBREW_STRUCT_SIZE];
 
 // Temp list to use to download/extract/delete
 extern struct homebrew_struct job_store;
-
-// Folders exist list
-extern struct sort_homebrew_struct folders_list[HOMEBREW_STRUCT_SIZE];
 
 int array_length(struct homebrew_struct array[]);
 int int_array_length(int array[]);
