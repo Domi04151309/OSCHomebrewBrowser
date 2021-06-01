@@ -86,9 +86,6 @@ struct homebrew_struct job_store_list[2];
 // Folders exist list
 struct sort_homebrew_struct folders_list[HOMEBREW_STRUCT_SIZE];
 
-// Apps to not manage
-struct sort_homebrew_struct no_manage_list[HOMEBREW_STRUCT_SIZE];
-
 static volatile u8 reset = 0;
 static lwp_t reset_thread;
 static lwp_t icons_thread;
@@ -1153,56 +1150,6 @@ int sort_array_length(struct sort_homebrew_struct array[]) {
 		x++;
 	}
 	return x;
-}
-
-// Save no manage list
-void save_no_manage_list() {
-
-	// Read all homebrew array for no managed
-	char no_manage_file[50];
-	strcpy(no_manage_file, rootdir);
-	strcat(no_manage_file, "/apps/homebrew_browser_lite/unmanaged_apps.txt");
-
-	FILE *fu = fopen(no_manage_file, "wb");
-
-	if (fu != NULL) {
-		int x = 0;
-		for (x = 0; x < total_list_count; x++) {
-			if (total_list[x].local_app_size > 0 && total_list[x].no_manage) {
-				char testname[100];
-				strcpy(testname, total_list[x].name);
-				int leng=strlen(testname);
-				int z;
-				for(z=0; z<leng; z++)
-					if (97<=testname[z] && testname[z]<=122)//a-z
-						testname[z]-=32;
-				fputs (testname, fu);
-				fputs ("\r\n", fu);
-			}
-		}
-
-		fclose(fu);
-	}
-}
-
-// Load no manage list to array
-void load_no_manage_list() {
-
-	char current_line[100];
-	char no_manage_file[50];
-	strcpy(no_manage_file, rootdir);
-	strcat(no_manage_file, "/apps/homebrew_browser_lite/unmanaged_apps.txt");
-	FILE *fl = fopen(no_manage_file, "rb");
-
-	if (fl != NULL) {
-		while (fgets (current_line, 100, fl)) {
-			current_line[(strlen(current_line) - 2)] = '\0';
-			strcpy(no_manage_list[no_manage_count].name, current_line);
-			no_manage_count++;
-		}
-	}
-
-	fclose(fl);
 }
 
 // Add text to log

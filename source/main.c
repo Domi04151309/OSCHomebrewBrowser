@@ -314,7 +314,7 @@ int main(int argc, char **argv) {
 				ypos = 142;
 				icons_loaded = 0;
 
-				if (category_selection != 9) clear_list();
+				clear_list();
 
 				// Update category
 				if (category_selection == 0) {
@@ -690,7 +690,7 @@ int main(int argc, char **argv) {
 
 		// Updating
 		if (updating >= 0 && current_items[0].original_pos != HOMEBREW_STRUCT_END) {
-			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, RES_COLOR_RED);
+			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, RES_COLOR_WHITE);
 			if (free_update) {
 				sprintf (str_title_status, "Processing %i/%i applications", new_updating + 1, array_length(current_items));
 				strcpy(str_res_title, total_list[current_items[new_updating].original_pos].app_name);
@@ -709,7 +709,7 @@ int main(int argc, char **argv) {
 
 					GRRLIB_Rectangle(139, 270, 400, 32, TOOLTIP_COLOR, true);
 					GRRLIB_Rectangle(139, 270, download_progress_count * 4, 32, RES_COLOR_BLUE, true);
-					GRRLIB_DrawText(208, 276, STR_DOWNLOADING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
+					GRRLIB_DrawText(208, 276, STR_DOWNLOADING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 					if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) {
 						cancel_download = true;
@@ -731,7 +731,7 @@ int main(int argc, char **argv) {
 
 					GRRLIB_Rectangle(139, 270, 400, 32, TOOLTIP_COLOR, true);
 					GRRLIB_Rectangle(139, 270, extract_progress_count * 4, 32, RES_COLOR_BLUE, true);
-					GRRLIB_DrawText(270, 276, STR_EXTRACTING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
+					GRRLIB_DrawText(270, 276, STR_EXTRACTING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 					if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) {
 						cancel_extract = true;
@@ -804,7 +804,7 @@ int main(int argc, char **argv) {
 
 				GRRLIB_Rectangle(139, 370, 400, 32, TOOLTIP_COLOR, true);
 				GRRLIB_Rectangle(139, 370, overall_progress * 4, 32, RES_COLOR_BLUE, true);
-				GRRLIB_DrawText(270, 376, STR_OVERALL_PROGRESS, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
+				GRRLIB_DrawText(270, 376, STR_OVERALL_PROGRESS, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 
 				if (new_updating != 10000 && (updating != new_updating || updating == 0) && !download_in_progress && !extract_in_progress && !delete_in_progress) {
@@ -872,9 +872,7 @@ int main(int argc, char **argv) {
 						j++;
 					}
 
-					category_selection = 9;
-					updated_cat = true;
-					refresh_list = -1;
+					updateList();
 				}
 			}
 
@@ -908,9 +906,8 @@ int main(int argc, char **argv) {
 			if ((pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) && !download_in_progress && !extract_in_progress && display_message_counter == 0 && wait_a_press == 0) {
 				updating = -1;
 				new_updating = 0;
-				updated_cat = true;
-				refresh_list = -1;
 				cancel_confirmed = false;
+				updateList();
 			}
 		}
 
@@ -1115,7 +1112,7 @@ int main(int argc, char **argv) {
 
 				GRRLIB_Rectangle(139, 390, 400, 32, TOOLTIP_COLOR, true);
 				GRRLIB_Rectangle(139, 390, download_progress_count * 4, 32, RES_COLOR_BLUE, true);
-				GRRLIB_DrawText(208, 396, STR_DOWNLOADING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
+				GRRLIB_DrawText(208, 396, STR_DOWNLOADING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 				if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) {
 					cancel_download = true;
@@ -1136,7 +1133,7 @@ int main(int argc, char **argv) {
 
 				GRRLIB_Rectangle(139, 390, 400, 32, TOOLTIP_COLOR, true);
 				GRRLIB_Rectangle(139, 390, extract_progress_count * 4, 32, RES_COLOR_BLUE, true);
-				GRRLIB_DrawText(270, 396, STR_EXTRACTING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY_DARK);
+				GRRLIB_DrawText(270, 396, STR_EXTRACTING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 				if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) {
 					cancel_extract = true;

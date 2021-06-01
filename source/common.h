@@ -99,8 +99,6 @@ extern bool cancel_confirmed;
 
 extern bool downloading_icons;
 
-void load_no_manage_list();
-void save_no_manage_list();
 void update_settings();
 void load_settings();
 void load_mount_settings();
@@ -224,9 +222,6 @@ extern struct homebrew_struct job_store_list[2];
 
 // Folders exist list
 extern struct sort_homebrew_struct folders_list[HOMEBREW_STRUCT_SIZE];
-
-// Apps to not manage
-extern struct sort_homebrew_struct no_manage_list[HOMEBREW_STRUCT_SIZE];
 
 int array_length(struct homebrew_struct array[]);
 int int_array_length(int array[]);
