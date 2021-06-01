@@ -14,9 +14,7 @@ With `DevKitPro` you can then build `GRRLIB` from source so that you can finally
 - `make -j` Builds the app
 
 ## Planned
-- Storing indexes in homebrew lists instead of duplicated data
-- No duplicated data lists
-- Dynamically drawn dialogs
-- Better sorting (quick sort)
+- Storing indexes in homebrew list instead of duplicated data
+- Dynamically drawing dialogs
 - Less repetitive code (more functions)
 - Migration to C++ (?)

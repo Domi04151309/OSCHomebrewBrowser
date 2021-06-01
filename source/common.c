@@ -68,19 +68,17 @@ struct repo_struct repo_list[200];
 // List to show
 struct homebrew_struct current_items[HOMEBREW_STRUCT_SIZE];
 
-struct homebrew_struct emulators_list[HOMEBREW_STRUCT_SIZE];
-struct homebrew_struct games_list[HOMEBREW_STRUCT_SIZE];
-struct homebrew_struct media_list[HOMEBREW_STRUCT_SIZE];
-struct homebrew_struct utilities_list[HOMEBREW_STRUCT_SIZE];
-struct homebrew_struct demos_list[HOMEBREW_STRUCT_SIZE];
+int emulators_list[HOMEBREW_STRUCT_SIZE];
+int games_list[HOMEBREW_STRUCT_SIZE];
+int media_list[HOMEBREW_STRUCT_SIZE];
+int utilities_list[HOMEBREW_STRUCT_SIZE];
+int demos_list[HOMEBREW_STRUCT_SIZE];
 
 // Total list
 struct homebrew_struct total_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list
-struct sort_homebrew_struct temp_list[HOMEBREW_STRUCT_SIZE];
 struct homebrew_struct temp_list2[HOMEBREW_STRUCT_SIZE];
-struct sort_homebrew_struct temp1_list[2];
 
 // Temp list to use to download/extract/delete
 struct homebrew_struct job_store_list[2];
@@ -319,41 +317,6 @@ static void *run_icons_thread(void *arg) {
 						current_items[y].content = total_list[x].content;
 					}
 				}
-
-				for (y = 0; y < array_length(emulators_list); y++) {
-					if (strcmp (total_list[x].name, emulators_list[y].name) == 0) {
-						emulators_list[y].file_found = total_list[x].file_found;
-						emulators_list[y].content = total_list[x].content;
-					}
-				}
-
-				for (y = 0; y < array_length(games_list); y++) {
-					if (strcmp (total_list[x].name, games_list[y].name) == 0) {
-						games_list[y].file_found = total_list[x].file_found;
-						games_list[y].content = total_list[x].content;
-					}
-				}
-
-				for (y = 0; y < array_length(media_list); y++) {
-					if (strcmp (total_list[x].name, media_list[y].name) == 0) {
-						media_list[y].file_found = total_list[x].file_found;
-						media_list[y].content = total_list[x].content;
-					}
-				}
-
-				for (y = 0; y < array_length(utilities_list); y++) {
-					if (strcmp (total_list[x].name, utilities_list[y].name) == 0) {
-						utilities_list[y].file_found = total_list[x].file_found;
-						utilities_list[y].content = total_list[x].content;
-					}
-				}
-
-				for (y = 0; y < array_length(demos_list); y++) {
-					if (strcmp (total_list[x].name, demos_list[y].name) == 0) {
-						demos_list[y].file_found = total_list[x].file_found;
-						demos_list[y].content = total_list[x].content;
-					}
-				}
 			}
 		}
 
@@ -398,56 +361,6 @@ static void *run_icons_thread(void *arg) {
 						if (strcmp (total_list[x].name, current_items[y].name) == 0) {
 							current_items[y].file_found = total_list[x].file_found;
 							current_items[y].content = total_list[x].content;
-						}
-					}
-					while (changing_cat) {
-						download_icon_sleeping = true;
-						sleep(3);
-					}
-					for (y = 0; y < array_length(emulators_list); y++) {
-						if (strcmp (total_list[x].name, emulators_list[y].name) == 0) {
-							emulators_list[y].file_found = total_list[x].file_found;
-							emulators_list[y].content = total_list[x].content;
-						}
-					}
-					while (changing_cat) {
-						download_icon_sleeping = true;
-						sleep(3);
-					}
-					for (y = 0; y < array_length(games_list); y++) {
-						if (strcmp (total_list[x].name, games_list[y].name) == 0) {
-							games_list[y].file_found = total_list[x].file_found;
-							games_list[y].content = total_list[x].content;
-						}
-					}
-					while (changing_cat) {
-						download_icon_sleeping = true;
-						sleep(3);
-					}
-					for (y = 0; y < array_length(media_list); y++) {
-						if (strcmp (total_list[x].name, media_list[y].name) == 0) {
-							media_list[y].file_found = total_list[x].file_found;
-							media_list[y].content = total_list[x].content;
-						}
-					}
-					while (changing_cat) {
-						download_icon_sleeping = true;
-						sleep(3);
-					}
-					for (y = 0; y < array_length(utilities_list); y++) {
-						if (strcmp (total_list[x].name, utilities_list[y].name) == 0) {
-							utilities_list[y].file_found = total_list[x].file_found;
-							utilities_list[y].content = total_list[x].content;
-						}
-					}
-					while (changing_cat) {
-						download_icon_sleeping = true;
-						sleep(3);
-					}
-					for (y = 0; y < array_length(demos_list); y++) {
-						if (strcmp (total_list[x].name, demos_list[y].name) == 0) {
-							demos_list[y].file_found = total_list[x].file_found;
-							demos_list[y].content = total_list[x].content;
 						}
 					}
 				}
@@ -1219,12 +1132,16 @@ void suspend_reset_thread() {
 
 // Return the array length by counting the characters in the name
 int array_length(struct homebrew_struct array[]) {
-	if (array[0].original_pos == -1) {
-		UI_bootScreenTwo("First item's index is -1", "return length 0; crash");
-		return 0;
-	}
 	int x = 0;
 	while (strlen(array[x].name) >= 2) {
+		x++;
+	}
+	return x;
+}
+
+int int_array_length(int array[]) {
+	int x = 0;
+	while (array[x] != HOMEBREW_STRUCT_END) {
 		x++;
 	}
 	return x;
@@ -1595,147 +1512,46 @@ void copy_xml_name() {
 	}
 }
 
+static int compareNamesTrue(const void *p1, const void *p2) {
+	const struct homebrew_struct *elem1 = p1;
+	const struct homebrew_struct *elem2 = p2;
+	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
+	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
+	else return strcasecmp(elem1->name, elem2->name);
+}
+
+static int compareNamesFalse(const void *p1, const void *p2) {
+	const struct homebrew_struct *elem1 = p1;
+	const struct homebrew_struct *elem2 = p2;
+	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
+	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
+	else return strcasecmp(elem2->name, elem1->name);
+}
+
 void sort_by_name (bool min_to_max) {
+	if (min_to_max) qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(struct homebrew_struct), compareNamesTrue);
+	else qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(struct homebrew_struct), compareNamesFalse);
+}
 
-	clear_temp_list();
+static int compareDatesTrue(const void *p1, const void *p2) {
+	const struct homebrew_struct *elem1 = p1;
+	const struct homebrew_struct *elem2 = p2;
+	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
+	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
+	else return (elem1->app_time - elem2->app_time);
+}
 
-	int i;
-	for (i = 0; i < array_length(current_items); i++) {
-		strcpy(temp_list[i].name, current_items[i].name);
-		strcpy(temp_list[i].app_name, current_items[i].app_name);
-
-		int leng=strlen(temp_list[i].app_name);
-		int z;
-		for(z=0; z<leng; z++)
-			if (97<=temp_list[i].app_name[z] && temp_list[i].app_name[z]<=122)//a-z
-				temp_list[i].app_name[z]-=32;
-	}
-
-
-	int now;
-	int x;
-	int final = 0;
-
-	while (final != (sort_array_length(temp_list) - 1)) {
-		final = 0;
-		for (x = 0; x < sort_array_length(temp_list) - 1; x++) {
-
-			now = strcmp(temp_list[x].app_name,temp_list[x+1].app_name);
-
-			if (min_to_max) {
-				if (now < 0) {
-					temp1_list[0] = temp_list[x+1];
-					temp_list[x+1] = temp_list[x];
-					temp_list[x] = temp1_list[0];
-				}
-				else {
-					final++;
-				}
-			}
-			else {
-				if (now > 0) {
-					temp1_list[0] = temp_list[x+1];
-					temp_list[x+1] = temp_list[x];
-					temp_list[x] = temp1_list[0];
-				}
-				else {
-					final++;
-				}
-			}
-		}
-	}
-
-	for (x = 0; x < array_length(current_items); x++) {
-		int y;
-		for (y = 0; y < array_length(current_items); y++) {
-			if (strcmp (current_items[x].name, temp_list[y].name) == 0) {
-				temp_list2[y] = current_items[x];
-			}
-		}
-	}
-
-	clear_list();
-
-	for (i = 0; i < 4; i++) {
-		current_items[i].original_pos = -1;
-	}
-
-	x = 0;
-	for (i = 0; i < array_length(temp_list2); i++) {
-		if (temp_list2[i].original_pos != -1) {
-			current_items[x] = temp_list2[i];
-			x++;
-		}
-	}
+static int compareDatesFalse(const void *p1, const void *p2) {
+	const struct homebrew_struct *elem1 = p1;
+	const struct homebrew_struct *elem2 = p2;
+	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
+	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
+	else return (elem2->app_time - elem1->app_time);
 }
 
 void sort_by_date (bool min_to_max) {
-
-	clear_temp_list();
-
-	int i;
-	for (i = 0; i < array_length(current_items); i++) {
-		strcpy(temp_list[i].name, current_items[i].name);
-		temp_list[i].app_time = current_items[i].app_time;
-	}
-
-	int now;
-	int next;
-	int x;
-	int final = 0;
-
-	while (final != (sort_array_length(temp_list) - 1)) {
-		final = 0;
-		for (x = 0; x < sort_array_length(temp_list) - 1; x++) {
-
-			now = temp_list[x].app_time;
-			next = temp_list[x+1].app_time;
-
-			if (min_to_max) {
-				if (next < now) {
-					temp1_list[0] = temp_list[x+1];
-					temp_list[x+1] = temp_list[x];
-					temp_list[x] = temp1_list[0];
-				}
-				else {
-					final++;
-				}
-			}
-			else {
-				if (now < next) {
-					temp1_list[0] = temp_list[x+1];
-					temp_list[x+1] = temp_list[x];
-					temp_list[x] = temp1_list[0];
-				}
-				else {
-					final++;
-				}
-			}
-		}
-	}
-
-	for (x = 0; x < array_length(current_items); x++) {
-		int y;
-		for (y = 0; y < array_length(current_items); y++) {
-			if (strcmp (current_items[x].name, temp_list[y].name) == 0) {
-				temp_list2[y] = current_items[x];
-			}
-		}
-	}
-
-	clear_list();
-
-	for (i = 0; i < 4; i++) {
-		current_items[i].original_pos = -1;
-	}
-
-	x = 0;
-	for (i = 0; i < array_length(temp_list2); i++) {
-		if (temp_list2[i].original_pos != -1) {
-			current_items[x] = temp_list2[i];
-			x++;
-		}
-	}
+	if (min_to_max) qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(struct homebrew_struct), compareDatesTrue);
+	else qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(struct homebrew_struct), compareDatesFalse);
 }
 
 void hide_apps_installed() {
@@ -1758,7 +1574,7 @@ void hide_apps_installed() {
 		}
 	}
 	if (j == 0) {
-		current_items[i].original_pos = -1;
+		current_items[i].original_pos = HOMEBREW_STRUCT_END;
 	}
 }
 
@@ -2165,7 +1981,7 @@ void clear_list() {
 		current_items[c].file_found = 0;
 		current_items[c].content = NULL;
 
-		current_items[c].original_pos = -1;
+		current_items[c].original_pos = HOMEBREW_STRUCT_END;
 	}
 }
 
@@ -2198,7 +2014,7 @@ void clear_temp_list() {
 		temp_list2[c].file_found = 0;
 		temp_list2[c].content = NULL;
 
-		temp_list[c].name[0] = 0;
+		temp_list2[c].original_pos = HOMEBREW_STRUCT_END;
 	}
 }
 
@@ -2230,6 +2046,8 @@ void clear_store_list() {
 
 		job_store_list[c].file_found = 0;
 		job_store_list[c].content = NULL;
+
+		job_store_list[c].original_pos = HOMEBREW_STRUCT_END;
 	}
 }
 
@@ -2336,7 +2154,7 @@ void download_queue_size() {
 
 	int x;
 	for (x = 0; x < array_length(current_items); x++) {
-		if (strlen(current_items[x].name) >= 3 && current_items[x].original_pos != -1 && current_items[x].in_download_queue != 2) {
+		if (strlen(current_items[x].name) >= 3 && current_items[x].original_pos != HOMEBREW_STRUCT_END && current_items[x].in_download_queue != 2) {
 			updating_total_size += current_items[x].total_app_size;
 			printf("%i\n",updating_total_size);
 		}
@@ -2745,6 +2563,12 @@ s32 request_list() {
 
 		UI_bootScreen("Parsing Homebrew list");
 
+		for (int i = 0; i < HOMEBREW_STRUCT_SIZE; i++) demos_list[i] = HOMEBREW_STRUCT_END;
+		for (int i = 0; i < HOMEBREW_STRUCT_SIZE; i++) emulators_list[i] = HOMEBREW_STRUCT_END;
+		for (int i = 0; i < HOMEBREW_STRUCT_SIZE; i++) games_list[i] = HOMEBREW_STRUCT_END;
+		for (int i = 0; i < HOMEBREW_STRUCT_SIZE; i++) media_list[i] = HOMEBREW_STRUCT_END;
+		for (int i = 0; i < HOMEBREW_STRUCT_SIZE; i++) utilities_list[i] = HOMEBREW_STRUCT_END;
+
 		while (fgets (cmd_line, 2000, f)) {
 
 			if (strstr(cmd_line, "Homebrew") && line_number == -1) {
@@ -2779,30 +2603,7 @@ s32 request_list() {
 			else {
 
 				if (!add_to_list) {
-					int c;
-					for (c = 0; c < 400; c++) {
-						current_items[c].name[0] = 0;
-						current_items[c].app_size = 0;
-						current_items[c].app_time = 0;
-						current_items[c].img_size = 0;
-						current_items[c].local_app_size = 0;
-						current_items[c].total_app_size = 0;
-						current_items[c].in_download_queue = 0;
-						current_items[c].user_dirname[0] = 0;
-						current_items[c].folders[0] = 0;
-						current_items[c].boot_ext[0] = 0;
-						current_items[c].boot_bak = 0;
-						current_items[c].no_manage = 0;
-
-						current_items[c].about_loaded = 0;
-						current_items[c].app_name[0] = 0;
-						current_items[c].app_short_description[0] = 0;
-						current_items[c].app_description[0] = 0;
-						current_items[c].app_author[0] = 0;
-						current_items[c].app_version[0] = 0;
-						current_items[c].app_total_size = 0;
-						current_items[c].app_controllers[0] = 0;
-					}
+					clear_list();
 					add_to_list = true;
 				}
 
@@ -2810,7 +2611,7 @@ s32 request_list() {
 					int i;
 					for (i = 0; i < array_count; i++) {
 						current_items[i].original_pos = total_list_count;
-						games_list[i] = current_items[i];
+						games_list[i] = total_list_count;
 						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
@@ -2821,7 +2622,7 @@ s32 request_list() {
 					int i;
 					for (i = 0; i < array_count; i++) {
 						current_items[i].original_pos = total_list_count;
-						emulators_list[i] = current_items[i];
+						emulators_list[i] = total_list_count;
 						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
@@ -2832,7 +2633,7 @@ s32 request_list() {
 					int i;
 					for (i = 0; i < array_count; i++) {
 						current_items[i].original_pos = total_list_count;
-						media_list[i] = current_items[i];
+						media_list[i] = total_list_count;
 						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
@@ -2843,7 +2644,7 @@ s32 request_list() {
 					int i;
 					for (i = 0; i < array_count; i++) {
 						current_items[i].original_pos = total_list_count;
-						utilities_list[i] = current_items[i];
+						utilities_list[i] = total_list_count;
 						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}
@@ -2854,7 +2655,7 @@ s32 request_list() {
 					int i;
 					for (i = 0; i < array_count; i++) {
 						current_items[i].original_pos = total_list_count;
-						demos_list[i] = current_items[i];
+						demos_list[i] = total_list_count;
 						total_list[total_list_count] = current_items[i];
 						total_list_count++;
 					}

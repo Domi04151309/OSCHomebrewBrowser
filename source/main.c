@@ -293,8 +293,6 @@ int main(int argc, char **argv) {
 
 		// Changed category
 		if (updated_cat) {
-			ypos = 142;
-			icons_loaded = 0;
 			WPAD_Rumble(WPAD_CHAN_0, 0);
 
 			close_windows();
@@ -313,31 +311,31 @@ int main(int argc, char **argv) {
 					while (!download_icon_sleeping) usleep(10000);
 				}
 
-				if (category_selection != 9) {
-					// Clear homebrew list
-					clear_list();
-				}
+				ypos = 142;
+				icons_loaded = 0;
+
+				if (category_selection != 9) clear_list();
 
 				// Update category
 				if (category_selection == 0) {
-					for (int i = 0; i < array_length(demos_list); i++) {
-						current_items[i] = demos_list[i];
+					for (int i = 0; i < int_array_length(demos_list); i++) {
+						current_items[i] = total_list[demos_list[i]];
 					}
 				} else if (category_selection == 1) {
-					for (int i = 0; i < array_length(emulators_list); i++) {
-						current_items[i] = emulators_list[i];
+					for (int i = 0; i < int_array_length(emulators_list); i++) {
+						current_items[i] = total_list[emulators_list[i]];
 					}
 				} else if (category_selection == 2) {
-					for (int i = 0; i < array_length(games_list); i++) {
-						current_items[i] = games_list[i];
+					for (int i = 0; i < int_array_length(games_list); i++) {
+						current_items[i] = total_list[games_list[i]];
 					}
 				} else if (category_selection == 3) {
-					for (int i = 0; i < array_length(media_list); i++) {
-						current_items[i] = media_list[i];
+					for (int i = 0; i < int_array_length(media_list); i++) {
+						current_items[i] = total_list[media_list[i]];
 					}
 				} else if (category_selection == 4) {
-					for (int i = 0; i < array_length(utilities_list); i++) {
-						current_items[i] = utilities_list[i];
+					for (int i = 0; i < int_array_length(utilities_list); i++) {
+						current_items[i] = total_list[utilities_list[i]];
 					}
 				} else if (category_selection == 5) {
 					int j = 0;
@@ -433,24 +431,24 @@ int main(int argc, char **argv) {
 				}
 
 				// Display images
-				if (total_list[current_items[start].original_pos].file_found == 1 && current_items[start].original_pos != -1) icon1_img=GRRLIB_LoadTexture(total_list[current_items[start].original_pos].content);
-				else if (strlen(total_list[current_items[start].original_pos].name) >= 3 && current_items[start].original_pos != -1) icon1_img=GRRLIB_LoadTexture(no_image_png);
+				if (total_list[current_items[start].original_pos].file_found == 1 && current_items[start].original_pos != HOMEBREW_STRUCT_END) icon1_img=GRRLIB_LoadTexture(total_list[current_items[start].original_pos].content);
+				else if (strlen(total_list[current_items[start].original_pos].name) >= 3 && current_items[start].original_pos != HOMEBREW_STRUCT_END) icon1_img=GRRLIB_LoadTexture(no_image_png);
 				else icon1_img=GRRLIB_LoadTexture(blank_png);
 
-				if (total_list[current_items[(start+1)].original_pos].file_found == 1 && current_items[(start+1)].original_pos != -1) icon2_img=GRRLIB_LoadTexture(total_list[current_items[(start+1)].original_pos].content);
-				else if (strlen(total_list[current_items[(start+1)].original_pos].name) >= 3 && current_items[(start+1)].original_pos != -1) icon2_img=GRRLIB_LoadTexture(no_image_png);
+				if (total_list[current_items[(start+1)].original_pos].file_found == 1 && current_items[(start+1)].original_pos != HOMEBREW_STRUCT_END) icon2_img=GRRLIB_LoadTexture(total_list[current_items[(start+1)].original_pos].content);
+				else if (strlen(total_list[current_items[(start+1)].original_pos].name) >= 3 && current_items[(start+1)].original_pos != HOMEBREW_STRUCT_END) icon2_img=GRRLIB_LoadTexture(no_image_png);
 				else icon2_img=GRRLIB_LoadTexture(blank_png);
 
-				if (total_list[current_items[(start+2)].original_pos].file_found == 1 && current_items[(start+2)].original_pos != -1) icon3_img=GRRLIB_LoadTexture(total_list[current_items[(start+2)].original_pos].content);
-				else if (strlen(total_list[current_items[(start+2)].original_pos].name) >= 3 && current_items[(start+2)].original_pos != -1) icon3_img=GRRLIB_LoadTexture(no_image_png);
+				if (total_list[current_items[(start+2)].original_pos].file_found == 1 && current_items[(start+2)].original_pos != HOMEBREW_STRUCT_END) icon3_img=GRRLIB_LoadTexture(total_list[current_items[(start+2)].original_pos].content);
+				else if (strlen(total_list[current_items[(start+2)].original_pos].name) >= 3 && current_items[(start+2)].original_pos != HOMEBREW_STRUCT_END) icon3_img=GRRLIB_LoadTexture(no_image_png);
 				else icon3_img=GRRLIB_LoadTexture(blank_png);
 
-				if (total_list[current_items[(start+3)].original_pos].file_found == 1 && current_items[(start+3)].original_pos != -1) icon4_img=GRRLIB_LoadTexture(total_list[current_items[(start+3)].original_pos].content);
-				else if (strlen(total_list[current_items[(start+3)].original_pos].name) >= 3 && current_items[(start+3)].original_pos != -1) icon4_img=GRRLIB_LoadTexture(no_image_png);
+				if (total_list[current_items[(start+3)].original_pos].file_found == 1 && current_items[(start+3)].original_pos != HOMEBREW_STRUCT_END) icon4_img=GRRLIB_LoadTexture(total_list[current_items[(start+3)].original_pos].content);
+				else if (strlen(total_list[current_items[(start+3)].original_pos].name) >= 3 && current_items[(start+3)].original_pos != HOMEBREW_STRUCT_END) icon4_img=GRRLIB_LoadTexture(no_image_png);
 				else icon4_img=GRRLIB_LoadTexture(blank_png);
 
-				if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && total_list[current_items[(start+4)].original_pos].file_found == 1 && current_items[(start+4)].original_pos != -1) icon5_img=GRRLIB_LoadTexture(total_list[current_items[(start+4)].original_pos].content);
-				else if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && current_items[(start+4)].original_pos != -1) icon5_img=GRRLIB_LoadTexture(no_image_png);
+				if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && total_list[current_items[(start+4)].original_pos].file_found == 1 && current_items[(start+4)].original_pos != HOMEBREW_STRUCT_END) icon5_img=GRRLIB_LoadTexture(total_list[current_items[(start+4)].original_pos].content);
+				else if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && current_items[(start+4)].original_pos != HOMEBREW_STRUCT_END) icon5_img=GRRLIB_LoadTexture(no_image_png);
 				else icon5_img=GRRLIB_LoadTexture(blank_png);
 
 				refresh_list = start;
@@ -462,96 +460,97 @@ int main(int argc, char **argv) {
 
 			// Dpad up / down
 			if (!setting_wiiside) {
-				if (held & WPAD_BUTTON_DOWN && strlen(total_list[current_items[finish+1].original_pos].name) > 1) ypos-= 4;
+				if (held & WPAD_BUTTON_DOWN && current_items[finish+1].original_pos != HOMEBREW_STRUCT_END) ypos-= 4;
 				else if (held & WPAD_BUTTON_UP && ypos <= 140) ypos+= 4;
 			}
 
 			// Wiimote sideways
 			if (held & WPAD_BUTTON_1) {
-				if (held & WPAD_BUTTON_LEFT && strlen(total_list[current_items[finish+1].original_pos].name) > 1) ypos-= 5;
+				if (held & WPAD_BUTTON_LEFT && current_items[finish+1].original_pos != HOMEBREW_STRUCT_END) ypos-= 5;
 				else if (held & WPAD_BUTTON_RIGHT && ypos <= 140) ypos+= 5;
 			}
 
 			// Highlighting and display tick, question mark or plus
 			GRRLIB_ClipDrawing(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_SMALL, UI_PAGE_H);
-			for (uint8_t b = 0; b < 5; b++) {
-				if (strlen(total_list[current_items[(start + b)].original_pos].name) >= 2 && current_items[(start + b)].original_pos != -1) {
-					if (UI_isOnSquare(ir, UI_PAGE_X, ypos + (76 * (start + b)), 530, 64)) {
-						doRumble = true;
-						UI_highlight(UI_PAGE_X, ypos + (76 * (start + b)), UI_PAGE_W_SMALL, 64);
+			if (current_items[0].original_pos != HOMEBREW_STRUCT_END) {
+				for (uint8_t b = 0; b < 5; b++) {
+					if (strlen(total_list[current_items[(start + b)].original_pos].name) >= 2 && current_items[(start + b)].original_pos != HOMEBREW_STRUCT_END) {
+						if (UI_isOnSquare(ir, UI_PAGE_X, ypos + (76 * (start + b)), 530, 64)) {
+							doRumble = true;
+							UI_highlight(UI_PAGE_X, ypos + (76 * (start + b)), UI_PAGE_W_SMALL, 64);
 
-						if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2)) {
-							ACTIVITIES_open(ACTIVITY_APP);
-							update_about = true;
-							current_app = start + b;
-							wait_a_press = 10;
-						}
-						if (pressed & WPAD_BUTTON_PLUS) {
-							if (total_list[current_items[(start + b)].original_pos].local_app_size > 0) {
-								total_list[current_items[(start + b)].original_pos].in_download_queue = 2;
-							} else {
-								total_list[current_items[(start + b)].original_pos].in_download_queue = 1;
+							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2)) {
+								ACTIVITIES_open(ACTIVITY_APP);
+								update_about = true;
+								current_app = start + b;
+								wait_a_press = 10;
 							}
-						} else if (pressed & WPAD_BUTTON_MINUS) {
-							total_list[current_items[(start + b)].original_pos].in_download_queue = false;
+							if (pressed & WPAD_BUTTON_PLUS) {
+								if (total_list[current_items[(start + b)].original_pos].local_app_size > 0) {
+									total_list[current_items[(start + b)].original_pos].in_download_queue = 2;
+								} else {
+									total_list[current_items[(start + b)].original_pos].in_download_queue = 1;
+								}
+							} else if (pressed & WPAD_BUTTON_MINUS) {
+								total_list[current_items[(start + b)].original_pos].in_download_queue = false;
+							}
+						}
+
+						if (total_list[current_items[(start + b)].original_pos].local_app_size > 0 && !total_list[current_items[(start + b)].original_pos].in_download_queue) {
+							if (total_list[current_items[(start + b)].original_pos].local_app_size == total_list[current_items[(start + b)].original_pos].app_size || total_list[current_items[(start + b)].original_pos].no_manage) {
+								GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
+							} else if (total_list[current_items[(start + b)].original_pos].local_app_size != total_list[current_items[(start + b)].original_pos].app_size) {
+								GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_question_img, 0, 1, 1, 0xFFFFFFFF);
+							}
+						}
+
+						if ((total_list[current_items[(start + b)].original_pos].app_time + 432000) > current_time && (strcmp (job_store_list[0].name, total_list[current_items[(start + b)].original_pos].name) != 0)) {
+							GRRLIB_DrawImg(468, ypos + (76 * (start + b)) - 6, app_new_img, 0, 1, 1, 0xFFFFFFFF);
+						}
+
+						if (total_list[current_items[(start + b)].original_pos].in_download_queue == 1) {
+							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_GREEN);
+						} else if (total_list[current_items[(start + b)].original_pos].in_download_queue == 2) {
+							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_RED);
+						}
+
+						if (strcmp (job_store_list[0].name, total_list[current_items[(start + b)].original_pos].name) == 0 && (download_in_progress || extract_in_progress)) {
+							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, download_img, 0, 1, 1, RES_COLOR_BLUE);
 						}
 					}
+				}
 
-					if (total_list[current_items[(start + b)].original_pos].local_app_size > 0 && !total_list[current_items[(start + b)].original_pos].in_download_queue) {
-						if (total_list[current_items[(start + b)].original_pos].local_app_size == total_list[current_items[(start + b)].original_pos].app_size || total_list[current_items[(start + b)].original_pos].no_manage) {
-							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-						} else if (total_list[current_items[(start + b)].original_pos].local_app_size != total_list[current_items[(start + b)].original_pos].app_size) {
-							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_question_img, 0, 1, 1, 0xFFFFFFFF);
-						}
-					}
+				// Display icons, text
+				GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_DrawImg(60, ypos + (76 * (start+1) + 4), icon2_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_DrawImg(60, ypos + (76 * (start+2) + 4), icon3_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
+				GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
 
-					if ((total_list[current_items[(start + b)].original_pos].app_time + 432000) > current_time && (strcmp (job_store_list[0].name, total_list[current_items[(start + b)].original_pos].name) != 0)) {
-						GRRLIB_DrawImg(468, ypos + (76 * (start + b)) - 6, app_new_img, 0, 1, 1, 0xFFFFFFFF);
-					}
+				for (uint8_t b = 0; b < 5; b++) {
+					GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 4, total_list[current_items[start + b].original_pos].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+					GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, total_list[current_items[start + b].original_pos].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
-					if (total_list[current_items[(start + b)].original_pos].in_download_queue == 1) {
-						GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_GREEN);
-					} else if (total_list[current_items[(start + b)].original_pos].in_download_queue == 2) {
-						GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_RED);
-					}
-
-					if (strcmp (job_store_list[0].name, total_list[current_items[(start + b)].original_pos].name) == 0 && (download_in_progress || extract_in_progress)) {
-						GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, download_img, 0, 1, 1, RES_COLOR_BLUE);
-					}
+					// Debigging
+					/*char temp[8] = "";
+					sprintf(temp, "%i", current_items[start + b].original_pos);
+					GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, temp, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);*/
+				}
+			} else {
+				// Empty messages
+				if (category_selection == 6) {
+					GRRLIB_DrawText(88, 159, STR_EMPTY_QUEUE_0, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
+					GRRLIB_DrawText(88, 189, STR_EMPTY_QUEUE_1, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
+					GRRLIB_DrawText(88, 219, STR_EMPTY_QUEUE_2, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
+					GRRLIB_DrawText(88, 249, STR_EMPTY_QUEUE_3, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
+				} else if (category_selection == 5) {
+					GRRLIB_DrawText(88, 159, STR_EMPTY_SD_0, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
+					GRRLIB_DrawText(88, 189, STR_EMPTY_SD_1, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
+					GRRLIB_DrawText(88, 219, STR_EMPTY_SD_2, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
 				}
 			}
 
-			// Display icons, text
-			GRRLIB_DrawImg(60, ypos + (76 * start) + 4, icon1_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(60, ypos + (76 * (start+1) + 4), icon2_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(60, ypos + (76 * (start+2) + 4), icon3_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(60, ypos + (76 * (start+3) + 4), icon4_img, 0, 1, 1, 0xFFFFFFC8);
-			GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
-
-			for (uint8_t b = 0; b < 5; b++) {
-				GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 4, total_list[current_items[start + b].original_pos].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
-				GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, total_list[current_items[start + b].original_pos].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
-
-				// Debigging
-				/*char temp[8] = "";
-				sprintf(temp, "%i", total_list[current_items[start + b].original_pos);
-				GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, temp, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);*/
-			}
-
 			GRRLIB_ClipReset();
-
-			// Empty messages
-			if (category_selection == 6 && current_items[0].original_pos == -1 && wait_a_press == 0) {
-				GRRLIB_DrawText(88, 159, STR_EMPTY_QUEUE_0, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
-				GRRLIB_DrawText(88, 189, STR_EMPTY_QUEUE_1, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
-				GRRLIB_DrawText(88, 219, STR_EMPTY_QUEUE_2, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
-				GRRLIB_DrawText(88, 249, STR_EMPTY_QUEUE_3, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
-			}
-			if (category_selection == 5 && current_items[0].original_pos == -1 && wait_a_press == 0) {
-				GRRLIB_DrawText(88, 159, STR_EMPTY_SD_0, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
-				GRRLIB_DrawText(88, 189, STR_EMPTY_SD_1, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
-				GRRLIB_DrawText(88, 219, STR_EMPTY_SD_2, FONTSIZE_SMALL1, TEXT_COLOR_SECONDARY);
-			}
 
 			//Sorting icons
 			if (UI_isOnImg(ir, UI_SORT_X, UI_SORT_1_Y, name_img)) {
@@ -559,8 +558,8 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_1_Y, name_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
 				if (setting_tool_tip) { UI_drawTooltip(UI_SORT_X, UI_SORT_1_Y, STR_SORT_BY_NAME); }
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
-					if (sort_up_down == 6) { sort_up_down = 7; sort_by_name(1); refresh_list = -1; ypos = 142; }
-					else { sort_up_down = 6; sort_by_name(0); refresh_list = -1; ypos = 142; }
+					if (sort_up_down == 6) { sort_up_down = 7; updateList(); }
+					else { sort_up_down = 6; updateList(); }
 				}
 			} else {
 				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_1_Y, name_img, 0, 1, 1, LIGHT_BTN_COLOR);
@@ -570,8 +569,8 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_2_Y, date_img, 0, 1, 1, LIGHT_BTN_COLOR_HOVER);
 				if (setting_tool_tip) { UI_drawTooltip(UI_SORT_X, UI_SORT_2_Y, STR_SORT_BY_DATE); }
 				if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
-					if (sort_up_down == 0) { sort_up_down = 1; sort_by_date(1); refresh_list = -1; ypos = 142; }
-					else { sort_up_down = 0; sort_by_date(0); refresh_list = -1; ypos = 142; }
+					if (sort_up_down == 0) { sort_up_down = 1; updateList(); }
+					else { sort_up_down = 0; updateList(); }
 				}
 			} else {
 				GRRLIB_DrawImg(UI_SORT_X, UI_SORT_2_Y, date_img, 0, 1, 1, LIGHT_BTN_COLOR);
@@ -595,7 +594,7 @@ int main(int argc, char **argv) {
 				}
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && !download_in_progress) {
 					if (category_selection == 6) {
-						if (setting_online && hide_apps_updated() && current_items[0].original_pos != -1 && array_length(current_items) >= 1) {
+						if (setting_online && hide_apps_updated() && current_items[0].original_pos != HOMEBREW_STRUCT_END && array_length(current_items) >= 1) {
 							clear_temp_list();
 							updating = 0;
 							free_update = true;
@@ -614,16 +613,12 @@ int main(int argc, char **argv) {
 			// Category Change DPAD
 			if (!setting_wiiside) {
 				if ((pressed & WPAD_BUTTON_LEFT) && category_selection > 0 && category_selection < 5 && updating == -1) {
-					if ((category_selection-1 == 0 && array_length(demos_list) >= 1) || (category_selection-1 == 1 && array_length(emulators_list) >= 1) || (category_selection-1 == 2 && array_length(games_list) >= 1) || (category_selection-1 == 3 && array_length(media_list) >= 1) || (category_selection-1 == 4 && array_length(utilities_list) >= 1)) {
-						category_selection--;
-						updated_cat = true;
-					}
+					category_selection--;
+					updated_cat = true;
 				}
 				if ((pressed & WPAD_BUTTON_RIGHT) && category_selection < 4 && updating == -1) {
-					if ((category_selection+1 == 0 && array_length(demos_list) >= 1) || (category_selection+1 == 1 && array_length(emulators_list) >= 1) || (category_selection+1 == 2 && array_length(games_list) >= 1) || (category_selection+1 == 3 && array_length(media_list) >= 1) || (category_selection+1 == 4 && array_length(utilities_list) >= 1)) {
-						category_selection++;
-						updated_cat = true;
-					}
+					category_selection++;
+					updated_cat = true;
 				}
 			}
 		}
@@ -636,31 +631,31 @@ int main(int argc, char **argv) {
 		if (!isInDialog()) {
 			if (UI_CAT_isOnCategory(ir, 0)) {
 				doRumble = true;
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(demos_list) >= 1) {
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1) {
 					category_selection = 0;
 					updated_cat = true;
 				}
 			} else if (UI_CAT_isOnCategory(ir, 1)) {
 				doRumble = true;
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(emulators_list) >= 1) {
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1) {
 					category_selection = 1;
 					updated_cat = true;
 				}
 			} else if (UI_CAT_isOnCategory(ir, 2)) {
 				doRumble = true;
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(games_list) >= 1) {
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1) {
 					category_selection = 2;
 					updated_cat = true;
 				}
 			} else if (UI_CAT_isOnCategory(ir, 3)) {
 				doRumble = true;
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(media_list) >= 1) {
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1) {
 					category_selection = 3;
 					updated_cat = true;
 				}
 			} else if (UI_CAT_isOnCategory(ir, 4)) {
 				doRumble = true;
-				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1 && array_length(utilities_list) >= 1) {
+				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && updating == -1) {
 					category_selection = 4;
 					updated_cat = true;
 				}
@@ -694,7 +689,7 @@ int main(int argc, char **argv) {
 		}
 
 		// Updating
-		if (updating >= 0 && current_items[0].original_pos != -1) {
+		if (updating >= 0 && current_items[0].original_pos != HOMEBREW_STRUCT_END) {
 			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, RES_COLOR_RED);
 			if (free_update) {
 				sprintf (str_title_status, "Processing %i/%i applications", new_updating + 1, array_length(current_items));
