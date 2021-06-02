@@ -1440,7 +1440,7 @@ static int compareNamesTrue(const void *p1, const void *p2) {
 	const struct homebrew_struct *elem2 = p2;
 	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
 	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
-	else return strcasecmp(elem1->name, elem2->name);
+	else return strcasecmp(total_list[elem1->original_pos].name, total_list[elem2->original_pos].name);
 }
 
 static int compareNamesFalse(const void *p1, const void *p2) {
@@ -1448,7 +1448,7 @@ static int compareNamesFalse(const void *p1, const void *p2) {
 	const struct homebrew_struct *elem2 = p2;
 	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
 	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
-	else return strcasecmp(elem2->name, elem1->name);
+	else return strcasecmp(total_list[elem2->original_pos].name, total_list[elem1->original_pos].name);
 }
 
 void sort_by_name (bool min_to_max) {
@@ -1461,7 +1461,7 @@ static int compareDatesTrue(const void *p1, const void *p2) {
 	const struct homebrew_struct *elem2 = p2;
 	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
 	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
-	else return (elem1->app_time - elem2->app_time);
+	else return (total_list[elem1->original_pos].app_time - total_list[elem2->original_pos].app_time);
 }
 
 static int compareDatesFalse(const void *p1, const void *p2) {
@@ -1469,7 +1469,7 @@ static int compareDatesFalse(const void *p1, const void *p2) {
 	const struct homebrew_struct *elem2 = p2;
 	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
 	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
-	else return (elem2->app_time - elem1->app_time);
+	else return (total_list[elem2->original_pos].app_time - total_list[elem1->original_pos].app_time);
 }
 
 void sort_by_date (bool min_to_max) {
@@ -2412,7 +2412,6 @@ s32 request_list() {
 		int array_count = 0;
 		int line_number = -1;
 		bool add_to_list = true;
-		int print_dot = 0;
 
 		// Grab all directories and put them in a list
 		int app_directories = 0;
@@ -2497,10 +2496,7 @@ s32 request_list() {
 				if (strstr(cmd_line, "=Games=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						current_items[i].original_pos = total_list_count;
-						games_list[i] = total_list_count;
-						total_list[total_list_count] = current_items[i];
-						total_list_count++;
+						games_list[i] = total_list_count - array_count + i;
 					}
 					array_count = 0;
 					add_to_list = false;
@@ -2508,10 +2504,7 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Emulators=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						current_items[i].original_pos = total_list_count;
-						emulators_list[i] = total_list_count;
-						total_list[total_list_count] = current_items[i];
-						total_list_count++;
+						emulators_list[i] = total_list_count - array_count + i;
 					}
 					array_count = 0;
 					add_to_list = false;
@@ -2519,10 +2512,7 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Media=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						current_items[i].original_pos = total_list_count;
-						media_list[i] = total_list_count;
-						total_list[total_list_count] = current_items[i];
-						total_list_count++;
+						media_list[i] = total_list_count - array_count + i;
 					}
 					array_count = 0;
 					add_to_list = false;
@@ -2530,10 +2520,7 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Utilities=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						current_items[i].original_pos = total_list_count;
-						utilities_list[i] = total_list_count;
-						total_list[total_list_count] = current_items[i];
-						total_list_count++;
+						utilities_list[i] = total_list_count - array_count + i;
 					}
 					array_count = 0;
 					add_to_list = false;
@@ -2541,10 +2528,7 @@ s32 request_list() {
 				else if (strstr(cmd_line, "=Demos=") && line_number == 0) {
 					int i;
 					for (i = 0; i < array_count; i++) {
-						current_items[i].original_pos = total_list_count;
-						demos_list[i] = total_list_count;
-						total_list[total_list_count] = current_items[i];
-						total_list_count++;
+						demos_list[i] = total_list_count - array_count + i;
 					}
 					array_count = 0;
 					add_to_list = false;
@@ -2570,9 +2554,9 @@ s32 request_list() {
 						split_tok = strtok (cmd_line, " ");
 
 						// ftpii_ thing
-						current_items[array_count].user_dirname[0] = 0;
+						total_list[total_list_count].user_dirname[0] = 0;
 						if (strcmp(split_tok,"ftpii") == 0) {
-							strcpy(current_items[array_count].user_dirname,"ftpii");
+							strcpy(total_list[total_list_count].user_dirname,"ftpii");
 
 							char apps_dir[80];
 							strcpy(apps_dir, rootdir);
@@ -2595,9 +2579,9 @@ s32 request_list() {
 										if (pch != NULL) {
 											int x;
 											for (x = 0; x < strlen(filename); x++) {
-												current_items[array_count].user_dirname[x] = filename[x];
+												total_list[total_list_count].user_dirname[x] = filename[x];
 											}
-											current_items[array_count].user_dirname[strlen(filename)] = '\0';
+											total_list[total_list_count].user_dirname[strlen(filename)] = '\0';
 
 											break;
 										}
@@ -2608,36 +2592,36 @@ s32 request_list() {
 							closedir(dir);
 						}
 
-						strcpy(current_items[array_count].name,split_tok);
+						strcpy(total_list[total_list_count].name,split_tok);
 
 						// App Time
 						split_tok = strtok (NULL, " ");
-						current_items[array_count].app_time = atoi(split_tok);
+						total_list[total_list_count].app_time = atoi(split_tok);
 
 						// Img size
 						split_tok = strtok (NULL, " ");
-						current_items[array_count].img_size = atoi(split_tok);
+						total_list[total_list_count].img_size = atoi(split_tok);
 
 						// Remote boot.dol/elf file size
 						split_tok = strtok (NULL, " ");
-						current_items[array_count].app_size = atoi(split_tok);
+						total_list[total_list_count].app_size = atoi(split_tok);
 
 						// File extension, either .dol or .elf
 						split_tok = strtok (NULL, " ");
-						strcpy(current_items[array_count].boot_ext,split_tok);
+						strcpy(total_list[total_list_count].boot_ext,split_tok);
 
 						// Try to open the local boot.elf file if it exists
-						current_items[array_count].local_app_size = 0;
+						total_list[total_list_count].local_app_size = 0;
 
 						char boot_path[100] = "sd:/apps/";
 						if (!setting_use_sd) {
 							strcpy(boot_path,"usb:/apps/");
 						}
-						if (strcmp(current_items[array_count].name,"ftpii") == 0) {
-							strcat(boot_path, current_items[array_count].user_dirname);
+						if (strcmp(total_list[total_list_count].name,"ftpii") == 0) {
+							strcat(boot_path, total_list[total_list_count].user_dirname);
 						}
 						else {
-							strcat(boot_path, current_items[array_count].name);
+							strcat(boot_path, total_list[total_list_count].name);
 						}
 
 						// New directory finding
@@ -2645,7 +2629,7 @@ s32 request_list() {
 
 						int g;
 						for (g = 0; g < app_directories; g++) {
-							strcpy(uppername, current_items[array_count].name);
+							strcpy(uppername, total_list[total_list_count].name);
 
 							int leng=strlen(uppername);
 								int z;
@@ -2660,7 +2644,7 @@ s32 request_list() {
 						}
 
 						strcat(boot_path, "/boot.");
-						strcat(boot_path, current_items[array_count].boot_ext);
+						strcat(boot_path, total_list[total_list_count].boot_ext);
 
 						if (dir_exists) {
 							FILE *f = fopen(boot_path, "rb");
@@ -2674,11 +2658,11 @@ s32 request_list() {
 									strcpy(boot_path2,"usb:/apps/");
 								}
 
-								if (strcmp(current_items[array_count].name,"ftpii") == 0) {
-									strcat(boot_path2, current_items[array_count].user_dirname);
+								if (strcmp(total_list[total_list_count].name,"ftpii") == 0) {
+									strcat(boot_path2, total_list[total_list_count].user_dirname);
 								}
 								else {
-									strcat(boot_path2, current_items[array_count].name);
+									strcat(boot_path2, total_list[total_list_count].name);
 								}
 
 								strcat(boot_path2, "/boot.elf");
@@ -2692,11 +2676,11 @@ s32 request_list() {
 										strcpy(boot_path2,"usb:/apps/");
 									}
 
-									if (strcmp(current_items[array_count].name,"ftpii") == 0) {
-										strcat(boot_path2, current_items[array_count].user_dirname);
+									if (strcmp(total_list[total_list_count].name,"ftpii") == 0) {
+										strcat(boot_path2, total_list[total_list_count].user_dirname);
 									}
 									else {
-										strcat(boot_path2, current_items[array_count].name);
+										strcat(boot_path2, total_list[total_list_count].name);
 									}
 
 									strcat(boot_path2, "/boot.dol.bak");
@@ -2710,11 +2694,11 @@ s32 request_list() {
 											strcpy(boot_path2,"usb:/apps/");
 										}
 
-										if (strcmp(current_items[array_count].name,"ftpii") == 0) {
-											strcat(boot_path2, current_items[array_count].user_dirname);
+										if (strcmp(total_list[total_list_count].name,"ftpii") == 0) {
+											strcat(boot_path2, total_list[total_list_count].user_dirname);
 										}
 										else {
-											strcat(boot_path2, current_items[array_count].name);
+											strcat(boot_path2, total_list[total_list_count].name);
 										}
 
 										strcat(boot_path2, "/boot.elf.bak");
@@ -2728,11 +2712,11 @@ s32 request_list() {
 												strcpy(boot_path3,"usb:/apps/");
 											}
 
-											if (strcmp(current_items[array_count].name,"ftpii") == 0) {
-												strcat(boot_path3, current_items[array_count].user_dirname);
+											if (strcmp(total_list[total_list_count].name,"ftpii") == 0) {
+												strcat(boot_path3, total_list[total_list_count].user_dirname);
 											}
 											else {
-												strcat(boot_path3, current_items[array_count].name);
+												strcat(boot_path3, total_list[total_list_count].name);
 											}
 
 											strcat(boot_path3, "/theme.zip");
@@ -2744,7 +2728,7 @@ s32 request_list() {
 											else {
 											// Open file and get the file size
 											fseek (f4 , 0, SEEK_END);
-											current_items[array_count].local_app_size = ftell (f4);
+											total_list[total_list_count].local_app_size = ftell (f4);
 											rewind (f4);
 											fclose(f4);
 											}
@@ -2752,25 +2736,25 @@ s32 request_list() {
 										else {
 											// Open file and get the file size
 											fseek (f3 , 0, SEEK_END);
-											current_items[array_count].local_app_size = ftell (f3);
+											total_list[total_list_count].local_app_size = ftell (f3);
 											rewind (f3);
 											fclose(f3);
-											current_items[array_count].boot_bak = true;
+											total_list[total_list_count].boot_bak = true;
 										}
 									}
 									else {
 										// Open file and get the file size
 										fseek (f2 , 0, SEEK_END);
-										current_items[array_count].local_app_size = ftell (f2);
+										total_list[total_list_count].local_app_size = ftell (f2);
 										rewind (f2);
 										fclose(f2);
-										current_items[array_count].boot_bak = true;
+										total_list[total_list_count].boot_bak = true;
 									}
 								}
 								else {
 									// Open file and get the file size
 									fseek (f1, 0, SEEK_END);
-									current_items[array_count].local_app_size = ftell (f1);
+									total_list[total_list_count].local_app_size = ftell (f1);
 									rewind (f1);
 									fclose(f);
 								}
@@ -2778,7 +2762,7 @@ s32 request_list() {
 							else {
 								// Open file and get the file size
 								fseek (f , 0, SEEK_END);
-								current_items[array_count].local_app_size = ftell (f);
+								total_list[total_list_count].local_app_size = ftell (f);
 								rewind (f);
 								fclose(f);
 							}
@@ -2786,7 +2770,7 @@ s32 request_list() {
 
 						// Total app size
 						split_tok = strtok (NULL, " ");
-						current_items[array_count].total_app_size = atoi(split_tok);
+						total_list[total_list_count].total_app_size = atoi(split_tok);
 
 						// Downloads
 						split_tok = strtok (NULL, " ");
@@ -2796,25 +2780,25 @@ s32 request_list() {
 
 						// Controllers
 						split_tok = strtok (NULL, " ");
-						strcpy(current_items[array_count].app_controllers, split_tok);
+						strcpy(total_list[total_list_count].app_controllers, split_tok);
 
 						// Folders to create (if any), a dot means no folders needed
 						split_tok = strtok (NULL, " ");
 						if (split_tok != NULL) {
-							strcpy(current_items[array_count].folders, split_tok);
+							strcpy(total_list[total_list_count].folders, split_tok);
 						}
 
 						// Folders to not delete files from
 						split_tok = strtok (NULL, " ");
 						if (split_tok != NULL) {
-							strcpy(current_items[array_count].folders_no_del, split_tok);
+							strcpy(total_list[total_list_count].folders_no_del, split_tok);
 						}
 
 						// Files to not extract
 						split_tok = strtok (NULL, " ");
 						if (split_tok != NULL) {
-							strncpy(current_items[array_count].files_no_extract, split_tok, strlen(split_tok) - hbb_string_len);
-							current_items[array_count].files_no_extract[strlen(split_tok) - hbb_string_len] = '\0';
+							strncpy(total_list[total_list_count].files_no_extract, split_tok, strlen(split_tok) - hbb_string_len);
+							total_list[total_list_count].files_no_extract[strlen(split_tok) - hbb_string_len] = '\0';
 						}
 
 						line_number++;
@@ -2834,61 +2818,56 @@ s32 request_list() {
 
 						}
 
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_name) ? sizeof(current_items[array_count].app_name) : strlen(cmd_line) - hbb_string_len + 1;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(total_list[total_list_count].app_name) ? sizeof(total_list[total_list_count].app_name) : strlen(cmd_line) - hbb_string_len + 1;
 
-						strncpy(current_items[array_count].app_name, cmd_line, hbb_null_len);
-						current_items[array_count].app_name[hbb_null_len - 1] = '\0';
+						strncpy(total_list[total_list_count].app_name, cmd_line, hbb_null_len);
+						total_list[total_list_count].app_name[hbb_null_len - 1] = '\0';
 						line_number++;
 					}
 
 					// Author
 					else if (line_number == 2) {
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_author) ? sizeof(current_items[array_count].app_author) : strlen(cmd_line) - hbb_string_len + 1;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(total_list[total_list_count].app_author) ? sizeof(total_list[total_list_count].app_author) : strlen(cmd_line) - hbb_string_len + 1;
 
-						strncpy(current_items[array_count].app_author, cmd_line, hbb_null_len);
-						current_items[array_count].app_author[hbb_null_len - 1] = '\0';
+						strncpy(total_list[total_list_count].app_author, cmd_line, hbb_null_len);
+						total_list[total_list_count].app_author[hbb_null_len - 1] = '\0';
 						line_number++;
 					}
 
 					// Version
 					else if (line_number == 3) {
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_version) ? sizeof(current_items[array_count].app_version) : strlen(cmd_line) - hbb_string_len + 1;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(total_list[total_list_count].app_version) ? sizeof(total_list[total_list_count].app_version) : strlen(cmd_line) - hbb_string_len + 1;
 
-						strncpy(current_items[array_count].app_version, cmd_line, hbb_null_len);
-						current_items[array_count].app_version[hbb_null_len - 1] = '\0';
+						strncpy(total_list[total_list_count].app_version, cmd_line, hbb_null_len);
+						total_list[total_list_count].app_version[hbb_null_len - 1] = '\0';
 						line_number++;
 					}
 
 					// Size
 					else if (line_number == 4) {
-						current_items[array_count].app_total_size = atoi(cmd_line);
+						total_list[total_list_count].app_total_size = atoi(cmd_line);
 						line_number++;
 					}
 
 					// Short Description
 					else if (line_number == 5) {
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_short_description) ? sizeof(current_items[array_count].app_short_description) : strlen(cmd_line) - hbb_string_len + 1;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(total_list[total_list_count].app_short_description) ? sizeof(total_list[total_list_count].app_short_description) : strlen(cmd_line) - hbb_string_len + 1;
 
-						strncpy(current_items[array_count].app_short_description, cmd_line, hbb_null_len);
-						current_items[array_count].app_short_description[hbb_null_len - 1] = '\0';
+						strncpy(total_list[total_list_count].app_short_description, cmd_line, hbb_null_len);
+						total_list[total_list_count].app_short_description[hbb_null_len - 1] = '\0';
 						line_number++;
 					}
 
 					// Description
 					else if (line_number == 6) {
-						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(current_items[array_count].app_description) ? sizeof(current_items[array_count].app_description) : strlen(cmd_line) - hbb_string_len;
+						hbb_null_len = (strlen(cmd_line) - hbb_string_len + 1) > sizeof(total_list[total_list_count].app_description) ? sizeof(total_list[total_list_count].app_description) : strlen(cmd_line) - hbb_string_len;
 
-						strncpy(current_items[array_count].app_description, cmd_line, hbb_null_len);
-						current_items[array_count].app_description[hbb_null_len - 1] = '\0';
+						strncpy(total_list[total_list_count].app_description, cmd_line, hbb_null_len);
+						total_list[total_list_count].app_description[hbb_null_len - 1] = '\0';
+						total_list[total_list_count].original_pos = total_list_count;
 						line_number = 0;
+						total_list_count++;
 						array_count++;
-
-						// Print ever 10 apps
-						if (print_dot == 10) {
-							printf(".");
-							print_dot = 0;
-						}
-						print_dot++;
 					}
 				}
 			}
