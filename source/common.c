@@ -66,7 +66,7 @@ int xfb_height = 0;
 struct repo_struct repo_list[200];
 
 // List to show
-struct homebrew_struct current_items[HOMEBREW_STRUCT_SIZE];
+int current_items[HOMEBREW_STRUCT_SIZE];
 
 int emulators_list[HOMEBREW_STRUCT_SIZE];
 int games_list[HOMEBREW_STRUCT_SIZE];
@@ -367,7 +367,7 @@ u8 load_icons() {
 static void *run_download_thread(void *arg) {
 
 	clear_store_list();
-	job_store = total_list[current_items[selected_app].original_pos];
+	job_store = total_list[current_items[selected_app]];
 
 	if (download_icon > 0) {
 		while (download_icon_sleeping != true) {
@@ -771,7 +771,7 @@ static void *run_download_thread(void *arg) {
 
 		total_list[job_store.original_pos] = job_store;
 
-		if (updating >= 0 && updating < array_length(current_items)) {
+		if (updating >= 0 && updating < int_array_length(current_items)) {
 			new_updating++;
 		}
 		if (update_xml == 1) {
@@ -803,7 +803,7 @@ static void *run_delete_thread(void *arg) {
 
 	if (error_number == 0) {
 		clear_store_list();
-		job_store = total_list[current_items[selected_app].original_pos];
+		job_store = total_list[current_items[selected_app]];
 	}
 
 	bool delete_status = true;
@@ -1041,7 +1041,7 @@ static void *run_delete_thread(void *arg) {
 		sd_card_update = true;
 		cancel_delete = false;
 
-		if (updating >= 0 && updating < array_length(current_items)) {
+		if (updating >= 0 && updating < int_array_length(current_items)) {
 			new_updating++;
 		}
 	}
@@ -1375,11 +1375,11 @@ void save_xml_name() {
 	if (!setting_use_sd) {
 		strcpy(savexml,"usb:/apps/");
 	}
-	if (strcmp(total_list[current_items[selected_app].original_pos].name,"ftpii") == 0) {
-		strcat(savexml, total_list[current_items[selected_app].original_pos].user_dirname);
+	if (strcmp(total_list[current_items[selected_app]].name,"ftpii") == 0) {
+		strcat(savexml, total_list[current_items[selected_app]].user_dirname);
 	}
 	else {
-		strcat(savexml, total_list[current_items[selected_app].original_pos].name);
+		strcat(savexml, total_list[current_items[selected_app]].name);
 	}
 	strcat(savexml, "/meta.xml");
 
@@ -1407,11 +1407,11 @@ void copy_xml_name() {
 		if (!setting_use_sd) {
 			strcpy(savexml,"usb:/apps/");
 		}
-		if (strcmp(total_list[current_items[selected_app].original_pos].name,"ftpii") == 0) {
-			strcat(savexml, total_list[current_items[selected_app].original_pos].user_dirname);
+		if (strcmp(total_list[current_items[selected_app]].name,"ftpii") == 0) {
+			strcat(savexml, total_list[current_items[selected_app]].user_dirname);
 		}
 		else {
-			strcat(savexml, total_list[current_items[selected_app].original_pos].name);
+			strcat(savexml, total_list[current_items[selected_app]].name);
 		}
 		strcat(savexml, "/meta.xml");
 
@@ -1436,45 +1436,45 @@ void copy_xml_name() {
 }
 
 static int compareNamesTrue(const void *p1, const void *p2) {
-	const struct homebrew_struct *elem1 = p1;
-	const struct homebrew_struct *elem2 = p2;
-	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
-	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
-	else return strcasecmp(total_list[elem1->original_pos].name, total_list[elem2->original_pos].name);
+	const int *elem1 = p1;
+	const int *elem2 = p2;
+	if ((*elem1) == HOMEBREW_STRUCT_END) return 1;
+	else if ((*elem2) == HOMEBREW_STRUCT_END) return -1;
+	else return strcasecmp(total_list[(*elem1)].name, total_list[(*elem2)].name);
 }
 
 static int compareNamesFalse(const void *p1, const void *p2) {
-	const struct homebrew_struct *elem1 = p1;
-	const struct homebrew_struct *elem2 = p2;
-	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
-	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
-	else return strcasecmp(total_list[elem2->original_pos].name, total_list[elem1->original_pos].name);
+	const int *elem1 = p1;
+	const int *elem2 = p2;
+	if ((*elem1) == HOMEBREW_STRUCT_END) return 1;
+	else if ((*elem2) == HOMEBREW_STRUCT_END) return -1;
+	else return strcasecmp(total_list[(*elem2)].name, total_list[(*elem1)].name);
 }
 
 void sort_by_name (bool min_to_max) {
-	if (min_to_max) qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(struct homebrew_struct), compareNamesTrue);
-	else qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(struct homebrew_struct), compareNamesFalse);
+	if (min_to_max) qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(int), compareNamesTrue);
+	else qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(int), compareNamesFalse);
 }
 
 static int compareDatesTrue(const void *p1, const void *p2) {
-	const struct homebrew_struct *elem1 = p1;
-	const struct homebrew_struct *elem2 = p2;
-	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
-	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
-	else return (total_list[elem1->original_pos].app_time - total_list[elem2->original_pos].app_time);
+	const int *elem1 = p1;
+	const int *elem2 = p2;
+	if ((*elem1) == HOMEBREW_STRUCT_END) return 1;
+	else if ((*elem2) == HOMEBREW_STRUCT_END) return -1;
+	else return (total_list[(*elem1)].app_time - total_list[(*elem2)].app_time);
 }
 
 static int compareDatesFalse(const void *p1, const void *p2) {
-	const struct homebrew_struct *elem1 = p1;
-	const struct homebrew_struct *elem2 = p2;
-	if (elem1->original_pos == HOMEBREW_STRUCT_END) return 1;
-	else if (elem2->original_pos == HOMEBREW_STRUCT_END) return -1;
-	else return (total_list[elem2->original_pos].app_time - total_list[elem1->original_pos].app_time);
+	const int *elem1 = p1;
+	const int *elem2 = p2;
+	if ((*elem1) == HOMEBREW_STRUCT_END) return 1;
+	else if ((*elem2) == HOMEBREW_STRUCT_END) return -1;
+	else return (total_list[(*elem2)].app_time - total_list[(*elem1)].app_time);
 }
 
 void sort_by_date (bool min_to_max) {
-	if (min_to_max) qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(struct homebrew_struct), compareDatesTrue);
-	else qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(struct homebrew_struct), compareDatesFalse);
+	if (min_to_max) qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(int), compareDatesTrue);
+	else qsort(current_items, HOMEBREW_STRUCT_SIZE, sizeof(int), compareDatesFalse);
 }
 
 void hide_apps_installed() {
@@ -1482,8 +1482,8 @@ void hide_apps_installed() {
 	clear_temp_list();
 
 	int x;
-	for (x = 0; x < array_length(current_items); x++) {
-		temp_list2[x] = current_items[x].original_pos;
+	for (x = 0; x < int_array_length(current_items); x++) {
+		temp_list2[x] = current_items[x];
 	}
 
 	clear_list();
@@ -1492,12 +1492,12 @@ void hide_apps_installed() {
 	int j = 0;
 	for (i = 0; i < int_array_length(temp_list2); i++) {
 		if (total_list[temp_list2[i]].local_app_size == 0) {
-			current_items[j] = total_list[temp_list2[i]];
+			current_items[j] = temp_list2[i];
 			j++;
 		}
 	}
 	if (j == 0) {
-		current_items[i].original_pos = HOMEBREW_STRUCT_END;
+		current_items[i] = HOMEBREW_STRUCT_END;
 	}
 }
 
@@ -1831,32 +1831,7 @@ int load_file_to_memory(const char *filename, unsigned char **result) {
 void clear_list() {
 	int c;
 	for (c = 0; c < HOMEBREW_STRUCT_SIZE; c++) {
-		current_items[c].name[0] = 0;
-		current_items[c].app_size = 0;
-		current_items[c].app_time = 0;
-		current_items[c].img_size = 0;
-		current_items[c].local_app_size = 0;
-		current_items[c].total_app_size = 0;
-		current_items[c].in_download_queue = 0;
-		current_items[c].user_dirname[0] = 0;
-		current_items[c].folders[0] = 0;
-		current_items[c].boot_ext[0] = 0;
-		current_items[c].boot_bak = 0;
-		current_items[c].no_manage = 0;
-
-		current_items[c].about_loaded = 0;
-		current_items[c].app_name[0] = 0;
-		current_items[c].app_short_description[0] = 0;
-		current_items[c].app_description[0] = 0;
-		current_items[c].app_author[0] = 0;
-		current_items[c].app_version[0] = 0;
-		current_items[c].app_total_size = 0;
-		current_items[c].app_controllers[0] = 0;
-
-		current_items[c].file_found = 0;
-		current_items[c].content = NULL;
-
-		current_items[c].original_pos = HOMEBREW_STRUCT_END;
+		current_items[c] = HOMEBREW_STRUCT_END;
 	}
 }
 
@@ -1999,9 +1974,9 @@ void download_queue_size() {
 	updating_total_size = 0;
 
 	int x;
-	for (x = 0; x < array_length(current_items); x++) {
-		if (current_items[x].original_pos != HOMEBREW_STRUCT_END && total_list[current_items[x].original_pos].in_download_queue != 2) {
-			updating_total_size += total_list[current_items[x].original_pos].total_app_size;
+	for (x = 0; x < int_array_length(current_items); x++) {
+		if (current_items[x] != HOMEBREW_STRUCT_END && total_list[current_items[x]].in_download_queue != 2) {
+			updating_total_size += total_list[current_items[x]].total_app_size;
 		}
 	}
 

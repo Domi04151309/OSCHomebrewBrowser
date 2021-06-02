@@ -319,29 +319,29 @@ int main(int argc, char **argv) {
 				// Update category
 				if (category_selection == 0) {
 					for (int i = 0; i < int_array_length(demos_list); i++) {
-						current_items[i] = total_list[demos_list[i]];
+						current_items[i] = demos_list[i];
 					}
 				} else if (category_selection == 1) {
 					for (int i = 0; i < int_array_length(emulators_list); i++) {
-						current_items[i] = total_list[emulators_list[i]];
+						current_items[i] = emulators_list[i];
 					}
 				} else if (category_selection == 2) {
 					for (int i = 0; i < int_array_length(games_list); i++) {
-						current_items[i] = total_list[games_list[i]];
+						current_items[i] = games_list[i];
 					}
 				} else if (category_selection == 3) {
 					for (int i = 0; i < int_array_length(media_list); i++) {
-						current_items[i] = total_list[media_list[i]];
+						current_items[i] = media_list[i];
 					}
 				} else if (category_selection == 4) {
 					for (int i = 0; i < int_array_length(utilities_list); i++) {
-						current_items[i] = total_list[utilities_list[i]];
+						current_items[i] = utilities_list[i];
 					}
 				} else if (category_selection == 5) {
 					int j = 0;
 					for (int i = 0; i < array_length(total_list); i++) {
 						if (total_list[i].local_app_size > 0) {
-							current_items[j] = total_list[i];
+							current_items[j] = i;
 							j++;
 						}
 					}
@@ -350,7 +350,7 @@ int main(int argc, char **argv) {
 					int j = 0;
 					for (int i = 0; i < array_length(total_list); i++) {
 						if (total_list[i].in_download_queue >= 1) {
-							current_items[j] = total_list[i];
+							current_items[j] = i;
 							j++;
 						}
 					}
@@ -373,7 +373,7 @@ int main(int argc, char **argv) {
 
 			int start = -1;
 			int finish = 0;
-			for (int x = 0; x < array_length(current_items); x++) {
+			for (int x = 0; x < int_array_length(current_items); x++) {
 				if (ypos + (76 * x) >= 94 && ypos + (76 * x) + 30 < 400) {
 					if (start == -1) start = x;
 					finish = x;
@@ -392,18 +392,18 @@ int main(int argc, char **argv) {
 				for (int c = start; c <= (start+4); c++) {
 					icons_loaded++;
 
-					if (total_list[current_items[c].original_pos].file_found == 0 || total_list[current_items[c].original_pos].file_found == 2) {
-						if (total_list[current_items[c].original_pos].file_found == 0) {
+					if (total_list[current_items[c]].file_found == 0 || total_list[current_items[c]].file_found == 2) {
+						if (total_list[current_items[c]].file_found == 0) {
 							// Check image file size
 							char img_path[100] = "sd:/apps/homebrew_browser_lite/temp/";
 							if (!setting_use_sd) strcpy(img_path,"usb:/apps/homebrew_browser_lite/temp/");
-							strcat(img_path, total_list[current_items[c].original_pos].name);
+							strcat(img_path, total_list[current_items[c]].name);
 							strcat(img_path, ".png");
 
 							FILE *f = fopen(img_path, "rb");
 
 							if (f == NULL) {
-								total_list[current_items[c].original_pos].file_found = -1;
+								total_list[current_items[c]].file_found = -1;
 							}
 							// Open file and check file length for changes
 							else {
@@ -413,15 +413,15 @@ int main(int argc, char **argv) {
 								fclose(f);
 
 								// Load image into memory if image size matches
-								if (local_img_size == total_list[current_items[c].original_pos].img_size) {
-									total_list[current_items[c].original_pos].file_found = load_file_to_memory(img_path, &total_list[current_items[c].original_pos].content);
+								if (local_img_size == total_list[current_items[c]].img_size) {
+									total_list[current_items[c]].file_found = load_file_to_memory(img_path, &total_list[current_items[c]].content);
 								} else {
-									total_list[current_items[c].original_pos].file_found = -1;
+									total_list[current_items[c]].file_found = -1;
 								}
 							}
 						}
 					}
-					if (total_list[current_items[c].original_pos].content != NULL) total_list[current_items[c].original_pos].file_found = 1;
+					if (total_list[current_items[c]].content != NULL) total_list[current_items[c]].file_found = 1;
 
 					// Once we've gone through the first 8 images of the category (even if they weren't loaded), we wake the download icon thread and are done
 					if (icons_loaded > 8) {
@@ -431,24 +431,24 @@ int main(int argc, char **argv) {
 				}
 
 				// Display images
-				if (total_list[current_items[start].original_pos].file_found == 1 && current_items[start].original_pos != HOMEBREW_STRUCT_END) icon1_img=GRRLIB_LoadTexture(total_list[current_items[start].original_pos].content);
-				else if (strlen(total_list[current_items[start].original_pos].name) >= 3 && current_items[start].original_pos != HOMEBREW_STRUCT_END) icon1_img=GRRLIB_LoadTexture(no_image_png);
+				if (total_list[current_items[start]].file_found == 1 && current_items[start] != HOMEBREW_STRUCT_END) icon1_img=GRRLIB_LoadTexture(total_list[current_items[start]].content);
+				else if (strlen(total_list[current_items[start]].name) >= 3 && current_items[start] != HOMEBREW_STRUCT_END) icon1_img=GRRLIB_LoadTexture(no_image_png);
 				else icon1_img=GRRLIB_LoadTexture(blank_png);
 
-				if (total_list[current_items[(start+1)].original_pos].file_found == 1 && current_items[(start+1)].original_pos != HOMEBREW_STRUCT_END) icon2_img=GRRLIB_LoadTexture(total_list[current_items[(start+1)].original_pos].content);
-				else if (strlen(total_list[current_items[(start+1)].original_pos].name) >= 3 && current_items[(start+1)].original_pos != HOMEBREW_STRUCT_END) icon2_img=GRRLIB_LoadTexture(no_image_png);
+				if (total_list[current_items[(start+1)]].file_found == 1 && current_items[(start+1)] != HOMEBREW_STRUCT_END) icon2_img=GRRLIB_LoadTexture(total_list[current_items[(start+1)]].content);
+				else if (strlen(total_list[current_items[(start+1)]].name) >= 3 && current_items[(start+1)] != HOMEBREW_STRUCT_END) icon2_img=GRRLIB_LoadTexture(no_image_png);
 				else icon2_img=GRRLIB_LoadTexture(blank_png);
 
-				if (total_list[current_items[(start+2)].original_pos].file_found == 1 && current_items[(start+2)].original_pos != HOMEBREW_STRUCT_END) icon3_img=GRRLIB_LoadTexture(total_list[current_items[(start+2)].original_pos].content);
-				else if (strlen(total_list[current_items[(start+2)].original_pos].name) >= 3 && current_items[(start+2)].original_pos != HOMEBREW_STRUCT_END) icon3_img=GRRLIB_LoadTexture(no_image_png);
+				if (total_list[current_items[(start+2)]].file_found == 1 && current_items[(start+2)] != HOMEBREW_STRUCT_END) icon3_img=GRRLIB_LoadTexture(total_list[current_items[(start+2)]].content);
+				else if (strlen(total_list[current_items[(start+2)]].name) >= 3 && current_items[(start+2)] != HOMEBREW_STRUCT_END) icon3_img=GRRLIB_LoadTexture(no_image_png);
 				else icon3_img=GRRLIB_LoadTexture(blank_png);
 
-				if (total_list[current_items[(start+3)].original_pos].file_found == 1 && current_items[(start+3)].original_pos != HOMEBREW_STRUCT_END) icon4_img=GRRLIB_LoadTexture(total_list[current_items[(start+3)].original_pos].content);
-				else if (strlen(total_list[current_items[(start+3)].original_pos].name) >= 3 && current_items[(start+3)].original_pos != HOMEBREW_STRUCT_END) icon4_img=GRRLIB_LoadTexture(no_image_png);
+				if (total_list[current_items[(start+3)]].file_found == 1 && current_items[(start+3)] != HOMEBREW_STRUCT_END) icon4_img=GRRLIB_LoadTexture(total_list[current_items[(start+3)]].content);
+				else if (strlen(total_list[current_items[(start+3)]].name) >= 3 && current_items[(start+3)] != HOMEBREW_STRUCT_END) icon4_img=GRRLIB_LoadTexture(no_image_png);
 				else icon4_img=GRRLIB_LoadTexture(blank_png);
 
-				if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && total_list[current_items[(start+4)].original_pos].file_found == 1 && current_items[(start+4)].original_pos != HOMEBREW_STRUCT_END) icon5_img=GRRLIB_LoadTexture(total_list[current_items[(start+4)].original_pos].content);
-				else if (strlen(total_list[current_items[(start+4)].original_pos].name) >= 3 && current_items[(start+4)].original_pos != HOMEBREW_STRUCT_END) icon5_img=GRRLIB_LoadTexture(no_image_png);
+				if (strlen(total_list[current_items[(start+4)]].name) >= 3 && total_list[current_items[(start+4)]].file_found == 1 && current_items[(start+4)] != HOMEBREW_STRUCT_END) icon5_img=GRRLIB_LoadTexture(total_list[current_items[(start+4)]].content);
+				else if (strlen(total_list[current_items[(start+4)]].name) >= 3 && current_items[(start+4)] != HOMEBREW_STRUCT_END) icon5_img=GRRLIB_LoadTexture(no_image_png);
 				else icon5_img=GRRLIB_LoadTexture(blank_png);
 
 				refresh_list = start;
@@ -460,21 +460,21 @@ int main(int argc, char **argv) {
 
 			// Dpad up / down
 			if (!setting_wiiside) {
-				if (held & WPAD_BUTTON_DOWN && current_items[finish+1].original_pos != HOMEBREW_STRUCT_END) ypos-= 4;
+				if (held & WPAD_BUTTON_DOWN && current_items[finish+1] != HOMEBREW_STRUCT_END) ypos-= 4;
 				else if (held & WPAD_BUTTON_UP && ypos <= 140) ypos+= 4;
 			}
 
 			// Wiimote sideways
 			if (held & WPAD_BUTTON_1) {
-				if (held & WPAD_BUTTON_LEFT && current_items[finish+1].original_pos != HOMEBREW_STRUCT_END) ypos-= 5;
+				if (held & WPAD_BUTTON_LEFT && current_items[finish+1] != HOMEBREW_STRUCT_END) ypos-= 5;
 				else if (held & WPAD_BUTTON_RIGHT && ypos <= 140) ypos+= 5;
 			}
 
 			// Highlighting and display tick, question mark or plus
 			GRRLIB_ClipDrawing(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W_SMALL, UI_PAGE_H);
-			if (current_items[0].original_pos != HOMEBREW_STRUCT_END) {
+			if (current_items[0] != HOMEBREW_STRUCT_END) {
 				for (uint8_t b = 0; b < 5; b++) {
-					if (strlen(total_list[current_items[(start + b)].original_pos].name) >= 2 && current_items[(start + b)].original_pos != HOMEBREW_STRUCT_END) {
+					if (strlen(total_list[current_items[(start + b)]].name) >= 2 && current_items[(start + b)] != HOMEBREW_STRUCT_END) {
 						if (UI_isOnSquare(ir, UI_PAGE_X, ypos + (76 * (start + b)), 530, 64)) {
 							doRumble = true;
 							UI_highlight(UI_PAGE_X, ypos + (76 * (start + b)), UI_PAGE_W_SMALL, 64);
@@ -486,35 +486,35 @@ int main(int argc, char **argv) {
 								wait_a_press = 10;
 							}
 							if (pressed & WPAD_BUTTON_PLUS) {
-								if (total_list[current_items[(start + b)].original_pos].local_app_size > 0) {
-									total_list[current_items[(start + b)].original_pos].in_download_queue = 2;
+								if (total_list[current_items[(start + b)]].local_app_size > 0) {
+									total_list[current_items[(start + b)]].in_download_queue = 2;
 								} else {
-									total_list[current_items[(start + b)].original_pos].in_download_queue = 1;
+									total_list[current_items[(start + b)]].in_download_queue = 1;
 								}
 							} else if (pressed & WPAD_BUTTON_MINUS) {
-								total_list[current_items[(start + b)].original_pos].in_download_queue = false;
+								total_list[current_items[(start + b)]].in_download_queue = false;
 							}
 						}
 
-						if (total_list[current_items[(start + b)].original_pos].local_app_size > 0 && !total_list[current_items[(start + b)].original_pos].in_download_queue) {
-							if (total_list[current_items[(start + b)].original_pos].local_app_size == total_list[current_items[(start + b)].original_pos].app_size || total_list[current_items[(start + b)].original_pos].no_manage) {
+						if (total_list[current_items[(start + b)]].local_app_size > 0 && !total_list[current_items[(start + b)]].in_download_queue) {
+							if (total_list[current_items[(start + b)]].local_app_size == total_list[current_items[(start + b)]].app_size || total_list[current_items[(start + b)]].no_manage) {
 								GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-							} else if (total_list[current_items[(start + b)].original_pos].local_app_size != total_list[current_items[(start + b)].original_pos].app_size) {
+							} else if (total_list[current_items[(start + b)]].local_app_size != total_list[current_items[(start + b)]].app_size) {
 								GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, app_question_img, 0, 1, 1, 0xFFFFFFFF);
 							}
 						}
 
-						if ((total_list[current_items[(start + b)].original_pos].app_time + 432000) > current_time && (strcmp (job_store.name, total_list[current_items[(start + b)].original_pos].name) != 0)) {
+						if ((total_list[current_items[(start + b)]].app_time + 432000) > current_time && (strcmp (job_store.name, total_list[current_items[(start + b)]].name) != 0)) {
 							GRRLIB_DrawImg(468, ypos + (76 * (start + b)) - 6, app_new_img, 0, 1, 1, 0xFFFFFFFF);
 						}
 
-						if (total_list[current_items[(start + b)].original_pos].in_download_queue == 1) {
+						if (total_list[current_items[(start + b)]].in_download_queue == 1) {
 							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_GREEN);
-						} else if (total_list[current_items[(start + b)].original_pos].in_download_queue == 2) {
+						} else if (total_list[current_items[(start + b)]].in_download_queue == 2) {
 							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, stack_img, 0, 1, 1, RES_COLOR_RED);
 						}
 
-						if (strcmp (job_store.name, total_list[current_items[(start + b)].original_pos].name) == 0 && (download_in_progress || extract_in_progress)) {
+						if (strcmp (job_store.name, total_list[current_items[(start + b)]].name) == 0 && (download_in_progress || extract_in_progress)) {
 							GRRLIB_DrawImg(506, ypos + (76 * (start + b)) + 22, download_img, 0, 1, 1, RES_COLOR_BLUE);
 						}
 					}
@@ -528,12 +528,12 @@ int main(int argc, char **argv) {
 				GRRLIB_DrawImg(60, ypos + (76 * (start+4) + 4), icon5_img, 0, 1, 1, 0xFFFFFFC8);
 
 				for (uint8_t b = 0; b < 5; b++) {
-					GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 4, total_list[current_items[start + b].original_pos].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
-					GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, total_list[current_items[start + b].original_pos].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
+					GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 4, total_list[current_items[start + b]].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+					GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, total_list[current_items[start + b]].app_short_description, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 
 					// Debigging
 					/*char temp[8] = "";
-					sprintf(temp, "%i", current_items[start + b].original_pos);
+					sprintf(temp, "%i", current_items[start + b]);
 					GRRLIB_DrawText(210, ypos + (76 * (start + b)) + 30, temp, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);*/
 				}
 			} else {
@@ -594,7 +594,7 @@ int main(int argc, char **argv) {
 				}
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && !download_in_progress) {
 					if (category_selection == 6) {
-						if (setting_online && current_items[0].original_pos != HOMEBREW_STRUCT_END && array_length(current_items) >= 1) {
+						if (setting_online && current_items[0] != HOMEBREW_STRUCT_END && int_array_length(current_items) >= 1) {
 							clear_temp_list();
 							updating = 0;
 							free_update = true;
@@ -689,18 +689,18 @@ int main(int argc, char **argv) {
 		}
 
 		// Updating
-		if (updating >= 0 && current_items[0].original_pos != HOMEBREW_STRUCT_END) {
+		if (updating >= 0 && current_items[0] != HOMEBREW_STRUCT_END) {
 			UI_roundedRect(UI_PAGE_X, UI_PAGE_Y, UI_PAGE_W, UI_PAGE_H, RES_COLOR_WHITE);
 			if (free_update) {
-				sprintf (str_title_status, "Processing %i/%i applications", new_updating + 1, array_length(current_items));
-				strcpy(str_res_title, total_list[current_items[new_updating].original_pos].app_name);
+				sprintf (str_title_status, "Processing %i/%i applications", new_updating + 1, int_array_length(current_items));
+				strcpy(str_res_title, total_list[current_items[new_updating]].app_name);
 				free_update = false;
 			}
 
-			if ((updating < array_length(current_items) && new_updating < array_length(current_items)) || new_updating == 10000) {
+			if ((updating < int_array_length(current_items) && new_updating < int_array_length(current_items)) || new_updating == 10000) {
 
 				GRRLIB_DrawText(220, 152, str_title_status, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
-				GRRLIB_DrawText(348 - (strlen(total_list[current_items[updating].original_pos].app_name) * 5.5), 196, str_res_title, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+				GRRLIB_DrawText(348 - (strlen(total_list[current_items[updating]].app_name) * 5.5), 196, str_res_title, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 				// Download
 				if (download_in_progress) {
@@ -718,7 +718,7 @@ int main(int argc, char **argv) {
 
 					// Download info
 					double temp_download_progress_counter = download_progress_counter;
-					double temp_total_app_size = total_list[current_items[updating].original_pos].total_app_size;
+					double temp_total_app_size = total_list[current_items[updating]].total_app_size;
 					sprintf(str_download_info, "%3.2fMB / %3.2fMB", (temp_download_progress_counter/1000/1000), (temp_total_app_size/1000/1000));
 					GRRLIB_DrawText(360, 278, str_download_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 				}
@@ -809,10 +809,10 @@ int main(int argc, char **argv) {
 
 				if (new_updating != 10000 && (updating != new_updating || updating == 0) && !download_in_progress && !extract_in_progress && !delete_in_progress) {
 					updating = new_updating;
-					if (strlen(total_list[current_items[updating].original_pos].name) >= 3) {
+					if (strlen(total_list[current_items[updating]].name) >= 3) {
 
 						// Delete
-						if (total_list[current_items[updating].original_pos].in_download_queue == 2) {
+						if (total_list[current_items[updating]].in_download_queue == 2) {
 							delete_in_progress = true;
 							selected_app = updating;
 							initialise_delete();
@@ -824,7 +824,7 @@ int main(int argc, char **argv) {
 							selected_app = updating;
 							save_xml_name();
 							initialise_download();
-							if (total_list[current_items[selected_app].original_pos].local_app_size > 0 && total_list[current_items[selected_app].original_pos].local_app_size != total_list[current_items[selected_app].original_pos].app_size) {
+							if (total_list[current_items[selected_app]].local_app_size > 0 && total_list[current_items[selected_app]].local_app_size != total_list[current_items[selected_app]].app_size) {
 								update_xml = 1;
 							}
 						}
@@ -897,21 +897,21 @@ int main(int argc, char **argv) {
 		// About
 		if (ACTIVITIES_current() == ACTIVITY_APP) {
 			if (update_about) {
-				if (total_list[current_items[current_app].original_pos].app_total_size > 0 && total_list[current_items[current_app].original_pos].app_total_size < 1048576) {
-					int appsize = total_list[current_items[current_app].original_pos].app_total_size / 1024;
+				if (total_list[current_items[current_app]].app_total_size > 0 && total_list[current_items[current_app]].app_total_size < 1048576) {
+					int appsize = total_list[current_items[current_app]].app_total_size / 1024;
 					sprintf(str_res_size, "%i KB", appsize);
 				} else {
-					float appsize = (float) (total_list[current_items[current_app].original_pos].app_total_size / 1024) / 1024;
+					float appsize = (float) (total_list[current_items[current_app]].app_total_size / 1024) / 1024;
 					sprintf(str_res_size, "%1.1f MB", appsize);
 				}
 
-				app_time = total_list[current_items[current_app].original_pos].app_time;
+				app_time = total_list[current_items[current_app]].app_time;
 				timeinfo = localtime( &app_time );
 				strftime(str_res_date, 50, "%d %b %Y", timeinfo);
 
-				const int text_size = sizeof(total_list[current_items[0].original_pos].app_description);
+				const int text_size = sizeof(total_list[current_items[0]].app_description);
 				char text_description[text_size];
-				strcpy(text_description, total_list[current_items[current_app].original_pos].app_description);
+				strcpy(text_description, total_list[current_items[current_app]].app_description);
 
 				int l = 0;
 				for(int s = strlen(text_description); s < text_size; s++) {
@@ -967,7 +967,7 @@ int main(int argc, char **argv) {
 				update_about = false;
 			}
 
-			GRRLIB_DrawText(330 - (strlen(total_list[current_items[current_app].original_pos].app_name) * 5.5), 140, total_list[current_items[current_app].original_pos].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
+			GRRLIB_DrawText(330 - (strlen(total_list[current_items[current_app]].app_name) * 5.5), 140, total_list[current_items[current_app]].app_name, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 			GRRLIB_DrawText(70, 170, string1, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 			GRRLIB_DrawText(70, 190, string2, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
@@ -980,53 +980,53 @@ int main(int argc, char **argv) {
 			GRRLIB_DrawText(70, 330, STR_SIZE, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 			GRRLIB_DrawText(70, 350, STR_DATE, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
 
-			GRRLIB_DrawText(140, 290, total_list[current_items[current_app].original_pos].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
-			GRRLIB_DrawText(140, 310, total_list[current_items[current_app].original_pos].app_version, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(140, 290, total_list[current_items[current_app]].app_author, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
+			GRRLIB_DrawText(140, 310, total_list[current_items[current_app]].app_version, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 			GRRLIB_DrawText(140, 330, str_res_date, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 			GRRLIB_DrawText(140, 350, str_res_size, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
 
-			if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "wwww")) GRRLIB_DrawImg(290, 330, control_wiimote_4_img, 0, 1, 1, 0xFFFFFFFF);
-			else if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "www")) GRRLIB_DrawImg(290, 330, control_wiimote_3_img, 0, 1, 1, 0xFFFFFFFF);
-			else if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "ww")) GRRLIB_DrawImg(290, 330, control_wiimote_2_img, 0, 1, 1, 0xFFFFFFFF);
-			else if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "w")) GRRLIB_DrawImg(290, 330, control_wiimote_img, 0, 1, 1, 0xFFFFFFFF);
+			if (strstr(total_list[current_items[current_app]].app_controllers, "wwww")) GRRLIB_DrawImg(290, 330, control_wiimote_4_img, 0, 1, 1, 0xFFFFFFFF);
+			else if (strstr(total_list[current_items[current_app]].app_controllers, "www")) GRRLIB_DrawImg(290, 330, control_wiimote_3_img, 0, 1, 1, 0xFFFFFFFF);
+			else if (strstr(total_list[current_items[current_app]].app_controllers, "ww")) GRRLIB_DrawImg(290, 330, control_wiimote_2_img, 0, 1, 1, 0xFFFFFFFF);
+			else if (strstr(total_list[current_items[current_app]].app_controllers, "w")) GRRLIB_DrawImg(290, 330, control_wiimote_img, 0, 1, 1, 0xFFFFFFFF);
 			else GRRLIB_DrawImg(290, 330, control_wiimote_img, 0, 1, 1, 0xFFFFFF3C);
 
-			if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "n")) GRRLIB_DrawImg(310, 330, control_nunchuck_img, 0, 1, 1, 0xFFFFFFFF);
+			if (strstr(total_list[current_items[current_app]].app_controllers, "n")) GRRLIB_DrawImg(310, 330, control_nunchuck_img, 0, 1, 1, 0xFFFFFFFF);
 			else GRRLIB_DrawImg(310, 330, control_nunchuck_img, 0, 1, 1, 0xFFFFFF3C);
 
-			if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "c")) GRRLIB_DrawImg(346, 330, control_classic_img, 0, 1, 1, 0xFFFFFFFF);
+			if (strstr(total_list[current_items[current_app]].app_controllers, "c")) GRRLIB_DrawImg(346, 330, control_classic_img, 0, 1, 1, 0xFFFFFFFF);
 			else GRRLIB_DrawImg(346, 330, control_classic_img, 0, 1, 1, 0xFFFFFF3C);
 
-			if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "g")) GRRLIB_DrawImg(395, 330, control_gcn_img, 0, 1, 1, 0xFFFFFFFF);
+			if (strstr(total_list[current_items[current_app]].app_controllers, "g")) GRRLIB_DrawImg(395, 330, control_gcn_img, 0, 1, 1, 0xFFFFFFFF);
 			else GRRLIB_DrawImg(395, 330, control_gcn_img, 0, 1, 1, 0xFFFFFF3C);
 
-			if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "z")) GRRLIB_DrawImg(455, 330, control_zapper_img, 0, 1, 1, 0xFFFFFFFF);
+			if (strstr(total_list[current_items[current_app]].app_controllers, "z")) GRRLIB_DrawImg(455, 330, control_zapper_img, 0, 1, 1, 0xFFFFFFFF);
 			else GRRLIB_DrawImg(455, 330, control_zapper_img, 0, 1, 1, 0xFFFFFF3C);
 
-			if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "k")) GRRLIB_DrawImg(544, 330, control_keyboard_img, 0, 1, 1, 0xFFFFFFFF);
+			if (strstr(total_list[current_items[current_app]].app_controllers, "k")) GRRLIB_DrawImg(544, 330, control_keyboard_img, 0, 1, 1, 0xFFFFFFFF);
 			else GRRLIB_DrawImg(544, 330, control_keyboard_img, 0, 1, 1, 0xFFFFFF3C);
 
 			GRRLIB_DrawText(489, 290, STR_SDHC, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY);
-			if (strstr(total_list[current_items[current_app].original_pos].app_controllers, "s")) GRRLIB_DrawText(553, 290, STR_YES, FONTSIZE_SMALLER, RES_COLOR_GREEN);
+			if (strstr(total_list[current_items[current_app]].app_controllers, "s")) GRRLIB_DrawText(553, 290, STR_YES, FONTSIZE_SMALLER, RES_COLOR_GREEN);
 			else GRRLIB_DrawText(553, 290, STR_NO, FONTSIZE_SMALLER, RES_COLOR_RED);
 
-			if ((!download_in_progress && !extract_in_progress && !delete_in_progress) || (strcmp (job_store.name, total_list[current_items[current_app].original_pos].name) != 0)) {
+			if ((!download_in_progress && !extract_in_progress && !delete_in_progress) || (strcmp (job_store.name, total_list[current_items[current_app]].name) != 0)) {
 				// Download or updated enabled?
-				if (total_list[current_items[current_app].original_pos].local_app_size > 0) {
-					if (total_list[current_items[current_app].original_pos].local_app_size != total_list[current_items[current_app].original_pos].app_size && download_arrow == 0 && !total_list[current_items[current_app].original_pos].no_manage) {
+				if (total_list[current_items[current_app]].local_app_size > 0) {
+					if (total_list[current_items[current_app]].local_app_size != total_list[current_items[current_app]].app_size && download_arrow == 0 && !total_list[current_items[current_app]].no_manage) {
 						if (UI_button(ir, 340, 385, STR_UPDATE)) {
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0 && !download_in_progress && !extract_in_progress && !delete_in_progress) {
 								download_in_progress = true;
 								selected_app = current_app;
 								save_xml_name();
 								initialise_download();
-								if (total_list[current_items[selected_app].original_pos].local_app_size > 0 && total_list[current_items[selected_app].original_pos].local_app_size != total_list[current_items[selected_app].original_pos].app_size) {
+								if (total_list[current_items[selected_app]].local_app_size > 0 && total_list[current_items[selected_app]].local_app_size != total_list[current_items[selected_app]].app_size) {
 									update_xml = 1;
 								}
 							}
 						}
 					}
-					else if (total_list[current_items[current_app].original_pos].local_app_size > 0 && download_arrow == 0) {
+					else if (total_list[current_items[current_app]].local_app_size > 0 && download_arrow == 0) {
 						UI_drawButton(340, 385, STR_UPDATE, 2);
 					}
 
@@ -1041,14 +1041,14 @@ int main(int argc, char **argv) {
 					}
 
 					if (download_arrow != 0) {
-						if (!total_list[current_items[current_app].original_pos].no_manage) {
+						if (!total_list[current_items[current_app]].no_manage) {
 							GRRLIB_DrawImg(490, 385, button_yes_img, 0, 1, 1, 0xFFFFFF96);
 
 							if (ir.x > 480 && ir.x < 580 && ir.y > 385 && ir.y < 420) {
 								doRumble = true;
 								GRRLIB_DrawImg(490, 385, button_yes_img, 0, 1, 1, 0xFFFFFFFF);
 								if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0 && !download_in_progress && !extract_in_progress && !delete_in_progress) {
-									total_list[current_items[current_app].original_pos].no_manage = true;
+									total_list[current_items[current_app]].no_manage = true;
 								}
 							}
 						}
@@ -1059,14 +1059,14 @@ int main(int argc, char **argv) {
 								doRumble = true;
 								GRRLIB_DrawImg(490, 385, button_no_img, 0, 1, 1, 0xFFFFFFFF);
 								if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0 && !download_in_progress && !extract_in_progress && !delete_in_progress) {
-									total_list[current_items[current_app].original_pos].no_manage = false;
+									total_list[current_items[current_app]].no_manage = false;
 								}
 							}
 						}
 					}
 				}
 				else {
-					if (download_in_progress && strcmp (job_store.name, total_list[current_items[current_app].original_pos].name) != 0) {
+					if (download_in_progress && strcmp (job_store.name, total_list[current_items[current_app]].name) != 0) {
 						UI_drawButton(340, 385, STR_DOWNLOAD, 2);
 					} else {
 						if (UI_button(ir, 340, 385, STR_DOWNLOAD)) {
@@ -1085,7 +1085,7 @@ int main(int argc, char **argv) {
 			}
 
 			// Downloading in progress, display progress
-			if (download_in_progress && strcmp (job_store.name, total_list[current_items[current_app].original_pos].name) == 0) {
+			if (download_in_progress && strcmp (job_store.name, total_list[current_items[current_app]].name) == 0) {
 
 				int download_progress_count = (int) download_progress_counter / download_part_size;
 				if (download_progress_count > 99) download_progress_count = 100;
@@ -1106,7 +1106,7 @@ int main(int argc, char **argv) {
 			}
 
 			// Extracting in progress, display progress
-			if (extract_in_progress && strcmp (job_store.name, total_list[current_items[current_app].original_pos].name) == 0) {
+			if (extract_in_progress && strcmp (job_store.name, total_list[current_items[current_app]].name) == 0) {
 
 				int extract_progress_count = (int) (zip_progress / extract_part_size);
 				if (extract_progress_count > 100) extract_progress_count = 100;
@@ -1170,7 +1170,7 @@ int main(int argc, char **argv) {
 			}
 
 			// Delete in progress
-			if (delete_in_progress && strcmp (job_store.name, total_list[current_items[current_app].original_pos].name) == 0) {
+			if (delete_in_progress && strcmp (job_store.name, total_list[current_items[current_app]].name) == 0) {
 				GRRLIB_DrawText(270, 396, STR_DELETING, FONTSIZE_SMALL, TEXT_COLOR_SECONDARY);
 			}
 
@@ -1188,7 +1188,7 @@ int main(int argc, char **argv) {
 			}
 
 			// Display error message for some time
-			if (display_message_counter > 0 && strcmp (job_store.name, total_list[current_items[current_app].original_pos].name) == 0) {
+			if (display_message_counter > 0 && strcmp (job_store.name, total_list[current_items[current_app]].name) == 0) {
 				display_message_counter--;
 
 				// Display what error occured
@@ -1300,10 +1300,10 @@ int main(int argc, char **argv) {
 			sprintf(str_icon_info, "Checking icon %i / %i", download_icon, array_length(total_list));
 			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, str_icon_info, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
-		if (download_in_progress && updating == -1 && strcmp (job_store.name, total_list[current_items[current_app].original_pos].name) != 0) {
+		if (download_in_progress && updating == -1 && strcmp (job_store.name, total_list[current_items[current_app]].name) != 0) {
 			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, STR_DOWNLOADING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
-		if (extract_in_progress && updating == -1 && strcmp (job_store.name, total_list[current_items[current_app].original_pos].name) != 0) {
+		if (extract_in_progress && updating == -1 && strcmp (job_store.name, total_list[current_items[current_app]].name) != 0) {
 			GRRLIB_DrawText(248, UI_BOTTOM_TEXT_Y, STR_EXTRACTING_SMALL, FONTSIZE_SMALLER, TEXT_COLOR_PRIMARY_DARK);
 		}
 

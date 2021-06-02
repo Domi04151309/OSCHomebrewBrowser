@@ -195,7 +195,7 @@ struct repo_struct {
 extern struct repo_struct repo_list[200];
 
 // List to show
-extern struct homebrew_struct current_items[HOMEBREW_STRUCT_SIZE];
+extern int current_items[HOMEBREW_STRUCT_SIZE];
 
 extern int emulators_list[HOMEBREW_STRUCT_SIZE];
 extern int games_list[HOMEBREW_STRUCT_SIZE];
