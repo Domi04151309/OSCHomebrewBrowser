@@ -78,7 +78,7 @@ int demos_list[HOMEBREW_STRUCT_SIZE];
 struct homebrew_struct total_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list
-int temp_list2[HOMEBREW_STRUCT_SIZE];
+int temp_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list to use to download/extract/delete
 struct homebrew_struct job_store;
@@ -1478,21 +1478,20 @@ void sort_by_date (bool min_to_max) {
 }
 
 void hide_apps_installed() {
-
 	clear_temp_list();
 
 	int x;
 	for (x = 0; x < int_array_length(current_items); x++) {
-		temp_list2[x] = current_items[x];
+		temp_list[x] = current_items[x];
 	}
 
 	clear_list();
 
 	int i;
 	int j = 0;
-	for (i = 0; i < int_array_length(temp_list2); i++) {
-		if (total_list[temp_list2[i]].local_app_size == 0) {
-			current_items[j] = temp_list2[i];
+	for (i = 0; i < int_array_length(temp_list); i++) {
+		if (total_list[temp_list[i]].local_app_size == 0) {
+			current_items[j] = temp_list[i];
 			j++;
 		}
 	}
@@ -1839,7 +1838,7 @@ void clear_list() {
 void clear_temp_list() {
 	int c;
 	for (c = 0; c < HOMEBREW_STRUCT_SIZE; c++) {
-		temp_list2[c] = HOMEBREW_STRUCT_END;
+		temp_list[c] = HOMEBREW_STRUCT_END;
 	}
 }
 

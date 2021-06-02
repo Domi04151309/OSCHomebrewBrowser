@@ -207,7 +207,7 @@ extern int demos_list[HOMEBREW_STRUCT_SIZE];
 extern struct homebrew_struct total_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list
-extern int temp_list2[HOMEBREW_STRUCT_SIZE];
+extern int temp_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list to use to download/extract/delete
 extern struct homebrew_struct job_store;

@@ -14,7 +14,8 @@ With `DevKitPro` you can then build `GRRLIB` from source so that you can finally
 - `make -j` Builds the app
 
 ## Planned
-- Less usage of homebrew_struct
+- Faster start-up
 - Dynamically drawing dialogs
 - Less repetitive code (more functions)
+- Fewer variables
 - Migration to C++ (?)
