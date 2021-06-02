@@ -707,8 +707,8 @@ int main(int argc, char **argv) {
 					int download_progress_count = (int) download_progress_counter / download_part_size;
 					if (download_progress_count > 99) download_progress_count = 100;
 
-					GRRLIB_Rectangle(139, 270, 400, 32, TOOLTIP_COLOR, true);
-					GRRLIB_Rectangle(139, 270, download_progress_count * 4, 32, RES_COLOR_BLUE, true);
+					UI_roundedRect(139, 270, 400, 32, RES_COLOR_LIGHT_GRAY);
+					UI_roundedRect(139, 270, download_progress_count * 4, 32, RES_COLOR_BLUE);
 					GRRLIB_DrawText(208, 276, STR_DOWNLOADING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 					if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) {
@@ -729,8 +729,8 @@ int main(int argc, char **argv) {
 					int extract_progress_count = (int) (zip_progress / extract_part_size);
 					if (extract_progress_count > 100) extract_progress_count = 100;
 
-					GRRLIB_Rectangle(139, 270, 400, 32, TOOLTIP_COLOR, true);
-					GRRLIB_Rectangle(139, 270, extract_progress_count * 4, 32, RES_COLOR_BLUE, true);
+					UI_roundedRect(139, 270, 400, 32, RES_COLOR_LIGHT_GRAY);
+					UI_roundedRect(139, 270, extract_progress_count * 4, 32, RES_COLOR_BLUE);
 					GRRLIB_DrawText(270, 276, STR_EXTRACTING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 					if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) {
@@ -802,8 +802,8 @@ int main(int argc, char **argv) {
 				int overall_progress = (int) (updating_current_size / updating_part_size);
 				if (overall_progress > 98) overall_progress = 100;
 
-				GRRLIB_Rectangle(139, 370, 400, 32, TOOLTIP_COLOR, true);
-				GRRLIB_Rectangle(139, 370, overall_progress * 4, 32, RES_COLOR_BLUE, true);
+				UI_roundedRect(139, 370, 400, 32, RES_COLOR_LIGHT_GRAY);
+				UI_roundedRect(139, 370, overall_progress * 4, 32, RES_COLOR_BLUE);
 				GRRLIB_DrawText(270, 376, STR_OVERALL_PROGRESS, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 
@@ -1107,8 +1107,8 @@ int main(int argc, char **argv) {
 				int download_progress_count = (int) download_progress_counter / download_part_size;
 				if (download_progress_count > 99) download_progress_count = 100;
 
-				GRRLIB_Rectangle(139, 390, 400, 32, TOOLTIP_COLOR, true);
-				GRRLIB_Rectangle(139, 390, download_progress_count * 4, 32, RES_COLOR_BLUE, true);
+				UI_roundedRect(139, 390, 400, 32, RES_COLOR_LIGHT_GRAY);
+				UI_roundedRect(139, 390, download_progress_count * 4, 32, RES_COLOR_BLUE);
 				GRRLIB_DrawText(208, 396, STR_DOWNLOADING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 				if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) {
@@ -1128,8 +1128,8 @@ int main(int argc, char **argv) {
 				int extract_progress_count = (int) (zip_progress / extract_part_size);
 				if (extract_progress_count > 100) extract_progress_count = 100;
 
-				GRRLIB_Rectangle(139, 390, 400, 32, TOOLTIP_COLOR, true);
-				GRRLIB_Rectangle(139, 390, extract_progress_count * 4, 32, RES_COLOR_BLUE, true);
+				UI_roundedRect(139, 390, 400, 32, RES_COLOR_LIGHT_GRAY);
+				UI_roundedRect(139, 390, extract_progress_count * 4, 32, RES_COLOR_BLUE);
 				GRRLIB_DrawText(270, 396, STR_EXTRACTING, FONTSIZE_SMALL, TEXT_COLOR_PRIMARY);
 
 				if (pressed & WPAD_BUTTON_B || pressed & WPAD_BUTTON_1) {
