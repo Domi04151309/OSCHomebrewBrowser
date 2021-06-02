@@ -202,9 +202,6 @@ int main(int argc, char **argv) {
 	// Grab the homebrew list and parse list
 	while (!request_list());
 
-	// Clear homebrew list
-	clear_list();
-
 	// List
 	category_selection = setting_category;
 	if (setting_sort == 0) sort_up_down = 6;

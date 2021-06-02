@@ -2014,7 +2014,7 @@ void check_temp_files() {
 	}
 	closedir(dir);
 
-	if (x < 200) {
+	if (x < total_list_count) {
 		UI_bootScreenTwo("Downloading latest previews", "Hold down B to skip");
 
 		hbb_updating = true;
@@ -2039,8 +2039,6 @@ void check_temp_files() {
 			cancel_download = false;
 			cancel_extract = false;
 		}
-
-		sleep(2);
 	}
 }
 
