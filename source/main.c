@@ -594,7 +594,7 @@ int main(int argc, char **argv) {
 				}
 				if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && !download_in_progress) {
 					if (category_selection == 6) {
-						if (setting_online && hide_apps_updated() && current_items[0].original_pos != HOMEBREW_STRUCT_END && array_length(current_items) >= 1) {
+						if (setting_online && current_items[0].original_pos != HOMEBREW_STRUCT_END && array_length(current_items) >= 1) {
 							clear_temp_list();
 							updating = 0;
 							free_update = true;
@@ -854,23 +854,6 @@ int main(int argc, char **argv) {
 
 				if (category_selection == 6) {
 					clear_temp_list();
-
-					for (int x = 0; x < array_length(current_items); x++) {
-						temp_list2[x] = total_list[current_items[x].original_pos];
-					}
-
-					clear_list();
-
-					for (uint8_t i = 0; i < 4; i++) {
-						current_items[i].original_pos = HOMEBREW_STRUCT_END;
-					}
-
-					int j = 0;
-					for (int i = 0; i < array_length(temp_list2); i++) {
-						total_list[current_items[j].original_pos] = temp_list2[i];
-						j++;
-					}
-
 					updateList();
 				}
 			}

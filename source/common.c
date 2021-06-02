@@ -78,7 +78,7 @@ int demos_list[HOMEBREW_STRUCT_SIZE];
 struct homebrew_struct total_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list
-struct homebrew_struct temp_list2[HOMEBREW_STRUCT_SIZE];
+int temp_list2[HOMEBREW_STRUCT_SIZE];
 
 // Temp list to use to download/extract/delete
 struct homebrew_struct job_store;
@@ -1483,70 +1483,22 @@ void hide_apps_installed() {
 
 	int x;
 	for (x = 0; x < array_length(current_items); x++) {
-		temp_list2[x] = total_list[current_items[x].original_pos];
+		temp_list2[x] = current_items[x].original_pos;
 	}
 
 	clear_list();
 
 	int i;
 	int j = 0;
-	for (i = 0; i < array_length(temp_list2); i++) {
-		if (temp_list2[i].local_app_size == 0) {
-			current_items[j] = temp_list2[i];
+	for (i = 0; i < int_array_length(temp_list2); i++) {
+		if (total_list[temp_list2[i]].local_app_size == 0) {
+			current_items[j] = total_list[temp_list2[i]];
 			j++;
 		}
 	}
 	if (j == 0) {
 		current_items[i].original_pos = HOMEBREW_STRUCT_END;
 	}
-}
-
-bool hide_apps_updated() {
-
-	clear_temp_list();
-
-	int x;
-	for (x = 0; x < array_length(current_items); x++) {
-		temp_list2[x] = total_list[current_items[x].original_pos];
-	}
-
-	clear_list();
-
-	int i;
-	int j = 0;
-	for (i = 0; i < array_length(temp_list2); i++) {
-		if (temp_list2[i].local_app_size == temp_list2[i].app_size && temp_list2[i].in_download_queue >= 1) {
-			current_items[j] = temp_list2[i];
-		}
-		else if (temp_list2[i].local_app_size != temp_list2[i].app_size && temp_list2[i].in_download_queue) {
-			current_items[j] = temp_list2[i];
-		}
-		else {
-			current_items[j] = temp_list2[i];
-			current_items[j].in_download_queue = false;
-		}
-		j++;
-	}
-
-	clear_list();
-
-	j = 0;
-	for (i = 0; i < array_length(temp_list2); i++) {
-		if (temp_list2[i].local_app_size == temp_list2[i].app_size && temp_list2[i].in_download_queue >= 1) {
-			current_items[j] = temp_list2[i];
-			j++;
-		}
-		else if (temp_list2[i].local_app_size != temp_list2[i].app_size && temp_list2[i].in_download_queue) {
-			current_items[j] = temp_list2[i];
-			j++;
-		}
-	}
-
-	if (j >= 1) {
-		return 1;
-	}
-
-	return 0;
 }
 
 void die(char *msg) {
@@ -1912,32 +1864,7 @@ void clear_list() {
 void clear_temp_list() {
 	int c;
 	for (c = 0; c < HOMEBREW_STRUCT_SIZE; c++) {
-		temp_list2[c].name[0] = 0;
-		temp_list2[c].app_size = 0;
-		temp_list2[c].app_time = 0;
-		temp_list2[c].img_size = 0;
-		temp_list2[c].local_app_size = 0;
-		temp_list2[c].total_app_size = 0;
-		temp_list2[c].in_download_queue = 0;
-		temp_list2[c].user_dirname[0] = 0;
-		temp_list2[c].folders[0] = 0;
-		temp_list2[c].boot_ext[0] = 0;
-		temp_list2[c].boot_bak = 0;
-		temp_list2[c].no_manage = 0;
-
-		temp_list2[c].about_loaded = 0;
-		temp_list2[c].app_name[0] = 0;
-		temp_list2[c].app_short_description[0] = 0;
-		temp_list2[c].app_description[0] = 0;
-		temp_list2[c].app_author[0] = 0;
-		temp_list2[c].app_version[0] = 0;
-		temp_list2[c].app_total_size = 0;
-		temp_list2[c].app_controllers[0] = 0;
-
-		temp_list2[c].file_found = 0;
-		temp_list2[c].content = NULL;
-
-		temp_list2[c].original_pos = HOMEBREW_STRUCT_END;
+		temp_list2[c] = HOMEBREW_STRUCT_END;
 	}
 }
 
@@ -2068,7 +1995,6 @@ bool unzipArchive(char * zipfilepath, char * unzipfolderpath) {
 
 
 void download_queue_size() {
-
 	updating_current_size = 0;
 	updating_total_size = 0;
 
@@ -2076,7 +2002,6 @@ void download_queue_size() {
 	for (x = 0; x < array_length(current_items); x++) {
 		if (current_items[x].original_pos != HOMEBREW_STRUCT_END && total_list[current_items[x].original_pos].in_download_queue != 2) {
 			updating_total_size += total_list[current_items[x].original_pos].total_app_size;
-			printf("%i\n",updating_total_size);
 		}
 	}
 

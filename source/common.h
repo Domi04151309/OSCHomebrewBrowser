@@ -104,7 +104,6 @@ void load_settings();
 void load_mount_settings();
 
 void hide_apps_installed();
-bool hide_apps_updated();
 void sort_by_date(bool min_to_max);
 void sort_by_name (bool min_to_max);
 extern int sort_up_down;
@@ -208,7 +207,7 @@ extern int demos_list[HOMEBREW_STRUCT_SIZE];
 extern struct homebrew_struct total_list[HOMEBREW_STRUCT_SIZE];
 
 // Temp list
-extern struct homebrew_struct temp_list2[HOMEBREW_STRUCT_SIZE];
+extern int temp_list2[HOMEBREW_STRUCT_SIZE];
 
 // Temp list to use to download/extract/delete
 extern struct homebrew_struct job_store;
