@@ -822,7 +822,6 @@ int main(int argc, char **argv) {
 						else {
 							download_in_progress = true;
 							selected_app = updating;
-							add_to_stats();
 							save_xml_name();
 							initialise_download();
 							if (total_list[current_items[selected_app].original_pos].local_app_size > 0 && total_list[current_items[selected_app].original_pos].local_app_size != total_list[current_items[selected_app].original_pos].app_size) {
@@ -863,7 +862,7 @@ int main(int argc, char **argv) {
 					clear_list();
 
 					for (uint8_t i = 0; i < 4; i++) {
-						current_items[i].original_pos = -1;
+						current_items[i].original_pos = HOMEBREW_STRUCT_END;
 					}
 
 					int j = 0;
@@ -1036,7 +1035,6 @@ int main(int argc, char **argv) {
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0 && !download_in_progress && !extract_in_progress && !delete_in_progress) {
 								download_in_progress = true;
 								selected_app = current_app;
-								add_to_stats();
 								save_xml_name();
 								initialise_download();
 								if (total_list[current_items[selected_app].original_pos].local_app_size > 0 && total_list[current_items[selected_app].original_pos].local_app_size != total_list[current_items[selected_app].original_pos].app_size) {
@@ -1092,7 +1090,6 @@ int main(int argc, char **argv) {
 							if ((pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) && wait_a_press == 0 && !download_in_progress && !extract_in_progress && !delete_in_progress) {
 								download_in_progress = true;
 								selected_app = current_app;
-								add_to_stats();
 								initialise_download();
 							}
 						}

@@ -306,14 +306,6 @@ static void *run_icons_thread(void *arg) {
 				else {
 					total_list[x].file_found = -1;
 				}
-
-				int y;
-				for (y = 0; y < array_length(current_items); y++) {
-					if (strcmp (total_list[x].name, current_items[y].name) == 0) {
-						current_items[y].file_found = total_list[x].file_found;
-						current_items[y].content = total_list[x].content;
-					}
-				}
 			}
 		}
 
@@ -352,14 +344,6 @@ static void *run_icons_thread(void *arg) {
 					else {
 						total_list[x].file_found = -1;
 					}
-
-					int y;
-					for (y = 0; y < array_length(current_items); y++) {
-						if (strcmp (total_list[x].name, current_items[y].name) == 0) {
-							current_items[y].file_found = total_list[x].file_found;
-							current_items[y].content = total_list[x].content;
-						}
-					}
 				}
 			}
 		}
@@ -383,7 +367,7 @@ u8 load_icons() {
 static void *run_download_thread(void *arg) {
 
 	clear_store_list();
-	job_store = current_items[selected_app];
+	job_store = total_list[current_items[selected_app].original_pos];
 
 	if (download_icon > 0) {
 		while (download_icon_sleeping != true) {
@@ -819,7 +803,7 @@ static void *run_delete_thread(void *arg) {
 
 	if (error_number == 0) {
 		clear_store_list();
-		job_store = current_items[selected_app];
+		job_store = total_list[current_items[selected_app].original_pos];
 	}
 
 	bool delete_status = true;
@@ -1391,11 +1375,11 @@ void save_xml_name() {
 	if (!setting_use_sd) {
 		strcpy(savexml,"usb:/apps/");
 	}
-	if (strcmp(current_items[selected_app].name,"ftpii") == 0) {
-		strcat(savexml, current_items[selected_app].user_dirname);
+	if (strcmp(total_list[current_items[selected_app].original_pos].name,"ftpii") == 0) {
+		strcat(savexml, total_list[current_items[selected_app].original_pos].user_dirname);
 	}
 	else {
-		strcat(savexml, current_items[selected_app].name);
+		strcat(savexml, total_list[current_items[selected_app].original_pos].name);
 	}
 	strcat(savexml, "/meta.xml");
 
@@ -1423,11 +1407,11 @@ void copy_xml_name() {
 		if (!setting_use_sd) {
 			strcpy(savexml,"usb:/apps/");
 		}
-		if (strcmp(current_items[selected_app].name,"ftpii") == 0) {
-			strcat(savexml, current_items[selected_app].user_dirname);
+		if (strcmp(total_list[current_items[selected_app].original_pos].name,"ftpii") == 0) {
+			strcat(savexml, total_list[current_items[selected_app].original_pos].user_dirname);
 		}
 		else {
-			strcat(savexml, current_items[selected_app].name);
+			strcat(savexml, total_list[current_items[selected_app].original_pos].name);
 		}
 		strcat(savexml, "/meta.xml");
 
@@ -1499,7 +1483,7 @@ void hide_apps_installed() {
 
 	int x;
 	for (x = 0; x < array_length(current_items); x++) {
-		temp_list2[x] = current_items[x];
+		temp_list2[x] = total_list[current_items[x].original_pos];
 	}
 
 	clear_list();
@@ -1523,7 +1507,7 @@ bool hide_apps_updated() {
 
 	int x;
 	for (x = 0; x < array_length(current_items); x++) {
-		temp_list2[x] = current_items[x];
+		temp_list2[x] = total_list[current_items[x].original_pos];
 	}
 
 	clear_list();
@@ -2090,8 +2074,8 @@ void download_queue_size() {
 
 	int x;
 	for (x = 0; x < array_length(current_items); x++) {
-		if (strlen(current_items[x].name) >= 3 && current_items[x].original_pos != HOMEBREW_STRUCT_END && current_items[x].in_download_queue != 2) {
-			updating_total_size += current_items[x].total_app_size;
+		if (current_items[x].original_pos != HOMEBREW_STRUCT_END && total_list[current_items[x].original_pos].in_download_queue != 2) {
+			updating_total_size += total_list[current_items[x].original_pos].total_app_size;
 			printf("%i\n",updating_total_size);
 		}
 	}
@@ -2159,39 +2143,6 @@ void check_temp_files() {
 
 		sleep(2);
 	}
-}
-
-void add_to_stats() {
-	s32 main_server = server_connect(0);
-	char http_request[1000];
-
-	if (setting_repo == 0) {
-		strcpy(http_request, "GET /hbb_download.php?name=");
-		strcat(http_request,current_items[selected_app].name);
-	}
-	else {
-		strcpy(http_request, "GET ");
-		strcat(http_request, repo_list[setting_repo].apps_dir);
-		strcat(http_request, "hbb_download.php?name=");
-		strcat(http_request, current_items[selected_app].name);
-	}
-
-	strcat(http_request, " HTTP/1.0\r\nHost: ");
-	if (setting_repo == 0) {
-		if (!codemii_backup) {
-			strcat(http_request, MAIN_DOMAIN);
-		}
-		else {
-			strcat(http_request, FALLBACK_DOMAIN);
-		}
-	}
-	else {
-		strcat(http_request, repo_list[setting_repo].domain);
-	}
-	strcat(http_request, "\r\nCache-Control: no-cache\r\n\r\n");
-
-	write_http_reply(main_server, http_request);
-	net_close(main_server);
 }
 
 void repo_check() {

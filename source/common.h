@@ -125,7 +125,6 @@ extern bool list_received;
 extern int no_manage_count;
 
 void download_queue_size();
-void add_to_stats();
 bool check_server();
 void initialise_codemii();
 void initialise_codemii_backup();
