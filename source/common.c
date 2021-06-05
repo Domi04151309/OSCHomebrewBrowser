@@ -2033,7 +2033,6 @@ void check_temp_files() {
 }
 
 void repo_check() {
-
 	// Setting in settings which will just be a number, 0 for HBB, 1 for another one, etc.
 	// Always grab the listing of other repos
 
@@ -2046,8 +2045,7 @@ void repo_check() {
 
 	if (!codemii_backup) {
 		strcat(http_request," HTTP/1.0\r\nHost: " MAIN_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
-	}
-	else {
+	} else {
 		strcat(http_request," HTTP/1.0\r\nHost: " FALLBACK_DOMAIN "\r\nCache-Control: no-cache\r\n\r\n");
 	}
 
@@ -2132,10 +2130,9 @@ void repo_check() {
 		// Now check which server to use
 		if (setting_repo != 0) {
 			printf("Using repository: %s\n", repo_list[setting_repo].name);
-			UI_bootScreen("Press Wiimote '2' or Gamecube 'X' button to revert to the CodeMii Repo");
+			UI_bootScreen("Press '2' to revert to the default repository");
 		}
-	}
-	else if (count == 0) {
+	} else if (count == 0) {
 		UI_bootScreen("Failed to receive repository list");
 	}
 }
@@ -2206,27 +2203,23 @@ s32 server_connect(int repo_bypass) {
 		if (hostname_ok) {
 			if (!codemii_backup) {
 				connect_addr.sin_addr.s_addr= getipbynamecached(MAIN_DOMAIN);
-			}
-			else {
+			} else {
 				connect_addr.sin_addr.s_addr= getipbynamecached(FALLBACK_DOMAIN);
 			}
-		}
-		else {
+		} else {
 			if (!codemii_backup) {
 				connect_addr.sin_addr.s_addr= inet_addr(IP_ADDRESS_OLD);
-			}
-			else {
+			} else {
 				connect_addr.sin_addr.s_addr= inet_addr(IP_ADDRESS_OLD2);
 			}
 		}
-	}
-	else {
+	} else {
 		connect_addr.sin_addr.s_addr = getipbynamecached(repo_list[setting_repo].domain);
 	}
 
 	if (net_connect(server, (struct sockaddr*)&connect_addr, sizeof(connect_addr)) == -1) {
 		net_close(server);
-		die("Failed to connect to the remote server.\n");
+		die("Failed to connect to the remote server");
 	}
 
 	return server;
@@ -2890,12 +2883,10 @@ s32 request_list_file(char *file_path, char *path) {
 		if (setting_repo == 0) {
 			if (!codemii_backup) {
 				strcat(http_request, MAIN_DOMAIN);
-			}
-			else {
+			} else {
 				strcat(http_request, FALLBACK_DOMAIN);
 			}
-		}
-		else {
+		} else {
 			strcat(http_request, repo_list[setting_repo].domain);
 		}
 		strcat(http_request, "\r\nCache-Control: no-cache\r\n\r\n");

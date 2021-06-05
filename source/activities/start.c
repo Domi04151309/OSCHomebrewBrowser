@@ -10,8 +10,8 @@ void START_tryWWW() {
   while (!www_passed && main_retries < 3) {
     initialise_www();
     int waiting = 0;
-    while (!www_passed && waiting < 5) {
-      sleep(1);
+    while (!www_passed && waiting < 10) {
+      usleep(500000);
       waiting++;
     }
     if (!www_passed) UI_bootScreen("Failed, retrying");
