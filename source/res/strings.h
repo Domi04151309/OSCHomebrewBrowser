@@ -61,7 +61,6 @@
 
 #define STR_DISABLE_USB_MOUNTING "Disable USB mounting"
 #define STR_USE_WIIMOTE_SIDEWAYS "Use Wiimote sideways"
-#define STR_USE_SECONDARY_SERVER "Use secondary server"
 
 #define STR_AUTHOR "Author:"
 #define STR_VERSION "Version:"

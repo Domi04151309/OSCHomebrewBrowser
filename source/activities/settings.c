@@ -142,25 +142,15 @@ void SETTINGS_render() {
         if (setting_wiiside) setting_wiiside = false;
         else setting_wiiside = true;
       }
-    } else if (UI_isOnSquare(ir, 104, 246, 440, 44)) {
-      UTILS_rumble();
-      UI_highlight(104, 246, 440, 44);
-      if (pressed & WPAD_BUTTON_A || pressed & WPAD_BUTTON_2) {
-        if (setting_server) setting_server = false;
-        else setting_server = true;
-      }
     }
 
     GRRLIB_DrawText(112, 160, STR_DISABLE_USB_MOUNTING, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
     GRRLIB_DrawText(112, 210, STR_USE_WIIMOTE_SIDEWAYS, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
-    GRRLIB_DrawText(112, 260, STR_USE_SECONDARY_SERVER, FONTSIZE_SMALL1, TEXT_COLOR_PRIMARY);
 
     if (setting_disusb) GRRLIB_DrawImg(498, 148, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
     else GRRLIB_DrawImg(498, 148, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
     if (setting_wiiside) GRRLIB_DrawImg(498, 198, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
     else GRRLIB_DrawImg(498, 198, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
-    if (setting_server) GRRLIB_DrawImg(498, 248, app_tick_img, 0, 1, 1, 0xFFFFFFFF);
-    else GRRLIB_DrawImg(498, 248, app_cross_img, 0, 1, 1, 0xFFFFFFFF);
 
     GRRLIB_DrawText(355, 418, STR_3_OF_3, FONTSIZE_SMALLER, TEXT_COLOR_SECONDARY);
   }

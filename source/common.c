@@ -143,7 +143,6 @@ int setting_category = 2;
 int setting_sort = 1;
 bool setting_disusb = false;
 bool setting_wiiside = false;
-bool setting_server = false;
 
 bool setting_repo_revert = false;
 bool cancel_confirmed = false;
@@ -1190,9 +1189,6 @@ void update_settings() {
 	char set19[2];
 	sprintf(set19, "%i", setting_wiiside);
 	mxmlElementSetAttr(data, "setting_wiiside", set19);
-	char set21[2];
-	sprintf(set21, "%i", setting_server);
-	mxmlElementSetAttr(data, "setting_server", set21);
 
 	FILE *fp = fopen("sd:/apps/homebrew_browser_lite/settings.xml", "wb");
 	FILE *fp1 = fopen("usb:/apps/homebrew_browser_lite/settings.xml", "wb");
@@ -1318,9 +1314,6 @@ void load_settings() {
 			}
 			if (mxmlElementGetAttr(data,"setting_wiiside")) {
 				setting_wiiside = atoi(mxmlElementGetAttr(data,"setting_wiiside"));
-			}
-			if (mxmlElementGetAttr(data,"setting_server")) {
-				setting_server = atoi(mxmlElementGetAttr(data,"setting_server"));
 			}
 
 			mxmlDelete(data);
@@ -1770,9 +1763,6 @@ void initialise_codemii() {
 void initialise_codemii_backup() {
 	UI_bootScreen("Requesting IP address of " FALLBACK_DOMAIN);
 	hostname_ok = true;
-	if (setting_server) {
-		initializedns();
-	}
 	IP_ADDRESS = getipbynamecached(FALLBACK_DOMAIN);
 
 	if (IP_ADDRESS == 0) {

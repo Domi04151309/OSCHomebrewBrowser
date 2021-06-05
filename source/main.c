@@ -42,6 +42,7 @@ ftpii Source Code Copyright (C) 2008 Joseph Jordan <joe.ftpii@psychlaw.com.au>
 #include "ui.h"
 #include "utils.h"
 
+#include "activities/start.h"
 #include "activities/menu.h"
 #include "activities/about.h"
 #include "activities/help_controller.h"
@@ -124,23 +125,11 @@ int main(int argc, char **argv) {
 	initialise_fat();
 	load_settings();
 
-	if (setting_online && !setting_server) {
+	if (setting_online) {
 		initialise_codemii();
 		printf("Attempting to connect to server");
-		int main_retries = 0;
-		while (!www_passed && main_retries < 3) {
-			initialise_www();
-			int retries = 0;
-			while (!www_passed && retries < 5) {
-				sleep(1);
-				retries++;
-			}
-			if (!www_passed) {
-				UI_bootScreen("Failed, retrying");
-			}
-			main_retries++;
-			suspend_www_thread();
-		}
+
+		START_tryWWW();
 
 		if (!www_passed) {
 			codemii_backup = true;
@@ -148,53 +137,9 @@ int main(int argc, char **argv) {
 			initialise_codemii_backup();
 			printf("Attempting to connect to server");
 
-			int main_retries = 0;
-			while (!www_passed && main_retries < 3) {
-				initialise_www();
-				int retries = 0;
-				while (!www_passed && retries < 5) {
-					sleep(1);
-					retries++;
-				}
-				if (!www_passed) {
-					UI_bootScreen("Failed, retrying");
-				}
-				main_retries++;
-				suspend_www_thread();
-			}
+			START_tryWWW();
 		}
-
-		suspend_www_thread();
-
-		if (!www_passed) {
-			die("Returning you back to HBC. Please check to see if " MAIN_DOMAIN " and " FALLBACK_DOMAIN " are working.");
-		}
-	}
-	else if (setting_server) { // Secondary server setting enabled
-		codemii_backup = true;
-		initialise_codemii_backup();
-		UI_bootScreen("Attempting to connect to OSCWii Secondary server");
-
-		int main_retries = 0;
-		while (!www_passed && main_retries < 3) {
-			initialise_www();
-			int retries = 0;
-			while (!www_passed && retries < 5) {
-				sleep(1);
-				retries++;
-			}
-			if (!www_passed) {
-				UI_bootScreen("Failed, retrying");
-			}
-			main_retries++;
-			suspend_www_thread();
-		}
-
-		suspend_www_thread();
-
-		if (!www_passed) {
-			die("Returning you back to HBC. Please check to see if " FALLBACK_DOMAIN " is working");
-		}
+		if (!www_passed) die("Returning you back to HBC. Please check to see if " MAIN_DOMAIN " and " FALLBACK_DOMAIN " are working.");
 	}
 	UI_bootScreen("Connection established");
 	repo_check();
