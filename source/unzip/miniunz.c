@@ -22,16 +22,6 @@
 #define WRITEBUFFERSIZE (8192)
 #define MAXFILENAME (256)
 
-int zip_size = 0;
-long extract_part_size = 0;
-long zip_progress = 0;
-bool cancel_extract = false;
-bool hbb_updating = false;
-int unzip_file_counter = 0;
-int unzip_file_count = 0;
-char no_unzip_list[10][300];
-int no_unzip_count = 0;
-
 static int mymkdir(const char* dirname)
 {
     int ret=0;
@@ -238,7 +228,7 @@ static int do_extract_currentfile(unzFile uf,const int* popt_extract_without_pat
 						zip_progress += size_buf;
 						temp_size += size_buf;
 						//updating_current_size += size_buf;
-						
+
 						if ((cancel_download == true || cancel_extract == true) && cancel_confirmed == true) {
 							cancel_download = false;
 							cancel_extract = true;

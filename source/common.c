@@ -185,6 +185,17 @@ size_t result;
 struct tm * timeinfo;
 time_t app_time;
 
+// Zip
+int zip_size = 0;
+long extract_part_size = 0;
+long zip_progress = 0;
+bool cancel_extract = false;
+bool hbb_updating = false;
+int unzip_file_counter = 0;
+int unzip_file_count = 0;
+char no_unzip_list[10][300];
+int no_unzip_count = 0;
+
 void exitApp(int code) {
 	GRRLIB_Exit();
 	exit(code);
