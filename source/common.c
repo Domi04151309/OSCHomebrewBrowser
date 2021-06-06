@@ -1962,7 +1962,7 @@ bool unzipArchive(char * zipfilepath, char * unzipfolderpath) {
 		}
 	}
 
-	extractZip(uf,0,1,0);
+	do_extract(uf,0,1,0);
 
 	unzCloseCurrentFile(uf);
 	return true;
